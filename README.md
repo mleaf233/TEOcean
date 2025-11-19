@@ -2,14 +2,14 @@
 
 这是一个为 Balatro/SMODS 环境准备的本地化合并工具模组扩展，目的是把 `impl/mods/<modid>/localization/` 下的翻译文件合并到对应的目标 mod 的 `localization/` 目录中，以便在游戏中使用统一的翻译覆盖或补充。
 
-## 功能概览:
+## 功能概览
 - **按 modid 合并**：会遍历 `SMODS.mod_list`，只针对工作区 `impl/mods/<modid>/` 存在的 mod 执行合并。
 - **备份原始文件（只备份一次）**：写入前会把目标 mod 现有的 `localization/<lang>.lua` / `.json` 复制到 `impl/backup/<modid>/localization/` 下；若备份已存在则跳过，确保备份保留的是“原始”的本地化文件。
 - **跳过无意义写入**：在写入前对合并结果做换行与尾部空白归一化并与现有文件比较，若一致则不写入也不备份。
 - **手动触发**：合并额外支持在游戏内点击模组配置里的“手动重载”按钮时执行（不会自动覆盖）。目前手动重载后需要手动切换一轮语言
 
 
-## 目录关系:
+## 目录关系
 - `impl/mods/<modid>/localization/` — 你的覆盖/补充翻译来源。
 - `impl/backup/<modid>/localization/` — 自动保存的原始目标 mod 本地化（仅首次备份）。
 - 目标写入路径：`<target_mod_path>/localization/<lang>.lua`。
@@ -40,4 +40,5 @@
 
 
 ## 许可说明
-- 请遵循各 mod 的许可条款；本工具仅在本地修改 mod 的 `localization` 文件，请在必要时备份并在分发前征得原作者许可。
+- 本项目采用 GPLv3 许可证
+- 请遵循各 mod 的许可条款；本工具仅在本地修改 mod 的 `localization` 文件，请在必要时备份并在分发前征得原作者许可
