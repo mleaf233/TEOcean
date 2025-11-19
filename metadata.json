@@ -1,0 +1,18 @@
+{
+  "id": "teocean",
+  "name": "TEOcean Language Packs",
+  "display_name": "TEOcean Language Packs",
+  "prefix": "teocean",
+  "author": [
+    "mleaf233"
+  ],
+  "priority": -10,
+  "description": "第八大洋的个人汉化包",
+  "main_file": "mod.lua",
+  "badge_colour": "4d7fcf",
+  "version": "1.0.0",
+  "dependencies": [
+    "Steamodded (>=1.0.0~ALPHA-1423h)",
+    "Lovely (>=0.7.1)"
+  ]
+}
