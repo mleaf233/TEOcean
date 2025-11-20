@@ -1,7 +1,19 @@
 local mod = SMODS.current_mod
 
+local DEBUG = false
 local function merge_impl_mod_localizations()
     if not mod or not mod.path then return end
+
+    local function dbg_print(...)
+        if not DEBUG then return end
+        print('[TEOcean DBG]', ...)
+    end
+    local function tbl_count(t)
+        if type(t) ~= 'table' then return 0 end
+        local c = 0
+        for _ in pairs(t) do c = c + 1 end
+        return c
+    end
     -- helper: 读取 .lua 或 .json 文件并返回 table
     local function read_loc_file(path)
         local info = NFS.getInfo(path)
@@ -86,6 +98,24 @@ local function merge_impl_mod_localizations()
         end
     end
 
+    -- 递归比较：返回 base 中在 other 中缺失的键及其原始值（保留原始结构）
+    local function diff_table(base, other)
+        if type(base) ~= 'table' then return nil end
+        local res = {}
+        for k, v in pairs(base) do
+            local ov = (type(other) == 'table') and other[k] or nil
+            if type(v) == 'table' then
+                local sub = diff_table(v, ov)
+                if sub and next(sub) then res[k] = sub end
+            else
+                if ov == nil or ov == '' then
+                    res[k] = v
+                end
+            end
+        end
+        return res
+    end
+
     -- languages to process (原 mod 文件 + impl 覆盖)
     local langs = { 'zh_CN', 'en-us', 'default' }
     if G and G.SETTINGS and G.SETTINGS.language then table.insert(langs, 1, G.SETTINGS.language) end
@@ -107,9 +137,19 @@ local function merge_impl_mod_localizations()
             local file_lua = loc_dir .. lang .. '.lua'
             local file_json = loc_dir .. lang .. '.json'
             local t = nil
-            if NFS.getInfo(file_lua) then t = read_loc_file(file_lua) end
-            if not t and NFS.getInfo(file_json) then t = read_loc_file(file_json) end
-            if t and type(t) == 'table' then merged_by_lang[lang] = merge_table(merged_by_lang[lang] or {}, t) end
+            if NFS.getInfo(file_lua) then
+                t = read_loc_file(file_lua)
+                dbg_print('read base file', file_lua, '->', type(t), 'keys=', tbl_count(t))
+            end
+            if not t and NFS.getInfo(file_json) then
+                t = read_loc_file(file_json)
+                dbg_print('read base file', file_json, '->', type(t), 'keys=', tbl_count(t))
+            end
+            if t and type(t) == 'table' then
+                dbg_print('merging base loc into lang', lang, 'for', target_mod.id, 'src_keys=', tbl_count(t))
+                merged_by_lang[lang] = merge_table(merged_by_lang[lang] or {}, t)
+                dbg_print('merged_by_lang[' .. tostring(lang) .. '] now keys=', tbl_count(merged_by_lang[lang]))
+            end
         end
 
         -- 2) 读取并合并 impl/mods/<modid>/localization/ 下的文件，覆盖原始
@@ -119,10 +159,59 @@ local function merge_impl_mod_localizations()
                 local file_lua = impl_base .. lang .. '.lua'
                 local file_json = impl_base .. lang .. '.json'
                 local t = nil
-                if NFS.getInfo(file_lua) then t = read_loc_file(file_lua) end
-                if not t and NFS.getInfo(file_json) then t = read_loc_file(file_json) end
-                if t and type(t) == 'table' then merged_by_lang[lang] = merge_table(merged_by_lang[lang] or {}, t) end
+                if NFS.getInfo(file_lua) then
+                    t = read_loc_file(file_lua)
+                    dbg_print('read impl file', file_lua, '->', type(t), 'keys=', tbl_count(t))
+                end
+                if not t and NFS.getInfo(file_json) then
+                    t = read_loc_file(file_json)
+                    dbg_print('read impl file', file_json, '->', type(t), 'keys=', tbl_count(t))
+                end
+                if t and type(t) == 'table' then
+                    dbg_print('merging impl loc into lang', lang, 'for', target_mod.id, 'src_keys=', tbl_count(t))
+                    merged_by_lang[lang] = merge_table(merged_by_lang[lang] or {}, t)
+                    dbg_print('merged_by_lang[' .. tostring(lang) .. '] now keys=', tbl_count(merged_by_lang[lang]))
+                end
             end
+        end
+
+        -- 额外：将合并后的本地化与原 mod 的 en-us.lua 比较，生成缺失翻译清单并保存到 impl/todo/<modid>/
+        local orig_en = nil
+        local orig_en_lua = loc_dir .. 'en-us.lua'
+        local orig_en_json = loc_dir .. 'en-us.json'
+        if NFS.getInfo(orig_en_lua) then
+            orig_en = read_loc_file(orig_en_lua)
+            dbg_print('read orig en lua', orig_en_lua, '->', type(orig_en), 'keys=', tbl_count(orig_en))
+        end
+        if not orig_en and NFS.getInfo(orig_en_json) then
+            orig_en = read_loc_file(orig_en_json)
+            dbg_print('read orig en json', orig_en_json, '->', type(orig_en), 'keys=', tbl_count(orig_en))
+        end
+        if orig_en and type(orig_en) == 'table' then
+            local todo_root = mod.path .. 'impl/todo/'
+            if not NFS.getInfo(todo_root) then pcall(NFS.createDirectory, todo_root) end
+            local todo_mod_dir = todo_root .. target_mod.id .. '/'
+            if not NFS.getInfo(todo_mod_dir) then pcall(NFS.createDirectory, todo_mod_dir) end
+            for lang, merged_tbl in pairs(merged_by_lang) do
+                -- 对每个目标语言，找出原 en 中存在但合并后缺失的键
+                dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', tbl_count(orig_en), 'merged_keys=', tbl_count(merged_tbl))
+                local missing = diff_table(orig_en, merged_tbl)
+                if missing and next(missing) then
+                    local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
+                    local content = 'return ' .. table_to_lua(missing, '') .. '\n'
+                    dbg_print('missing table for', target_mod.id, lang, 'top_keys=', tbl_count(missing))
+                    local okw, errw = pcall(NFS.write, out_path, content)
+                    if okw then
+                        print(('[TEOcean Language Packs] 生成缺失翻译: %s -> %s'):format(target_mod.id, out_path))
+
+                    else
+                        print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
+                    end
+                end
+            end
+        else
+            -- 如果没有原始 en-us，可选地记录一条信息
+            print(('[TEOcean Language Packs] 未找到原始 en-us，跳过缺失翻译检查: %s'):format(target_mod.id))
         end
 
         -- 3) 将合并结果写回到目标 mod 的 localization 目录（创建目录如有必要），并先备份原始文件到 impl/backup/<modid>/localization/
@@ -229,6 +318,21 @@ local function merge_impl_mod_localizations()
                 local okw, errw = pcall(NFS.write, out_path, content)
                 if okw then
                     print(('[TEOcean Language Packs] 写入合并本地化: %s -> %s'):format(target_mod.id, out_path))
+                    -- -- 额外保存一份带时间戳的副本，方便历史追踪
+                    -- local ok_ts, err_ts
+                    -- local ts = os.date('%Y%m%d%H%M%S')
+                    -- local alt_path
+                    -- if out_path:lower():match('%.lua$') then
+                    --     alt_path = out_path:gsub('%.lua$', '_' .. ts .. '.lua')
+                    -- else
+                    --     alt_path = out_path .. '_' .. ts
+                    -- end
+                    -- ok_ts, err_ts = pcall(NFS.write, alt_path, content)
+                    -- if ok_ts then
+                    --     print(('[TEOcean Language Packs] 另存时间戳文件: %s'):format(alt_path))
+                    -- else
+                    --     print(('[TEOcean Language Packs] 另存时间戳失败: %s (%s)'):format(tostring(alt_path), tostring(err_ts)))
+                    -- end
                 else
                     print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
                 end
