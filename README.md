@@ -37,6 +37,12 @@
 
 注意：首次备份会保留目标 mod 在触发时的原始文件。若想强制重新备份原始文件，请手动删除 `impl/backup/<modid>/localization/` 下对应的备份文件，再次点击手动重载。
 
+## 交流群
+
+QQ群: 
+```
+1074056375
+```
 ## 开发说明
 - 合并逻辑位于 `mod.lua` 中，函数 `merge_impl_mod_localizations()` 执行读取、合并、序列化与写入。
 - 适配更多mod，需要根据modid在impl/mods/ 下新建文件夹，具体参考已有的。
