@@ -514,7 +514,7 @@ return {
                 }
             },
             j_paperback_jestosterone = {
-                name = "jestosterone",
+                name = "Jestosterone",
                 text = {
                     "计分的{C:attention}#1#{}变为{C:attention}#2#{}"
                 }
@@ -765,12 +765,14 @@ return {
                 }
             },
             j_paperback_double_dutchman = {
-                name = "双人跳绳",
+                name = "双层荷兰风味汉堡",
                 text = {
                     "{C:attention}手持{}的游戏牌有{C:green}#1#/#2#{}",
                     "几率获得随机{C:attention}增强{}、",
                     "{C:attention}蜡封{}或{C:attention}版本{}",
-                    "持续{C:attention}#3#{}次出牌"
+                    "持续{C:attention}#3#{}次出牌",
+                    "{C:inactive}(译注：此食物名称通常指含有双份肉或{}",
+                    "{C:inactive}双份荷兰奶酪的荷兰风味汉堡或三明治){}",
                 }
             },
             j_paperback_pedrillo = {
@@ -816,7 +818,7 @@ return {
             j_paperback_master_spark = {
                 name = "极限火花",
                 text = {
-                    "若打出的牌包含{C:attention}明亮牌{}，",
+                    "若打出的牌包含{C:attention}光谱{}，",
                     "摧毁所有{C:attention}手牌{}，",
                     "所有打出的牌赋予{C:dark_edition}多彩{}版本",
                     "{S:1.1,C:red,E:2}自毁"
@@ -1048,7 +1050,7 @@ return {
             paperback_gold_clip = {
                 name = "金色别针",
                 text = {
-                    "回合结束时{C:attention}留在手中{}的金色别针为",
+                    "回合结束时{C:attention}留在手牌{}的金色别针为",
                     "每个{C:attention}计分{}的{C:attention}别针{}",
                     "提供{C:money}$#1#{}",
                     "{C:inactive}(当前{C:money}$#2#{C:inactive})"
@@ -1092,6 +1094,42 @@ return {
         },
         ranks = {
             paperback_Apostle = "使徒",
+        },
+        dictionary = {
+            paperback_clippy_msg_5 = "我来帮忙！",
+            paperback_ui_select = "选择",
+            paperback_rare_ex = "稀有！",
+            paperback_clippy_msg_1 = "保存文件？",
+            paperback_plus_tag = "+1 标签",
+            paperback_clippy_msg_6 = "询问我！",
+            paperback_ui_enable_ranks = "启用点数",
+            paperback_clippy_msg_3 = "嗨！",
+            paperback_da_capo_Clubs = "第一乐章",
+            paperback_jestosterone_ex = "雄性化！",
+            paperback_confessed_ex = "忏悔！",
+            paperback_clippy_msg_4 = "键盘已启用！",
+            paperback_punch_card_active = "告诉你的朋友！",
+            paperback_saved_unholy_alliance = "被邪恶联盟拯救",
+            paperback_da_capo_Hearts = "第四乐章",
+            paperback_ui_plague_doctor_quotes = "瘟疫医生语录",
+            paperback_clippy_msg_7 = "我该走吗？",
+            paperback_da_capo_Spades = "第二乐章",
+            paperback_determination_ex = "啊啊啊啊！",
+            paperback_da_capo_Diamonds = "第三乐章",
+            paperback_forlorn_destruction = "抱歉……",
+            paperback_ui_enable_spectrals = "启用幻灵牌",
+            paperback_punch_card_ex = "错误传送！",
+            paperback_clippy_msg_full = "存储空间已满！",
+            paperback_ui_enable_blinds = "启用盲注",
+            paperback_ui_no_requires_restart = "无需重启",
+            paperback_da_capo_None = "终章！",
+            paperback_clippy_msg_8 = "鼠标已启用！",
+            paperback_freezer_ex = "晚餐时间！",
+            paperback_saved_determination = "被决心拯救",
+            paperback_clippy_msg_2 = "我是大眼夹！",
+            paperback_reduced_ex = "已减少！",
+            paperback_jestrogen_ex = "雌性化！"
+            -- 译者注，paperback_plague_quote** 系列涉及宗教内容，故未翻译。如果后续需要翻译，请尽量贴合原意。
         },
     },
 }
