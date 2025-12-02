@@ -1,25 +1,83 @@
 return {
     descriptions = {
         Back = {
+            b_paperback_shimmering = {
+                unlock = {
+                    "出售{C:attention}#1#{}张",
+                    "{C:paperback_ego_gift}E.G.O饰品{}"
+                },
+                name = "闪耀牌组",
+                text = {
+                    "每拥有一种不同{C:attention}罪孽{}",
+                    "便获得{C:attention}+#1#{}个消耗牌栏位",
+                    "小丑牌槽位{C:red}#2#{}",
+                    "{C:paperback_ego_gift}E.G.O.饰品提取包{}",
+                    "有{C:attention}5X{}几率更可能出现"
+                }
+            },
+            b_paperback_paper = {
+                name = "纸质牌组",
+                text = {
+                    "{C:legendary}传奇{C:attention}小丑牌{}有",
+                    "有{C:attention}3X{}的几率更可能出现",
+                    "开局时拥有",
+                    "{C:attention,T:j_paperback_shopping_center}#1#{}小丑牌"
+                }
+            },
+            b_paperback_silver = {
+                unlock = {
+                    "发现{C:attention}#1#{}张",
+                    "{C:paperback_minor_arcana,E:1}塔罗辅牌{}"
+                },
+                name = "银色牌组",
+                text = {
+                    "开局时拥有",
+                    "{C:paperback_minor_arcana,T:v_paperback_celtic_cross}#1#{}优惠券",
+                    "和一张{C:paperback_minor_arcana,T:c_paperback_nine_of_cups}#2#"
+                }
+            },
             b_paperback_passionate = {
+                unlock = {
+                    "使用任意牌组",
+                    "在至少{V:1}#1#{}难度下",
+                    "赢得一局游戏"
+                },
                 name = "热忱牌组",
                 text = {
-                    "每击败一次",
-                    "{C:attention}Boss盲注{}后",
-                    "获得{C:attention,T:tag_paperback_high_risk}#1#",
-                    "不获得任何{C:money}利息"
+                    "每次击败{C:attention}Boss盲注{}后",
+                    "获得一个{C:attention,T:tag_paperback_high_risk}#1#标签",
+                    "不赚取任何{C:money}利息"
                 }
             },
             b_paperback_antique = {
+                unlock = {
+                    "发现所有",
+                    "{C:paperback_minor_arcana,E:1}塔罗辅牌{}"
+                },
                 name = "古旧牌组",
                 text = {
-                    "{C:tarot}秘术包{}将不再",
+                    "{C:tarot}秘术包{}不再",
                     "出现在商店中",
                     "{C:paperback_minor_arcana}秘仪包",
-                    "出现频率提升为{C:attention}3X{}"
+                    "有{C:attention}3X{}的几率更可能出现"
+                }
+            },
+            b_paperback_proud = {
+                unlock = {
+                    "打出一次{C:attention}光谱{}"
+                },
+                name = "骄傲牌组",
+                text = {
+                    "开局时拥有全套",
+                    "{C:hearts}红桃{}、{C:diamonds}方片{}、{C:spades}黑桃{}",
+                    "{C:clubs}梅花{}、{C:paperback_crowns}皇冠{}和{C:paperback_stars}银星{}"
                 }
             },
             b_paperback_dreamer = {
+                unlock = {
+                    "拥有{C:attention}#1#{}张小丑牌",
+                    "每张带有{V:1}#2#{}张贴纸"
+                },
                 name = "追梦者牌组",
                 text = {
                     "开局时获得一张{C:paperback_temporary}临时{}的",
@@ -27,12 +85,193 @@ return {
                     "{C:attention}#2#{}个小丑牌槽位"
                 }
             },
-            b_paperback_paper = {
-                name = "纸制牌组",
+        },
+        paperback_ego_gift = {
+            c_paperback_thrill = {
+                name = "快感",
                 text = {
-                    "{C:legendary}Paperback{C:attention} 小丑{}有{C:attention}3X{}的可能出现",
-                    "开局时获得",
-                    "{C:attention,T:j_paperback_shopping_center}#1#{}"
+                    "在回合的{C:attention}第一次出牌{}时",
+                    "此{C:paperback_ego_gift}E.G.O. 饰品{}给予{X:mult,C:white}X#1#{}倍率",
+                    "每在本回合使用一次{C:attention}弃牌{}",
+                    "{C:inactive}(当前{X:mult,C:white}X#2#{C:inactive}倍率)"
+                }
+            },
+            c_paperback_downpour = {
+                name = "暴雨",
+                text = {
+                    "每次出牌后",
+                    "{C:attention}盲注要求{}降低{C:attention}#1#%"
+                }
+            },
+            c_paperback_phlebotomy_pack = {
+                name = "采血包",
+                text = {
+                    "每回合{C:blue}+#1#{}次出牌次数"
+                }
+            },
+            c_paperback_blue_lighter = {
+                name = "蓝色芝宝牌打火机",
+                text = {
+                    "选择{C:attention}盲注{}时",
+                    "摧毁一张非{C:paperback_ego_gift}E.G.O. 饰品{}的消耗牌",
+                    "此{C:paperback_ego_gift}E.G.O. 饰品{}获得{X:mult,C:white}X#1#{}倍率",
+                    "{C:inactive}(当前{X:mult,C:white}X#2#{C:inactive}倍率)"
+                }
+            },
+            c_paperback_fluorescent_lamp = {
+                name = "荧光灯",
+                text = {
+                    "{C:red}+#1#{}次弃牌次数",
+                    "每有一个空的{C:attention}小丑牌槽位{}",
+                    "额外{C:red}+#1#{}次弃牌次数",
+                    "{C:inactive}(当前{C:red}+#3#{C:inactive}次弃牌)"
+                }
+            },
+            c_paperback_death_seeker = {
+                name = "赴死者",
+                text = {
+                    "{C:attention}增强牌{}计分时",
+                    "给予等于其{C:attention}点数{}的{C:mult}倍率{}"
+                }
+            },
+            c_paperback_smokes_and_wires = {
+                name = "烟霾与铁丝网",
+                text = {
+                    "回合的{C:attention}最后一次{}出牌",
+                    "获得{X:red,C:white}X#1#{}倍率"
+                }
+            },
+            c_paperback_coffee_and_cranes = {
+                name = "咖啡与纸鹤",
+                text = {
+                    "回合结束时获得{C:money}$#1#{}"
+                }
+            },
+            c_paperback_chalice_of_trickle_down = {
+                name = "涓滴圣杯",
+                text = {
+                    "在{C:attention}Boss盲注{}期间",
+                    "获得等于{C:attention}计分牌{}中",
+                    "最低点数的{C:money}资金{}"
+                }
+            },
+            c_paperback_dark_vestige = {
+                name = "黑暗残迹",
+                text = {
+                    "试图拥有重复的",
+                    "{C:paperback_ego_gift}E.G.O. 饰品{}的产物"
+                }
+            },
+            c_paperback_decamillennial_stewpot = {
+                name = "万年炖锅",
+                text = {
+                    "如果回合的{C:attention}第一次出牌{}",
+                    "是{C:attention}单张牌{}",
+                    "则将其摧毁"
+                }
+            },
+            c_paperback_imposed_weight = {
+                name = "强压的重担",
+                text = {
+                    "每有一个空的{C:attention}小丑牌槽位{}",
+                    "{C:attention}最右侧{}的计分牌",
+                    "就额外重新触发{C:attention}#1#{}次"
+                }
+            },
+            c_paperback_nebulizer = {
+                name = "雾化器",
+                text = {
+                    "计分牌有{C:green}#1#/#2#{}几率",
+                    "给予{X:mult,C:white}X#3#{}倍率"
+                }
+            },
+            c_paperback_broken_glasses = {
+                name = "破碎眼镜",
+                text = {
+                    "每当恰好有{C:attention}1{}或{C:attention}2{}张牌被{C:attention}摧毁{}时",
+                    "为每张被摧毁的牌生成{C:attention}两张复制{}",
+                    "之后有{C:green}#1#/#2#{}几率{C:red}自毁{}"
+                }
+            },
+            c_paperback_pendant_of_nostalgia = {
+                name = "追忆吊坠",
+                text = {
+                    "每当一张{C:attention}游戏牌{}被摧毁时",
+                    "生成一张随机{C:tarot}塔罗牌{}",
+                    "{C:inactive}(必须有空位)"
+                }
+            },
+            c_paperback_disk_fragment = {
+                name = "星象盘碎片",
+                text = {
+                    "当选择{C:attention}小盲注{}或{C:attention}大盲注{}时",
+                    "如果当前没有拥有",
+                    "则生成{C:attention}#1#{}张{C:dark_edition}负片{}{C:planet}星球牌{}"
+                }
+            },
+            c_paperback_ragged_umbrella = {
+                name = "破伞",
+                text = {
+                    "每当一次出牌",
+                    "未能击败{C:attention}盲注{}时",
+                    "此{C:paperback_ego_gift}E.G.O. 饰品{}获得{C:chips}+#1#{}筹码",
+                    "{C:inactive}(当前{C:chips}+#2#{C:inactive}筹码)"
+                }
+            },
+            c_paperback_tomorrow_fortune = {
+                name = "明日之运",
+                text = {
+                    "所有{C:attention}增强包{}中",
+                    "可选择的牌增加{C:attention}1{}张"
+                }
+            },
+            c_paperback_rusty_coin = {
+                name = "生锈纪念币",
+                text = {
+                    "如果回合的{C:attention}第一次出牌{}",
+                    "是{C:attention}单张牌{}",
+                    "则为其添加一个随机{C:attention}蜡封{}"
+                }
+            },
+            c_paperback_fiery_down = {
+                name = "炽热绒羽",
+                text = {
+                    "弃掉{C:attention}#1#{}张牌后",
+                    "{C:inactive}(已弃{C:attention}#2#{C:inactive}张){}",
+                    "升级下一次打出的",
+                    "{C:attention}牌型{}"
+                }
+            },
+            c_paperback_pendant_of_nostalgia_minor_arcana = {
+                name = "追忆吊坠",
+                text = {
+                    "每当一张{C:attention}游戏牌{}被摧毁时",
+                    "生成一张随机{C:tarot}塔罗牌{}或{C:paperback_minor_arcana}塔罗辅牌{}",
+                    "{C:inactive}(必须有空位)"
+                }
+            },
+            c_paperback_lightning_rod = {
+                name = "避雷针",
+                text = {
+                    "{C:attention}留在手中的{}牌",
+                    "有{C:green}#1#/#2#{}几率",
+                    "重新触发"
+                }
+            },
+            c_paperback_patrolling_flashlight = {
+                name = "巡逻用手电筒",
+                text = {
+                    "每个{C:attention}底注{}中",
+                    "{C:attention}第一次{}使用的消耗牌",
+                    "会生成一个{C:attention}充能复制{}"
+                }
+            },
+            c_paperback_thrill_inactive = {
+                name = "快感",
+                text = {
+                    "在回合的{C:attention}第一次{}出牌时",
+                    "此{C:paperback_ego_gift}E.G.O. 饰品{}给予{X:mult,C:white}X#1#{}倍率",
+                    "每在本回合使用一次{C:attention}弃牌{}"
                 }
             }
         },
@@ -180,7 +419,8 @@ return {
                 text = {
                     "摧毁选定小丑牌",
                     "{C:attention}本局游戏{}",
-                    "此牌{C:red}无法{}再次出现"
+                    "{C:red}无法{}再次出现",
+                    "{C:inactive}(可摧毁{C:paperback_eternal}永恒{C:inactive}小丑牌)"
                 }
             },
             c_paperback_four_of_swords = {
@@ -214,7 +454,110 @@ return {
                     "游戏牌增强为",
                     "{C:attention}#2#"
                 }
-            }
+            },
+            c_paperback_ten_of_pentacles = {
+                name = "钱币十",
+                text = {
+                    "获得{C:money}$#1#{}~{C:money}$#2#{}之间的随机资金"
+                }
+            },
+            c_paperback_knight_of_pentacles = {
+                name = "钱币骑士",
+                text = {
+                    "将{C:green}重掷{}费用重置为{C:money}$#1#{}"
+                }
+            },
+            c_paperback_four_of_pentacles = {
+                name = "钱币四",
+                text = {
+                    "选择{C:attention}#1#{}张牌",
+                    "有{C:green}#2#/#3#{}几率",
+                    "摧毁手牌中每张",
+                    "{C:attention}未被选中的{}牌"
+                }
+            },
+            c_paperback_page_of_pentacles = {
+                name = "钱币侍从",
+                text = {
+                    "将{C:attention}#1#{}张",
+                    "选定牌增强为",
+                    "{C:attention}#2#{}"
+                }
+            },
+            c_paperback_eight_of_pentacles = {
+                name = "钱币八",
+                text = {
+                    "本局每使用一种不重复的",
+                    "{C:tarot}塔罗牌{}和{C:paperback_minor_arcana}塔罗辅牌{}",
+                    "获得{C:money}$#1#{}",
+                    "{C:inactive}(当前{C:money}$#2#{C:inactive})"
+                }
+            },
+            c_paperback_two_of_pentacles = {
+                name = "钱币二",
+                text = {
+                    "选中的小丑牌获得",
+                    "或失去{C:paperback_eternal}永恒{}标签"
+                }
+            },
+            c_paperback_five_of_pentacles = {
+                name = "钱币五",
+                text = {
+                    "选定{C:attention}#1#{}张牌",
+                    "增强为{C:attention}#2#{}"
+                }
+            },
+            c_paperback_nine_of_pentacles = {
+                name = "钱币九",
+                text = {
+                    "为{C:attention}#1#{}张",
+                    "选定牌添加",
+                    "{C:purple}紫色别针{}"
+                }
+            },
+            c_paperback_king_of_pentacles = {
+                name = "钱币国王",
+                text = {
+                    "完整牌组中每有一张",
+                    "{C:attention}人头牌{}",
+                    "便获得{C:money}$#1#{}",
+                    "{C:inactive}(当前{C:money}$#2#{C:inactive})"
+                }
+            },
+            c_paperback_three_of_pentacles = {
+                name = "钱币三",
+                text = {
+                    "选择{C:attention}#1#{}张牌",
+                    "{C:attention}最右侧两张{}牌",
+                    "复制{C:attention}最左侧{}牌的{C:attention}增强效果{}",
+                    "{C:inactive}(可拖动重新排列)"
+                }
+            },
+            c_paperback_six_of_pentacles = {
+                name = "钱币六",
+                text = {
+                    "随机生成{C:money}投资{}",
+                    "{C:money}经济{}、{C:red}代金券{}",
+                    "{C:green}D6{}和{C:attention}杂耍标签{}中的一个"
+                }
+            },
+            c_paperback_seven_of_pentacles = {
+                name = "钱币七",
+                text = {
+                    "为最多{C:attention}#1#{}张",
+                    "选定牌添加",
+                    "{C:green}绿色别针{}"
+                }
+            },
+            c_paperback_queen_of_pentacles = {
+                name = "钱币皇后",
+                text = {
+                    "选择{C:attention}#1#{}张牌",
+                    "将{C:attention}左侧{}牌的{C:attention}点数{}",
+                    "复制给{C:attention}右侧{}牌",
+                    "{C:inactive}(可拖动重新排列)"
+                }
+            },
         },
         Partner = {
             pnr_paperback_faker_buffed = {
@@ -249,7 +592,7 @@ return {
         },
         Sleeve = {
             sleeve_paperback_paper = {
-                name = "纸制牌套",
+                name = "纸质牌套",
                 text = {
                     "{C:legendary}Paperback{C:attention}小丑{}出现几率",
                     "{C:attention}3X{}开局时拥有",
@@ -266,7 +609,7 @@ return {
                 }
             },
             sleeve_paperback_paper_buff = {
-                name = "纸制牌套",
+                name = "纸质牌套",
                 text = {
                     "开局时拥有{C:dark_edition}负片{}",
                     "{C:attention,T:j_paperback_shopping_center}#1#{}小丑牌"
@@ -323,7 +666,7 @@ return {
                 text = {
                     "开局时拥有",
                     "{C:paperback_minor_arcana,T:v_paperback_celtic_cross}#1#{}优惠券",
-                    "和一张{C:paperback_minor_arcana,T:c_paperback_nine_of_cups}#2#"
+                    "和一张{C:paperback_minor_arcana,T:c_paperback_nine_of_cups}#2#小丑牌"
                 }
             },
             sleeve_paperback_antique_buff = {
@@ -339,7 +682,23 @@ return {
                     "获得一个{C:attention,T:tag_paperback_high_risk}#1#",
                     "不赚取任何{C:money}利息"
                 }
-            }
+            },
+            sleeve_paperback_shimmering = {
+                name = "闪耀牌套",
+                text = {
+                    "每拥有一种不同{C:attention}罪孽{}",
+                    "便获得{C:attention}+#1#{}个消耗牌槽位",
+                    "{C:red}#2#{}个小丑牌槽位",
+                    "{C:paperback_ego_gift}E.G.O饰品提取包{}",
+                    "有{C:attention}5X{}的几率更可能出现"
+                }
+            },
+            sleeve_paperback_shimmering_buff = {
+                name = "闪耀牌套",
+                text = {
+                    "待补充"
+                }
+            },
         },
         Enhanced = {
             m_paperback_ceramic = {
@@ -367,7 +726,23 @@ return {
                     "获得{C:mult}+#1#{}倍率",
                     "{C:inactive}（当前为{C:mult}+#2#{C:inactive}倍率）"
                 }
-            }
+            },
+            m_paperback_antique = {
+                name = "古旧牌",
+                text = {
+                    "{X:chips,C:white}X#1#{}筹码",
+                    "打出并计分时",
+                    "增加{X:chips,C:white}X#2#{}"
+                }
+            },
+            m_paperback_sleeved = {
+                name = "套牌",
+                text = {
+                    "无法被{C:attention}削弱{}",
+                    "无法被翻转为{C:attention}背面朝上{}",
+                    "被摧毁时获得{C:money}$#1#{}"
+                }
+            },
         },
         Spectral = {
             c_paperback_apostle_of_cups = {
@@ -392,7 +767,24 @@ return {
                     "{C:legendary}传奇{}以下（不包含）稀有度的小丑牌",
                     "{C:inactive}（不会重复）"
                 }
-            }
+            },
+            c_paperback_apostle_of_pentacles = {
+                name = "钱币使徒",
+                text = {
+                    "为{C:attention}#1#{}张",
+                    "选定牌添加",
+                    "{C:paperback_platinum}铂金别针{}"
+                }
+            },
+            c_paperback_golden_bough = {
+                name = "黄金枝",
+                text = {
+                    "每次击败{C:attention}Boss盲注{}后",
+                    "生成一个随机{C:dark_edition}负片{}的",
+                    "{C:paperback_ego_gift}E.G.O饰品{}",
+                    "{C:red}#1#{}个小丑牌槽位"
+                }
+            },
         },
         Joker = {
             j_paperback_boundary_of_death = {
@@ -870,10 +1262,9 @@ return {
             j_paperback_blue_marble = {
                 name = "蓝色弹珠",
                 text = {
-                    "如果{C:attention}计分牌{}包含{V:3}#3#{}",
-                    "{C:green}#1#/#2#{}几率生成",
-                    "一张随机{C:planet}星球牌{}",
-                    "{C:inactive}（必须有空位）"
+                    "使用一张{C:attention}星球牌{}时",
+                    "此小丑牌获得{C:mult}+#1#{}倍率",
+                    "{C:inactive}（当前{C:mult}+#2#{C:inactive}倍率）"
                 }
             },
             j_paperback_da_capo = {
@@ -1101,6 +1492,172 @@ return {
                     "{C:green}#7#/#8#{}几率获得{C:money}$#9#{}"
                 }
             },
+            paperback_sin_gluttony = {
+                name = "暴食",
+                text = {
+                    "被售出时",
+                    "为一张随机{C:attention}小丑牌{}",
+                    "添加{C:paperback_perishable}易腐{}标签"
+                }
+            },
+            paperback_purple_clip = {
+                name = "紫色别针",
+                text = {
+                    "如果{C:attention}相邻{}牌",
+                    "带有{C:attention}别针{}",
+                    "则重新触发它们"
+                }
+            },
+            paperback_sin_sloth = {
+                name = "怠惰",
+                text = {
+                    "仅在跳过一次{C:attention}盲注{}后",
+                    "才可直接售出"
+                }
+            },
+            paperback_corroded = {
+                name = "锈蚀",
+                text = {
+                    "可被{C:money}售出{}而",
+                    "不触发{C:paperback_ego_gift}罪孽{}",
+                    "{C:attention}#1#{}回合后",
+                    "{C:red}自毁{}并",
+                    "触发该{C:paperback_ego_gift}罪孽{}"
+                }
+            },
+            p_paperback_ego_gift_normal = {
+                name = "E.G.O饰品包",
+                text = {
+                    "从最多{C:attention}#2#{}个{C:paperback_ego_gift}E.G.O饰品{}中",
+                    "选择{C:attention}#1#{}个"
+                }
+            },
+            paperback_upgrade_unlock = {
+                name = "已锁定",
+                text = {
+                    "激活{C:attention,E:1}#1#{}的能力"
+                }
+            },
+            paperback_sin_gloom = {
+                name = "忧郁",
+                text = {
+                    "被售出时所有{C:attention}盲注{}的",
+                    "分数需求 X{C:attention}#1#{}"
+                }
+            },
+            paperback_sin_none = {
+                name = "遗迹",
+                text = {
+                    "始终以{C:money}$#1#{}的价格售出"
+                }
+            },
+            paperback_sin_envy = {
+                name = "嫉妒",
+                text = {
+                    "被售出时",
+                    "手牌上限{C:attention}-#1#{}"
+                }
+            },
+            paperback_sin_wrath = {
+                name = "暴怒",
+                text = {
+                    "被售出时",
+                    "{C:attention}摧毁{}所有",
+                    "持有的{C:attention}消耗牌"
+                }
+            },
+            paperback_sin_madness = {
+                name = "疯狂",
+                text = {
+                    "被售出时",
+                    "{C:attention}摧毁{}一张",
+                    "随机{C:attention}小丑牌"
+                }
+            },
+            paperback_requires_ego_gifts = {
+                name = "需要 E.G.O饰品",
+                text = {
+                    "由于{C:legendary}Paperback{}中",
+                    "禁用了{C:paperback_ego_gift}E.G.O饰品{}",
+                    "已从奖池中移除"
+                }
+            },
+            paperback_sin_pride = {
+                name = "傲慢",
+                text = {
+                    "始终以{C:money}#2#{}的价格售出"
+                }
+            },
+            undiscovered_paperback_ego_gift = {
+                name = "未发现",
+                text = {
+                    "在非预设局中",
+                    "购买此牌",
+                    "以了解其作用"
+                }
+            },
+            paperback_sin_lust = {
+                name = "色欲",
+                text = {
+                    "被售出时",
+                    "将{C:attention}最常打出的牌型{}",
+                    "等级降低{C:attention}#1#{}级"
+                }
+            },
+            paperback_platinum_clip = {
+                name = "铂金别针",
+                text = {
+                    "当此牌被{C:attention}计分{}时",
+                    "强制触发所有",
+                    "留在手中的非{C:paperback_platinum}铂金{}{C:attention}别针{}"
+                }
+            },
+            paperback_green_clip = {
+                name = "绿色别针",
+                text = {
+                    "每打出{C:attention}2{}个计分的{C:attention}别针{}",
+                    "此别针获得{C:mult}+#2#{}倍率",
+                    "每弃掉一个{C:attention}别针{}则{C:mult}#3#{}倍率",
+                    "{C:inactive}(当前{C:mult}+#1#{C:inactive}倍率)"
+                }
+            },
+        },
+        Edition = {
+            e_paperback_dichrome = {
+                name = "双色",
+                text = {
+                    "选择{C:attention}盲注{}时",
+                    "{C:attention}+#1#{C:blue}出牌{}或{C:red}弃牌{}次数",
+                    "{C:inactive}(较少的优先)"
+                }
+            },
+            e_paperback_dichrome_playing_card = {
+                name = "双色",
+                text = {
+                    "被{C:attention}抽到{}手牌中时",
+                    "{C:attention}+#1#{C:blue}出牌{}或{C:red}弃牌{}次数",
+                    "{C:inactive}(较少的优先)"
+                }
+            },
+        },
+        Voucher = {
+            v_paperback_rabbit_protocol = {
+                unlock = {
+                    "在一局游戏中售出{C:attention,E:1}#1#{}个{C:paperback_ego_gift,E:1}E.G.O饰品{}"
+                },
+                name = "兔子协议",
+                text = {
+                    "{C:attention}售出{}一个{C:paperback_ego_gift}E.G.O饰品{}",
+                    "{C:attention}消除{}当前{C:attention}Boss盲注{}的限制条件"
+                }
+            },
+            v_paperback_second_trumpet = {
+                name = "第二号角",
+                text = {
+                    "您的第一个{C:paperback_ego_gift}E.G.O饰品{}",
+                    "给予{C:attention}+#1#{}个消耗牌槽位"
+                }
+            },
         },
     },
     misc = {
@@ -1112,13 +1669,18 @@ return {
         },
         v_dictionary = {
             paperback_a_plus_tags = "+#1# 标签",
-            paperback_a_plus_cards = "+#1# #2#s"
+            paperback_a_plus_cards = "+#1# #2#s",
+            paperback_a_ante = "#1#底注",
         },
         labels = {
             paperback_energized = "已充能",
             paperback_temporary = "临时",
             paperback_yellow_clip = "黄色别针",
             paperback_gold_clip = "金色别针",
+            paperback_purple_clip = "紫色别针",
+            paperback_green_clip = "绿色别针",
+            paperback_corroded = "锈蚀",
+            paperback_platinum_clip = "铂金别针",
         },
         ranks = {
             paperback_Apostle = "使徒",
@@ -1156,7 +1718,29 @@ return {
             paperback_saved_determination = "被决心拯救",
             paperback_clippy_msg_2 = "我是大眼夹！",
             paperback_reduced_ex = "已减少！",
-            paperback_jestrogen_ex = "雌性化！"
+            paperback_jestrogen_ex = "雌性化！",
+            b_paperback_ego_gift_cards = "E.G.O饰品",
+            k_paperback_ego_gift = "E.G.O饰品",
+            k_paperback_ego_sin_pride = "傲慢",
+            k_paperback_ego_sin_none = "遗迹",
+            k_paperback_ego_sin_wrath = "暴怒",
+            k_paperback_ego_sin_gloom = "忧郁",
+            k_paperback_ego_sin_sloth = "怠惰",
+            k_paperback_ego_sin_lust = "色欲",
+            k_paperback_ego_sin_gluttony = "暴食",
+            k_paperback_ego_sin_madness = "疯狂",
+            k_paperback_ego_sin_envy = "嫉妒",
+            paperback_ego_gift_pack = "E.G.O饰品包",
+            paperback_inline_inactive = "未激活",
+            paperback_inline_active = "激活",
+            paperback_enhanced_ex = "已增强!",
+            paperback_der_freischutz_fire = "燃尽...",
+            paperback_light = "Light",
+            paperback_dark = "Dark",
+            paperback_hamsa_reverse = "反转！",
+            paperback_ui_enable_ego_gifts = "启用 E.G.O饰品",
+            paperback_ui_remaining_hands = "保留手牌",
+            paperback_corroded_ex = "锈蚀了！",
             -- 译者注：paperback_plague_quote** 系列涉及宗教内容，故未翻译。如果后续需要翻译，请尽量贴合原意。
         },
     },
