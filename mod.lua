@@ -105,8 +105,25 @@ local function merge_impl_mod_localizations()
         for k, v in pairs(base) do
             local ov = (type(other) == 'table') and other[k] or nil
             if type(v) == 'table' then
-                local sub = diff_table(v, ov)
-                if sub and next(sub) then res[k] = sub end
+                -- 特例: 仅当 key 为 'text' 或 'unlock' 时应用特殊逻辑：
+                -- 如果 base.text 中任意一行为非空（非 nil 且非空字符串），则认为该键不是缺失的，跳过标记。
+                if k == 'text' or k == 'unlock' then
+                    local has_non_empty = false
+                    for _, line in pairs(v) do
+                        if line ~= nil and tostring(line) ~= '' then
+                            has_non_empty = true
+                            dbg_print('found non-empty text line (key=', k, ')->', tostring(line))
+                            break
+                        end
+                    end
+                    if not has_non_empty then
+                        local sub = diff_table(v, ov)
+                        if sub and next(sub) then res[k] = sub end
+                    end
+                else
+                    local sub = diff_table(v, ov)
+                    if sub and next(sub) then res[k] = sub end
+                end
             else
                 if ov == nil or ov == '' then
                     res[k] = v
