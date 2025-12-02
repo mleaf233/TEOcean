@@ -10,7 +10,7 @@
   "description": "第八大洋的个人汉化包",
   "main_file": "mod.lua",
   "badge_colour": "4d7fcf",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "dependencies": [
     "Steamodded (>=1.0.0~ALPHA-1423h)",
     "Lovely (>=0.7.1)"
