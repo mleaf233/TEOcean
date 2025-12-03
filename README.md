@@ -1,4 +1,4 @@
-# The Eighth Ocean — 本地化合并工具
+# The Eighth Ocean 本地化框架  
 
 这是一个为 Balatro/SMODS 环境准备的本地化合并工具模组扩展，目的是把 `impl/mods/<modid>/localization/` 下的翻译文件合并到对应的目标 mod 的 `localization/` 目录中，以便在游戏中使用统一的翻译覆盖或补充。
 
