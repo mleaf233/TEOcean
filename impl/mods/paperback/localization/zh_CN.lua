@@ -11,7 +11,7 @@ return {
                     "每拥有一种不同{C:attention}罪孽{}",
                     "便获得{C:attention}+#1#{}个消耗牌栏位",
                     "小丑牌槽位{C:red}#2#{}",
-                    "{C:paperback_ego_gift}E.G.O.饰品提取包{}",
+                    "{C:paperback_ego_gift}E.G.O饰品包{}",
                     "有{C:attention}5X{}几率更可能出现"
                 }
             },
@@ -91,8 +91,8 @@ return {
                 name = "快感",
                 text = {
                     "在回合的{C:attention}第一次出牌{}时",
-                    "此{C:paperback_ego_gift}E.G.O. 饰品{}给予{X:mult,C:white}X#1#{}倍率",
                     "每在本回合使用一次{C:attention}弃牌{}",
+                    "此{C:paperback_ego_gift}E.G.O饰品{}给予{X:mult,C:white}X#1#{}倍率",
                     "{C:inactive}(当前为{X:mult,C:white}X#2#{C:inactive}倍率)"
                 }
             },
@@ -113,8 +113,8 @@ return {
                 name = "蓝色芝宝牌打火机",
                 text = {
                     "选择{C:attention}盲注{}时",
-                    "摧毁一张非{C:paperback_ego_gift}E.G.O. 饰品{}的消耗牌",
-                    "此{C:paperback_ego_gift}E.G.O. 饰品{}获得{X:mult,C:white}X#1#{}倍率",
+                    "摧毁一张非{C:paperback_ego_gift}E.G.O饰品{}的消耗牌",
+                    "此{C:paperback_ego_gift}E.G.O饰品{}获得{X:mult,C:white}X#1#{}倍率",
                     "{C:inactive}(当前为{X:mult,C:white}X#2#{C:inactive}倍率)"
                 }
             },
@@ -159,7 +159,7 @@ return {
                 name = "黑暗残迹",
                 text = {
                     "试图拥有重复的",
-                    "{C:paperback_ego_gift}E.G.O. 饰品{}的产物"
+                    "{C:paperback_ego_gift}E.G.O饰品{}的产物"
                 }
             },
             c_paperback_decamillennial_stewpot = {
@@ -214,7 +214,7 @@ return {
                 text = {
                     "每当一次出牌",
                     "未能击败{C:attention}盲注{}时",
-                    "此{C:paperback_ego_gift}E.G.O. 饰品{}获得{C:chips}+#1#{}筹码",
+                    "此{C:paperback_ego_gift}E.G.O饰品{}获得{C:chips}+#1#{}筹码",
                     "{C:inactive}(当前为{C:chips}+#2#{C:inactive}筹码)"
                 }
             },
@@ -270,8 +270,8 @@ return {
                 name = "快感",
                 text = {
                     "在回合的{C:attention}第一次{}出牌时",
-                    "此{C:paperback_ego_gift}E.G.O. 饰品{}给予{X:mult,C:white}X#1#{}倍率",
                     "每在本回合使用一次{C:attention}弃牌{}"
+                    "此{C:paperback_ego_gift}E.G.O饰品{}给予{X:mult,C:white}X#1#{}倍率",
                 }
             }
         },
@@ -689,7 +689,7 @@ return {
                     "每拥有一种不同{C:attention}罪孽{}",
                     "便获得{C:attention}+#1#{}个消耗牌槽位",
                     "{C:red}#2#{}个小丑牌槽位",
-                    "{C:paperback_ego_gift}E.G.O饰品提取包{}",
+                    "{C:paperback_ego_gift}E.G.O饰品包{}",
                     "有{C:attention}5X{}的几率更可能出现"
                 }
             },
@@ -868,9 +868,9 @@ return {
                 name = "朗格雷",
                 text = {
                     "击败{C:attention}大盲注{}时获得",
-                    "所有小丑牌{C:money}售价{}一半的金钱",
+                    "所有小丑牌{C:money}售价{}一半的资金",
                     "击败{C:attention}Boss盲注{}时获得",
-                    "所有小丑牌全额{C:money}售价{}的金钱"
+                    "所有小丑牌全额{C:money}售价{}的资金"
                 }
             },
             j_paperback_chaplin = {
@@ -906,7 +906,7 @@ return {
                 text = {
                     "打出{C:attention}隐藏牌型{}时",
                     "获得右侧{C:attention}小丑牌{}",
-                    "售价的金钱"
+                    "售价的资金"
                 }
             },
             j_paperback_jestosterone = {
@@ -999,7 +999,7 @@ return {
             j_paperback_pinot_noir = {
                 name = "黑皮诺",
                 text = {
-                    "下{C:attention}#1#{}次{C:attention}#2#",
+                    "接下来{C:attention}#1#{}次{C:attention}#2#",
                     "触发时给予额外{C:mult}#3#{}倍率"
                 }
             },
@@ -1161,12 +1161,12 @@ return {
             j_paperback_double_dutchman = {
                 name = "双层荷兰风味汉堡",
                 text = {
-                    "出牌后{C:attention}留在手中{}的游戏牌",
+                    "出牌后",
+                    "{C:attention}留在手中{}的牌",
                     "有{C:green}#1#/#2#{}几率",
                     "获得随机{C:attention}增强{}、{C:attention}蜡封{}或{C:attention}版本{}",
-                    "{C:attention}#3#{}次出牌自毁",
-                    "{C:inactive}（译注：此食物名称通常指含有双份肉或{}",
-                    "{C:inactive}双份荷兰奶酪的荷兰风味汉堡或三明治）{}",
+                    "{C:attention}#3#{}次出牌后{S:1.1,C:red,E:2}自毁{}",
+                    ""
                 }
             },
             j_paperback_pedrillo = {
@@ -1473,6 +1473,7 @@ return {
                     "{C:chips}+#2#{}筹码",
                     "出牌后有{C:green}#3#/#4#{}几率{S:1.1,C:red,E:2}自毁{}",
                     "每次出牌后几率+{C:green}#5#{}",
+                    ""
                 }
             },
             j_paperback_sake_cup = {
@@ -1503,7 +1504,7 @@ return {
                 text = {
                     "计分的{C:paperback_crowns}#1#{}给予{X:mult,C:white}X#2#{}倍率",
                     "每张连续打出的{C:paperback_crowns}#4#{}",
-                    "额外提供{X:mult,C:white}X#3#{}倍率",
+                    "额外给予{X:mult,C:white}X#3#{}倍率",
                     "{C:inactive}(出牌结束后重置)"
                 }
             },
@@ -1551,7 +1552,7 @@ return {
                     "{X:chips,C:white}X#1#{}筹码",
                     "回合结束时",
                     "有{C:green}#2#/#3#{}几率",
-                    "{S:1.1,C:red,E:2}自毁{}"
+                    "摧毁此牌"
                 }
             },
             j_paperback_black_forest_cake = {
@@ -1664,7 +1665,7 @@ return {
             j_paperback_plague_doctor = {
                 unlock = {
                     "发现{C:attention}#1#{}个",
-                    "{C:paperback_ego_gift,E:1}E.G.O. 饰品{}"
+                    "{C:paperback_ego_gift,E:1}E.G.O饰品{}"
                 },
                 name = "疫医",
                 text = {
@@ -1855,7 +1856,7 @@ return {
                     "牌组中每有一张{C:attention}J{}",
                     "{C:mult}+#1#{}倍率",
                     "牌组中每有一张{C:attention}K{}",
-                    "{C:mult}#1#{}倍率",
+                    "{C:mult}-#1#{}倍率",
                     "{C:inactive}(当前为{C:mult}#2#{C:inactive}倍率)"
                 }
             },
@@ -1949,7 +1950,7 @@ return {
                 }
             },
             j_paperback_a_balatro_movie = {
-                name = "小丑牌movie",
+                name = "《小丑牌：电影版》",
                 text = {
                     "如果{C:attention}打出的牌型{}与",
                     "{C:attention}上一次相同{}",
@@ -2149,6 +2150,172 @@ return {
                     "在{C:attention,E:1}从未{}拥有",
                     "{C:attention,E:1}消耗牌{}的情况下",
                     "赢得一局游戏"
+                }
+            },
+            j_paperback_skydiver = {
+                name = "跳伞者",
+                text = {
+                    "如果{C:attention}所有计分牌{}的点数",
+                    "都{C:attention}小于或等于{}本回合",
+                    "计分过的{C:attention}最小点数{}",
+                    "则获得{C:white,X:mult}X#1#{}倍率",
+                    "{C:inactive}(出牌结束后更新{C:inactive})",
+                    "{C:inactive}(当前点数：{C:attention}#2#{C:inactive})"
+                }
+            },
+            j_paperback_surfer = {
+                name = "冲浪者",
+                text = {
+                    "回合结束时",
+                    "每张{C:attention}留在手中{}的{C:attention}#2#{}",
+                    "使这张小丑牌获得{C:chips}+#1#{}筹码",
+                    "{C:inactive}(当前为{C:chips}+#3#{C:inactive}筹码)",
+                    ""
+                }
+            },
+            j_paperback_joker_cookie = {
+                name = "小丑姜饼",
+                text = {
+                    "回合结束时获得{C:money}$#1#{}",
+                    "提现时这一数值增加{C:money}$#2#{}",
+                    "{C:inactive}(最高{C:money}$#3#{C:inactive})",
+                    "回合结束时",
+                    "有{C:green}#4#/#5#{}几率",
+                    "摧毁此牌",
+                }
+            },
+            j_paperback_ice_cube = {
+                name = "冰块",
+                text = {
+                    "选择{C:attention}盲注{}时",
+                    "获得{C:blue}+#1#{}次出牌次数",
+                    "如果{C:attention}分数着火{}则融化",
+                    "{C:inactive}(分数着火即第一次出牌击败盲注)"
+                },
+                unlock = {
+                    "同时拥有{C:attention,E:1}#1#{}张",
+                    "{C:attention,E:1}食物{}小丑牌"
+                }
+            },
+            j_paperback_matcha = {
+                name = "抹茶",
+                text = {
+                    "每张牌计分时",
+                    "这张小丑牌获得{C:chips}+#1#{}筹码",
+                    "{C:mult}弃牌{}时有{C:green}#2#/#3#{}几率",
+                    "摧毁此牌",
+                    "{C:inactive}(当前{C:chips}+#4#{C:inactive}筹码)"
+                }
+            },
+            j_paperback_grenadine = {
+                name = "石榴糖浆",
+                text = {
+                    "计分的{C:hearts}#1#{}给予{X:mult,C:white}X#2#{}倍率",
+                    "如果计分牌包含至少{C:attention}4{}张{C:hearts}#4#{}",
+                    "则获得{X:mult,C:white}X#3#{}倍率",
+                    "否则失去{X:mult,C:white}X#3#{}倍率"
+                }
+            },
+            j_paperback_stout = {
+                name = "世涛啤酒",
+                text = {
+                    "计分的{C:spades}#1#{}给予{C:chips}+#2#{}筹码",
+                    "如果计分牌包含至少{C:attention}4{}张{C:spades}#4#{}",
+                    "则获得{C:chips}+#3#{}筹码",
+                    "否则失去{C:chips}-#3#{}筹码"
+                }
+            },
+            j_paperback_aperol = {
+                name = "阿佩罗",
+                text = {
+                    "计分的{C:diamonds}#1#{}给予{C:money}$#2#{}资金",
+                    "如果计分牌包含至少{C:attention}4{}张{C:diamonds}#4#{}",
+                    "则数值+{C:money}$#3#{}",
+                    "否则减少{C:money}$#3#{}"
+                }
+            },
+            j_paperback_blue_curacao = {
+                name = "蓝柑酒",
+                text = {
+                    "计分的{C:clubs}#1#{}给予{C:mult}+#2#{}倍率",
+                    "如果计分牌包含至少{C:attention}4{}张{C:clubs}#4#{}",
+                    "则获得{C:mult}+#3#{}倍率",
+                    "否则失去{C:mult}#3#{}倍率"
+                }
+            },
+            j_paperback_nigori = {
+                name = "浊清酒",
+                text = {
+                    "计分的{C:paperback_stars}#1#{}给予{X:chips,C:white}X#2#{}筹码",
+                    "如果计分牌包含至少{C:attention}4{}张{C:paperback_stars}#4#{}",
+                    "则获得{X:chips,C:white}X#3#{}筹码",
+                    "如果计分的{C:paperback_stars}#4#{}少于{C:attention}#5#{}张",
+                    "则失去{X:chips,C:white}X#3#{}筹码"
+                }
+            },
+            j_paperback_lager = {
+                name = "拉格啤酒",
+                text = {
+                    "{C:attention}#2#{}个消耗牌槽位",
+                    "如果计分牌包含至少{C:attention}4{}张{C:paperback_crowns}#4#{}",
+                    "则增加{C:attention}+#3#{}",
+                    "如果计分的{C:paperback_crowns}#4#{}少于{C:attention}#5#{}张",
+                    "则减少{C:attention}#3#{}"
+                }
+            },
+            j_paperback_wild_prize = {
+                name = "[[万能大奖！1！]]",
+                text = {
+                    "{C:attention}万能牌{}有{C:green}#1#/#2#{}几率",
+                    "{C:attention}重新触发{}以及{C:green}#3#/#4#{}几率",
+                    "计分时获得{C:money}$#5#{}~{C:money}$#6#{}之间的随机资金"
+                }
+            },
+            j_paperback_blue_bonnets = {
+                name = "矢车菊",
+                text = {
+                    "计分的{C:clubs}#1#{}给予{X:mult,C:white}X#2#{}倍率",
+                    "每张连续打出的{C:clubs}#4#{}",
+                    "额外给予{X:mult,C:white}X#3#{}倍率",
+                    "{C:inactive}(出牌结束后重置)"
+                }
+            },
+            j_paperback_autumn_leaves = {
+                name = "秋叶",
+                text = {
+                    "计分的{C:diamonds}#1#{}给予{X:mult,C:white}X#2#{}倍率",
+                    "每张连续打出的{C:diamonds}#4#{}",
+                    "额外给予{X:mult,C:white}X#3#{}倍率",
+                    "{C:inactive}(出牌结束后重置)"
+                }
+            },
+            j_paperback_evergreens = {
+                name = "常青树",
+                text = {
+                    "计分的{C:spades}#1#{}给予{X:mult,C:white}X#2#{}倍率",
+                    "每张连续打出的{C:spades}#4#{}",
+                    "额外给予{X:mult,C:white}X#3#{}倍率",
+                    "{C:inactive}(出牌结束后重置)"
+                }
+            },
+            j_paperback_resurrections = {
+                name = "复活",
+                text = {
+                    "售出{C:attention}小丑牌{}时有{C:green}#1#/#2#{}几率",
+                    "使其{C:attention}回归{}并生成",
+                    "一张售价为{C:money}-$#3#{}",
+                    "且带有{C:dark_edition}负片{}版本的额外复制",
+                    "{s:0.8}失败时几率增加{s:0.8,C:green}#4#{}",
+                    "{S:1.1,C:red,E:2}自毁"
+                }
+            },
+            j_paperback_jestrica = {
+                name = "JESTRiCA",
+                text = {
+                    "打出的{C:attention}8{}计分时",
+                    "这张小丑牌获得{C:mult}+#1#{}倍率",
+                    "本回合未触发则重置",
+                    "{C:inactive}(当前为{C:mult}+#2#{C:inactive}倍率)"
                 }
             },
 
