@@ -270,7 +270,7 @@ return {
                 name = "快感",
                 text = {
                     "在回合的{C:attention}第一次{}出牌时",
-                    "每在本回合使用一次{C:attention}弃牌{}"
+                    "每在本回合使用一次{C:attention}弃牌{}",
                     "此{C:paperback_ego_gift}E.G.O饰品{}给予{X:mult,C:white}X#1#{}倍率",
                 }
             }
