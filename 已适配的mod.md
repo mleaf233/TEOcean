@@ -1,5 +1,6 @@
-1. paperback (beta分支) https://github.com/Balatro-Paperback/paperback/tree/beta
-2. plantain https://github.com/IcebergLettuce0/Plantain
+1. [paperback (beta分支)](https://github.com/Balatro-Paperback/paperback/tree/beta)
+2. [plantain] (https://github.com/IcebergLettuce0/Plantain)
+3. [FinalMix] (https://github.com/cloudzXIII/FinalMix)
 
 如有其他mod汉化需求，请加群反馈：1074056375
 
