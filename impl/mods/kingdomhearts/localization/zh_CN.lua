@@ -145,7 +145,7 @@ return {
 				},
 			},
 			j_kh_xehanort = {
-				name = '{E:kh_pulse}泽阿诺特大师',
+				name = '{E:kh_pulse}大师赛亚诺特',
 				text = {
 					{
 						"每{C:attention}连续{}出牌",
@@ -487,7 +487,7 @@ return {
 				},
 			},
 			j_kh_chipanddale = {
-				name = "{E:kh_pulse}高姆电话",
+				name = "{E:kh_pulse}奇奇与蒂蒂",
 				text = {
 					"当选择{C:attention}盲注{}时",
 					"将{C:attention}上一次出牌{}",
@@ -517,7 +517,7 @@ return {
 				text = {
 					{
 						"{C:chips}+#5#{}筹码",
-						"用一次出牌打赢盲注",
+						"用一次出牌击败盲注",
 						"以{C:legendary}升级{}",
 					},
 					{
@@ -976,7 +976,7 @@ return {
 
 		dictionary = {
 			-- config
-			k_finalmix_config_jokers = "启用 KH 小丑牌",
+			k_finalmix_config_jokers = "启用KH小丑牌",
 			k_finalmix_config_tarots = "启用塔罗牌",
 			k_finalmix_config_spectrals = "启用幻灵牌",
 			k_finalmix_config_vouchers = "启用优惠券",

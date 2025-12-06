@@ -82,8 +82,12 @@ local function merge_impl_mod_localizations()
         else
             for k, v in pairs(tbl) do
                 local key
-                if type(k) == 'string' and k:match('^%a[_%w]*$') then key = k else key = string.format('[%q]',
-                        tostring(k)) end
+                if type(k) == 'string' and k:match('^%a[_%w]*$') then
+                    key = k
+                else
+                    key = string.format('[%q]',
+                        tostring(k))
+                end
                 local val
                 if type(v) == 'table' then
                     val = table_to_lua(v, next_indent)
@@ -211,7 +215,8 @@ local function merge_impl_mod_localizations()
             if not NFS.getInfo(todo_mod_dir) then pcall(NFS.createDirectory, todo_mod_dir) end
             for lang, merged_tbl in pairs(merged_by_lang) do
                 -- 对每个目标语言，找出原 en 中存在但合并后缺失的键
-                dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', tbl_count(orig_en), 'merged_keys=', tbl_count(merged_tbl))
+                dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', tbl_count(orig_en),
+                    'merged_keys=', tbl_count(merged_tbl))
                 local missing = diff_table(orig_en, merged_tbl)
                 if missing and next(missing) then
                     local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
@@ -220,9 +225,9 @@ local function merge_impl_mod_localizations()
                     local okw, errw = pcall(NFS.write, out_path, content)
                     if okw then
                         print(('[TEOcean Language Packs] 生成缺失翻译: %s -> %s'):format(target_mod.id, out_path))
-
                     else
-                        print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
+                        print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path,
+                            tostring(errw)))
                     end
                 end
             end
@@ -360,16 +365,29 @@ local function merge_impl_mod_localizations()
     end
 end
 
-print('[TEOcean Language Packs] 正在合并 impl/mods 下的本地化文件...')
-if mod then
-    mod.process_loc_text = merge_impl_mod_localizations
-    print('[TEOcean Language Packs] 已注册本地化合并函数，将在注入阶段运行')
-else
-    print('[TEOcean Language Packs] 当前 mod 未就绪，无法注册本地化合并函数')
+
+local quick_reload_lang = function(e)
+    local current_lang = G.LANG
+    local lang = current_lang
+    if lang then
+        G.SETTINGS.language = lang.key
+        G:set_language()
+        G.E_MANAGER:clear_queue()
+        G.FUNCS.wipe_on()
+        G.E_MANAGER:add_event(Event({
+            no_delete = true,
+            blockable = true,
+            blocking = false,
+            func = function()
+                G:delete_run()
+                G:init_item_prototypes()
+                G:main_menu()
+                return true
+            end
+        }))
+        G.FUNCS.wipe_off()
+    end
 end
-
-print('[TEOcean Language Packs] 翻译mod加载完成')
-
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
 G.FUNCS.TEOcean_manual_reload = function(e)
@@ -381,8 +399,19 @@ G.FUNCS.TEOcean_manual_reload = function(e)
         print(('[TEOcean Language Packs] 手动重载失败: %s'):format(tostring(err)))
     end
     -- 给玩家一点可见反馈（控制台日志即可）；如需弹窗，可在这里增加 UI 提示
+    quick_reload_lang(G.LANG or {})
 end
 
+
+print('[TEOcean Language Packs] 正在合并 impl/mods 下的本地化文件...')
+if mod then
+    mod.process_loc_text = merge_impl_mod_localizations
+    print('[TEOcean Language Packs] 已注册本地化合并函数，将在注入阶段运行')
+else
+    print('[TEOcean Language Packs] 当前 mod 未就绪，无法注册本地化合并函数')
+end
+
+print('[TEOcean Language Packs] 翻译mod加载完成')
 if mod then
     mod.config_tab = function()
         return {
