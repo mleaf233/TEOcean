@@ -365,7 +365,7 @@ return {
 			},
 
 			j_kh_mickey = {
-				name = '{E:kh_pulse}奇妙仙子',
+				name = '{E:kh_pulse}米奇',
 				text = {
 					"打出的{C:attention}K{}有",
 					"{C:green}#1#/#2#{}几率",
