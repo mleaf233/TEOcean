@@ -2542,6 +2542,9 @@ return {
             paperback_a_plus_tags = "+#1# 标签",
             paperback_a_plus_cards = "+#1# #2#s",
             paperback_a_ante = "#1#底注",
+            paperback_a_plus_consumable_slot = "+#1# 消耗牌槽位",
+            paperback_a_minus_consumable_slot = "-#1# 消耗牌槽位",
+            paperback_a_dollars = "$#1#",
         },
         labels = {
             paperback_energized = "已充能",
