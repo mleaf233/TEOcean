@@ -1,59 +1,73 @@
 local mod = SMODS.current_mod
 
+-- DEBUG 模式开关：开启后会打印更多调试信息
 local DEBUG = true
-local function merge_impl_mod_localizations()
-    if not mod or not mod.path then return end
 
-    local function dbg_print(...)
-        if not DEBUG then return end
-        print('[TEOcean DBG]', ...)
+local function insert_unique_first(t, v)
+    if not v then return end
+    for _, x in ipairs(t) do
+        if x == v then return end
     end
-    local function tbl_count(t)
-        if type(t) ~= 'table' then return 0 end
-        local c = 0
-        for _ in pairs(t) do c = c + 1 end
-        return c
-    end
-    -- helper: 读取 .lua 或 .json 文件并返回 table
-    local function read_loc_file(path)
-        local info = NFS.getInfo(path)
-        if not info then return nil end
-        local ok_read, content = pcall(NFS.read, path)
-        if not ok_read then return nil end
-        if path:lower():match('%.json$') then
-            local ok_json, parsed = pcall(JSON.decode, content)
-            if ok_json then return parsed end
-            return nil
+    table.insert(t, 1, v)
+end
+local function dbg_print(...)
+    if not DEBUG then return end
+    print('[TEOcean DEBUG]', ...)
+end
+local function tbl_count(t)
+    if type(t) ~= 'table' then return 0 end
+    local c = 0
+    for _ in pairs(t) do c = c + 1 end
+    return c
+end
+local function merge_table(dest, src)
+    if type(src) ~= 'table' then return end
+    dest = dest or {}
+    for k, v in pairs(src) do
+        if type(k) == 'number' then
+            dest[k] = v
         else
-            local chunk, errc = load(tostring(content), ('=[TEOcean loc "%s"]'):format(path))
-            if not chunk then return nil end
-            local ok_exec, res = pcall(chunk)
-            if ok_exec then return res end
-            return nil
-        end
-    end
-
-    local function merge_table(dest, src)
-        if type(src) ~= 'table' then return end
-        dest = dest or {}
-        for k, v in pairs(src) do
-            if type(k) == 'number' then
+            if dest[k] == nil then
                 dest[k] = v
             else
-                if dest[k] == nil then
-                    dest[k] = v
+                if type(v) == 'table' and type(dest[k]) == 'table' then
+                    merge_table(dest[k], v)
                 else
-                    if type(v) == 'table' and type(dest[k]) == 'table' then
-                        merge_table(dest[k], v)
-                    else
-                        -- impl 优先覆盖原始 mod
-                        dest[k] = v
-                    end
+                    -- impl 优先覆盖原始 mod
+                    dest[k] = v
                 end
             end
         end
-        return dest
     end
+    return dest
+end
+-- helper: 读取 .lua 或 .json 文件并返回 table
+local function read_loc_file(path)
+    local info = NFS.getInfo(path)
+    if not info then return nil end
+    local ok_read, content = pcall(NFS.read, path)
+    if not ok_read then return nil end
+    if path:lower():match('%.json$') then
+        local ok_json, parsed = pcall(JSON.decode, content)
+        if ok_json then return parsed end
+        return nil
+    else
+        local chunk, errc = load(tostring(content), ('=[TEOcean loc "%s"]'):format(path))
+        if not chunk then return nil end
+        local ok_exec, res = pcall(chunk)
+        if ok_exec then return res end
+        return nil
+    end
+end
+local function normalize_str(s)
+    if not s then return s end
+    -- 统一换行并去掉尾部空白，减少无意义差异
+    s = tostring(s):gsub('\r\n', '\n')
+    s = s:gsub('[ \t\n\r]+$', '')
+    return s
+end
+local function merge_impl_mod_localizations()
+    if not mod or not mod.path then return end
 
     local function table_to_lua(tbl, indent)
         indent = indent or ''
@@ -139,8 +153,9 @@ local function merge_impl_mod_localizations()
 
     -- languages to process (原 mod 文件 + impl 覆盖)
     local langs = { 'zh_CN', 'en-us', 'default' }
-    if G and G.SETTINGS and G.SETTINGS.language then table.insert(langs, 1, G.SETTINGS.language) end
-    if G and G.SETTINGS and G.SETTINGS.real_language then table.insert(langs, 1, G.SETTINGS.real_language) end
+
+    if G and G.SETTINGS and G.SETTINGS.language then insert_unique_first(langs, G.SETTINGS.language) end
+    if G and G.SETTINGS and G.SETTINGS.real_language then insert_unique_first(langs, G.SETTINGS.real_language) end
 
     for _, target_mod in ipairs(SMODS.mod_list or {}) do
         if not (target_mod and target_mod.id and target_mod.path) then goto continue end
@@ -148,7 +163,7 @@ local function merge_impl_mod_localizations()
         local impl_mod_dir = mod.path .. 'impl/mods/' .. target_mod.id .. '/'
         if not NFS.getInfo(impl_mod_dir) then
             -- 跳过没有 impl 适配的 mod
-            -- print(('[TEOcean Language Packs] 跳过未适配 mod: %s'):format(target_mod.id))
+            print(('[TEOcean Language Packs] 跳过未适配 mod: %s'):format(target_mod.id))
             goto continue
         end
         local merged_by_lang = {}
@@ -170,6 +185,9 @@ local function merge_impl_mod_localizations()
                 dbg_print('merging base loc into lang', lang, 'for', target_mod.id, 'src_keys=', tbl_count(t))
                 merged_by_lang[lang] = merge_table(merged_by_lang[lang] or {}, t)
                 dbg_print('merged_by_lang[' .. tostring(lang) .. '] now keys=', tbl_count(merged_by_lang[lang]))
+            elseif t == nil then
+                dbg_print('no base loc file for `', lang, '` in', target_mod.id,
+                '. Missing localization items will not be automatically output.')
             end
         end
 
@@ -197,12 +215,23 @@ local function merge_impl_mod_localizations()
         end
 
         -- 额外：将合并后的本地化与原 mod 的 en-us.lua 比较，生成缺失翻译清单并保存到 impl/todo/<modid>/
+        print(('[TEOcean Language Packs] 处理缺失翻译检查: %s'):format(target_mod.id))
         local orig_en = nil
+        local orig_default_lua = loc_dir .. 'default.lua' -- 优先级最高
         local orig_en_lua = loc_dir .. 'en-us.lua'
+        local orig_default_json = loc_dir .. 'default.json'
         local orig_en_json = loc_dir .. 'en-us.json'
-        if NFS.getInfo(orig_en_lua) then
+        if NFS.getInfo(orig_default_lua) then
+            orig_en = read_loc_file(orig_default_lua)
+            dbg_print('read orig default lua', orig_default_lua, '->', type(orig_en), 'keys=', tbl_count(orig_en))
+        end
+        if not orig_en and NFS.getInfo(orig_en_lua) then
             orig_en = read_loc_file(orig_en_lua)
             dbg_print('read orig en lua', orig_en_lua, '->', type(orig_en), 'keys=', tbl_count(orig_en))
+        end
+        if not orig_en and NFS.getInfo(orig_default_json) then
+            orig_en = read_loc_file(orig_default_json)
+            dbg_print('read orig default json', orig_default_json, '->', type(orig_en), 'keys=', tbl_count(orig_en))
         end
         if not orig_en and NFS.getInfo(orig_en_json) then
             orig_en = read_loc_file(orig_en_json)
@@ -233,7 +262,7 @@ local function merge_impl_mod_localizations()
             end
         else
             -- 如果没有原始 en-us，可选地记录一条信息
-            print(('[TEOcean Language Packs] 未找到原始 en-us，跳过缺失翻译检查: %s'):format(target_mod.id))
+            print(('[TEOcean Language Packs] 未找到原始 default、 en-us本地化文件，跳过缺失翻译检查: %s'):format(target_mod.id))
         end
 
         -- 3) 将合并结果写回到目标 mod 的 localization 目录（创建目录如有必要），并先备份原始文件到 impl/backup/<modid>/localization/
@@ -246,13 +275,7 @@ local function merge_impl_mod_localizations()
         local backup_base = backup_root .. target_mod.id .. '/localization/'
         if not NFS.getInfo(backup_base) then pcall(NFS.createDirectory, backup_base) end
 
-        local function normalize_str(s)
-            if not s then return s end
-            -- 统一换行并去掉尾部空白，减少无意义差异
-            s = tostring(s):gsub('\r\n', '\n')
-            s = s:gsub('[ \t\n\r]+$', '')
-            return s
-        end
+
 
         for lang, tbl in pairs(merged_by_lang) do
             -- 先尝试备份精确命名的原始文件（如果存在）
@@ -340,21 +363,6 @@ local function merge_impl_mod_localizations()
                 local okw, errw = pcall(NFS.write, out_path, content)
                 if okw then
                     print(('[TEOcean Language Packs] 写入合并本地化: %s -> %s'):format(target_mod.id, out_path))
-                    -- -- 额外保存一份带时间戳的副本，方便历史追踪
-                    -- local ok_ts, err_ts
-                    -- local ts = os.date('%Y%m%d%H%M%S')
-                    -- local alt_path
-                    -- if out_path:lower():match('%.lua$') then
-                    --     alt_path = out_path:gsub('%.lua$', '_' .. ts .. '.lua')
-                    -- else
-                    --     alt_path = out_path .. '_' .. ts
-                    -- end
-                    -- ok_ts, err_ts = pcall(NFS.write, alt_path, content)
-                    -- if ok_ts then
-                    --     print(('[TEOcean Language Packs] 另存时间戳文件: %s'):format(alt_path))
-                    -- else
-                    --     print(('[TEOcean Language Packs] 另存时间戳失败: %s (%s)'):format(tostring(alt_path), tostring(err_ts)))
-                    -- end
                 else
                     print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
                 end
@@ -406,12 +414,13 @@ end
 print('[TEOcean Language Packs] 正在合并 impl/mods 下的本地化文件...')
 if mod then
     mod.process_loc_text = merge_impl_mod_localizations
-    print('[TEOcean Language Packs] 已注册本地化合并函数，将在注入阶段运行')
+    print('[TEOcean Language Packs] 已注册本地化合并函数，将在本地化注入阶段运行')
 else
     print('[TEOcean Language Packs] 当前 mod 未就绪，无法注册本地化合并函数')
 end
 
-print('[TEOcean Language Packs] 翻译mod加载完成')
+print('[TEOcean Language Packs] TEOcean 本地化框架 mod加载完成')
+print('[TEOcean Language Packs] TEOcean 适配的汉化语言包已加载完成 尽情享受游戏吧！')
 if mod then
     mod.config_tab = function()
         return {
