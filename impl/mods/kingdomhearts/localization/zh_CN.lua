@@ -349,7 +349,7 @@ return {
 					"当{C:attention}Boss盲注{}被击败时",
 					"使最左侧的{C:attention}小丑牌{}",
 					"数值{C:white,X:enhanced}X2{}",
-					"并应用{C:spectral}易腐{}标贴",
+					"并应用{C:spectral}易腐{}贴纸",
 					"{C:inactive,s:0.8}记住了吗？",
 				},
 			},
