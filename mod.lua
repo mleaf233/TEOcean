@@ -1,8 +1,47 @@
 local mod = SMODS.current_mod
 
 -- DEBUG 模式开关：开启后会打印更多调试信息
-local DEBUG = true
+local DEBUG = false
 
+function teo_printTable(t, indent, visited)
+    if type(t) ~= "table" then
+        print("teo_printTable: 传入的参数不是表格类型")
+        return
+    end
+    print("teo_printTable 开始 =====================================")
+    indent = indent or 0
+    visited = visited or {}
+    
+    -- 避免循环引用
+    if visited[t] then
+        print(string.rep(" ", indent) .. "*循环引用*\n")
+        return
+    end
+    visited[t] = true
+    
+    local spaces = string.rep(" ", indent)
+    
+    for k, v in pairs(t) do
+        local keyStr = type(k) == "string" and k or "[" .. tostring(k) .. "]"
+        
+        if type(v) == "table" then
+            print(spaces .. keyStr .. " = {\n")
+            printTable(v, indent + 2, visited)
+            print(spaces .. "}\n")
+        else
+            local valueStr
+            if type(v) == "string" then
+                valueStr = "'" .. v .. "'"
+            else
+                valueStr = tostring(v)
+            end
+            print(spaces .. keyStr .. " = " .. valueStr .. "\n")
+        end
+    end
+    
+    visited[t] = nil  -- 清理visited标记
+    print("teo_printTable 结束 =====================================")
+end
 local function insert_unique_first(t, v)
     if not v then return end
     for _, x in ipairs(t) do
@@ -66,55 +105,54 @@ local function normalize_str(s)
     s = s:gsub('[ \t\n\r]+$', '')
     return s
 end
+local function table_to_lua(tbl, indent)
+    indent = indent or ''
+    local next_indent = indent .. '  '
+    local parts = {}
+    local is_array = true
+    local max_index = 0
+    for k, _ in pairs(tbl) do
+        if type(k) ~= 'number' then
+            is_array = false; break
+        end
+        if type(k) == 'number' and k > max_index then max_index = k end
+    end
+    if is_array then
+        for i = 1, max_index do
+            local v = tbl[i]
+            if type(v) == 'table' then
+                parts[#parts + 1] = next_indent .. table_to_lua(v, next_indent)
+            elseif type(v) == 'string' then
+                parts[#parts + 1] = next_indent .. string.format('%q', v)
+            else
+                parts[#parts + 1] = next_indent .. tostring(v)
+            end
+        end
+        return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
+    else
+        for k, v in pairs(tbl) do
+            local key
+            if type(k) == 'string' and k:match('^%a[_%w]*$') then
+                key = k
+            else
+                key = string.format('[%q]',
+                    tostring(k))
+            end
+            local val
+            if type(v) == 'table' then
+                val = table_to_lua(v, next_indent)
+            elseif type(v) == 'string' then
+                val = string.format('%q', v)
+            else
+                val = tostring(v)
+            end
+            parts[#parts + 1] = next_indent .. key .. ' = ' .. val
+        end
+        return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
+    end
+end
 local function merge_impl_mod_localizations()
     if not mod or not mod.path then return end
-
-    local function table_to_lua(tbl, indent)
-        indent = indent or ''
-        local next_indent = indent .. '  '
-        local parts = {}
-        local is_array = true
-        local max_index = 0
-        for k, _ in pairs(tbl) do
-            if type(k) ~= 'number' then
-                is_array = false; break
-            end
-            if type(k) == 'number' and k > max_index then max_index = k end
-        end
-        if is_array then
-            for i = 1, max_index do
-                local v = tbl[i]
-                if type(v) == 'table' then
-                    parts[#parts + 1] = next_indent .. table_to_lua(v, next_indent)
-                elseif type(v) == 'string' then
-                    parts[#parts + 1] = next_indent .. string.format('%q', v)
-                else
-                    parts[#parts + 1] = next_indent .. tostring(v)
-                end
-            end
-            return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
-        else
-            for k, v in pairs(tbl) do
-                local key
-                if type(k) == 'string' and k:match('^%a[_%w]*$') then
-                    key = k
-                else
-                    key = string.format('[%q]',
-                        tostring(k))
-                end
-                local val
-                if type(v) == 'table' then
-                    val = table_to_lua(v, next_indent)
-                elseif type(v) == 'string' then
-                    val = string.format('%q', v)
-                else
-                    val = tostring(v)
-                end
-                parts[#parts + 1] = next_indent .. key .. ' = ' .. val
-            end
-            return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
-        end
-    end
 
     -- 递归比较：返回 base 中在 other 中缺失的键及其原始值（保留原始结构）
     local function diff_table(base, other)
