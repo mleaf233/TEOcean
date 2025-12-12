@@ -1680,7 +1680,8 @@ return {
                 text = {
                     "如果回合的{C:attention}第一次{}出牌",
                     "包含{C:attention}#1#{}",
-                    "重新触发所有打出的牌"
+                    "本回合重新触发所有打出的牌",
+                    "{C:inactive}(当前{V:1}#2#{C:inactive})"
                 }
             },
             j_paperback_meeple = {
@@ -1735,10 +1736,9 @@ return {
             j_paperback_book_of_life = {
                 name = "生命之书",
                 text = {
-                    "击败{C:attention}#1#{}次盲注后",
-                    "此小丑牌{S:1.1,C:red,E:2}自毁{}",
-                    "{C:attention}#3#{}个底注",
-                    "{C:inactive}(当前为{C:attention}#2#{C:inactive}次){}",
+                    "跳过或击败一个{C:attention}盲注{}后",
+                    "有{C:green}#1#/#2#{}几率",
+                    "额外获得跳过盲注所奖励的{C:attention}标签{}的{C:attention}复制{}"
                 }
             },
             j_paperback_prince_of_darkness = {
