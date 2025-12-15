@@ -87,7 +87,7 @@ return {
         },
         Joker = {
             j_cry_broken_sync_catalyst = {
-                name = "破碎的同步催化剂",
+                name = "破碎同步催化剂",
                 text = {
                     "将 {C:chips}筹码{}的 {C:attention}#1#%{}",
                     "与 {C:mult}倍率{}的 {C:attention}#1#%{} 交换",
