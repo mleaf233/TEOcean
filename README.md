@@ -1,59 +1,73 @@
-# The Eighth Ocean 本地化框架  
+<div align="center">
+    <h1> 🌏TEOcean Localization Framework🌎 </h1>
+    <p>Also is a language pack</p>
+    <p><a href="https://github.com/mleaf233/TEOcean/blob/main/README_zh_CN.md">简体中文</a> &nbsp;&nbsp; English</p>
+    <img src="https://img.shields.io/github/license/mleaf233/TEOcean">
+    <a href="https://github.com/mleaf233/TEOcean/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
+</div>
 
-这是一个为 Balatro/SMODS 环境准备的本地化合并工具模组扩展，目的是把 `impl/mods/<modid>/localization/` 下的翻译文件合并到对应的目标 mod 的 `localization/` 目录中，以便在游戏中使用统一的翻译覆盖或补充。
+---
 
-## 使用场景
+## Introdution
 
-- 对一个mod的本地化缺失部分进行补充
-- 覆盖原mod翻译
-- 因mod开发迭代导致效果变更而未能及时同步本地化文件时
-- 想对多个mod进行统一翻译
-- mod在开发阶段，最终效果还没确定时
+A lightweight localization framework for mods in the Balatro/SMODS, which also functions as a language pack.
 
+## Use Cases
 
-## 功能概览
-- **按 modid 合并**：会遍历 `SMODS.mod_list`，只针对工作区 `impl/mods/<modid>/` 存在的 mod 执行合并。
-- **备份原始文件（只备份一次）**：写入前会把目标 mod 现有的 `localization/<lang>.lua` / `.json` 复制到 `impl/backup/<modid>/localization/` 下；若备份已存在则跳过，确保备份保留的是“原始”的本地化文件。
-- **跳过无意义写入**：在写入前对合并结果做换行与尾部空白归一化并与现有文件比较，若一致则不写入也不备份。
-- **手动触发**：合并额外支持在游戏内点击模组配置里的“手动重载”按钮时执行（不会自动覆盖）。目前手动重载后需要手动切换一轮语言
+- Fill in missing localization for a mod  
+- Override the original translations of a mod  
+- Apply a unified translation across multiple mods  
+- When a target mod is still under active development and its localization files change frequently, making PRs inconvenient  
 
+## How It Works
 
-## 目录关系
-- `impl/mods/<modid>/localization/` — 你的覆盖/补充翻译来源。
-- `impl/backup/<modid>/localization/` — 自动保存的原始目标 mod 本地化（仅首次备份）。
-- 目标写入路径：`<target_mod_path>/localization/<lang>.lua`。
+Translation files under `impl/mods/<modid>/localization/` are merged into the corresponding target mod’s `localization/` directory, allowing unified translations to override or supplement the originals in-game.
 
-## 如何使用
+## Features
 
-### 方法一
+- **Merge by modid**: Iterates over `SMODS.mod_list` and only performs merging for mods that exist in the workspace at `impl/mods/<modid>/`
+- **Backup original files (once only)**: Before the first merge, the target mod’s existing `localization/<lang>.lua` / `.json` files are copied to `impl/backup/<modid>/localization/`. If a backup already exists, it is skipped to ensure the backup always represents the “original” localization files
+- **Skip meaningless writes**: Before writing, the merged result is normalized for newlines and trailing whitespace and compared with the existing file. If they are identical, no write or backup is performed
+- **Hot reload**: Supports execution when clicking the “Manual Reload” button in the mod configuration menu in-game
 
-* 和其他mod一样，将整个项目文件夹复制到 %AppData%/Balatro/mods 文件夹即可
+## How to Use
 
-### 方法二（热重载）
-1. 启动游戏。
-2. 打开主菜单 → Mods。
-3. 选择目标 mod（本 mod 即 The Eighth Ocean），进入 `Config` 标签。
-4. 点击 `手动重载(切换语言生效)` 按钮来触发合并与备份。
+### Method 1
 
-注意：首次备份会保留目标 mod 在触发时的原始文件。若想强制重新备份原始文件，请手动删除 `impl/backup/<modid>/localization/` 下对应的备份文件，再次点击手动重载。
+- Like any other mod, simply copy the entire project folder into `%AppData%/Balatro/mods`
 
-## 交流群
+### Method 2 (Hot Reload)
 
-QQ群: 
-```
-1074056375
-```
-## 开发说明
-- 合并逻辑位于 `mod.lua` 中，函数 `merge_impl_mod_localizations()` 执行读取、合并、序列化与写入。
-- 适配更多mod，需要根据modid在impl/mods/ 下新建文件夹，具体参考已有的。
-- 最好确保本mod的加载优先级在适配的mod之前
+1. Launch the game.  
+2. Open the main menu → Mods.  
+3. Select the mod(this mod itself is **The Eighth Ocean**) and enter the `Config` tab.  
+4. Click the **Manual Reload** button to trigger merging and reload.
 
-## 故障排查
-- 若点击按钮后没有生成备份或写入结果，先检查游戏启动日志（控制台输出），寻找以 `[TEOcean Language Packs]` 前缀的日志项。
-- 确保目标 mod 的 `localization/` 目录可写。
-- 如果合并后仍未生效，确认游戏所选语言（`G.SETTINGS.language`）与你合并的语言文件（例如 `zh_CN.lua`）匹配。
+> Note: The initial backup preserves the original files of the target mod at the moment it is triggered.  
+> To force a fresh backup of the original files, manually delete the corresponding backup files under  
+> `impl/backup/<modid>/localization/`, then click Manual Reload again.
 
 
-## 许可说明
-- 本项目采用 GPLv3 许可证
-- 请遵循各 mod 的许可条款；本工具仅在本地修改 mod 的 `localization` 文件，请在必要时备份并在分发前征得原作者许可
+## Development
+
+- The merge logic is implemented in `mod.lua`, in the function `merge_impl_mod_localizations()`, which handles reading, merging, serialization, and writing.
+- To support additional mods, create a new folder under `impl/mods/` according to the modid. Refer to the existing examples for details.
+- It is recommended to ensure this mod loads with higher priority than the mods it adapts.
+
+## Directory Structure
+
+- `impl/mods/<modid>/localization/` — Source of your override/supplemental translations  
+- `impl/backup/<modid>/localization/` — Automatic backup of the target mod’s original localization (backed up once only)  
+- Target write path: `<target_mod_path>/localization/<lang>.lua`
+
+## Troubleshooting
+
+- If no backup or output is generated after clicking the button, check the game startup logs (console output) for entries prefixed with `[TEOcean Language Packs]`.
+- Ensure the target mod’s `localization/` directory is writable.
+- If the localization still does not take effect after merging, confirm that the selected in-game language (`G.SETTINGS.language`) matches the merged language file (e.g. `zh_CN.lua`).
+
+## License
+
+- This project is licensed under GPLv3.
+- Please comply with each mod’s individual license terms. This mod only modifies the target mod’s `localization` files locally; make backups when necessary and obtain the original author’s permission before distribution.
+
