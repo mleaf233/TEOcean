@@ -3,12 +3,12 @@ local mod = SMODS.current_mod
 -- DEBUG 模式开关：开启后会打印更多调试信息
 local DEBUG = false
 
-function teo_printTable(t, indent, visited)
+function TEO_printTable(t, indent, visited)
     if type(t) ~= "table" then
-        print("teo_printTable: 传入的参数不是表格类型")
+        print("TEO_printTable: 传入的参数不是表格类型")
         return
     end
-    print("teo_printTable 开始 =====================================")
+    print("TEO_printTable 开始 =====================================")
     indent = indent or 0
     visited = visited or {}
     
@@ -26,7 +26,7 @@ function teo_printTable(t, indent, visited)
         
         if type(v) == "table" then
             print(spaces .. keyStr .. " = {\n")
-            printTable(v, indent + 2, visited)
+            TEO_printTable(v, indent + 2, visited)
             print(spaces .. "}\n")
         else
             local valueStr
@@ -40,7 +40,7 @@ function teo_printTable(t, indent, visited)
     end
     
     visited[t] = nil  -- 清理visited标记
-    print("teo_printTable 结束 =====================================")
+    print("TEO_printTable 结束 =====================================")
 end
 local function insert_unique_first(t, v)
     if not v then return end
@@ -151,6 +151,7 @@ local function table_to_lua(tbl, indent)
         return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
     end
 end
+TEO_table_to_lua = table_to_lua
 local function merge_impl_mod_localizations()
     if not mod or not mod.path then return end
 
