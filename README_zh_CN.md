@@ -20,7 +20,9 @@
 - 想对多个mod进行统一翻译
 - 目标mod开发阶段，本地化文件改动频繁，不方便进行PR时
 
+## 已适配本地化的mod
 
+点击这里： [已适配mod](https://github.com/mleaf233/TEOcean/blob/main/mod_list.md)
 ## 原理
 把 `impl/mods/<modid>/localization/` 下的翻译文件合并到对应目标mod的 `localization/` 目录中，以便在游戏中使用统一的翻译覆盖或补充。
 
