@@ -1,3 +1,4 @@
+-- Cryptid 属于热门模组，一般更新较快，这里仅对缺失的翻译进行填充
 return {
     descriptions = {
         Back = {
@@ -16,6 +17,16 @@ return {
                 }
             },
         },
+        Code = {
+            c_cry_exploit = {
+                name = "://利用",
+                text = {
+                    "{C:cry_code}选中{}一个{C:cry_code}当前可见{}的牌型",
+                    "下一手牌将{C:cry_code}被计算{}为该牌型",
+                    "并获得{C:cry_code}1{}点临时{C:cry_code}晋升强度{}"
+                }
+            },
+        },
         Planet = {
             c_cry_perkele = {
                 name = "Perkele",
@@ -26,25 +37,25 @@ return {
                     "{C:attention}#2#{}",
                     "与{C:attention}#3#{}",
                     "{C:inactive}（当前为{X:gold,C:white}X#7#{C:inactive} {C:chips}筹码{}+{C:mult}倍率{C:inactive}倍乘",
-                    "{C:inactive}每{C:attention}1{C:inactive}点升华之力）"
+                    "{C:inactive}每{C:attention}1{C:inactive}点升阶强度）"
                 }
             },
             c_cry_sunplanet2 = {
                 name = "Sol",
                 text = {
                     "{S:0.8}（{S:0.8,V:1}等级#1#{S:0.8}）{}",
-                    "提升{C:attention}升华{}手牌的",
-                    "升华系数{X:gold,C:white}#2#{}",
+                    "{C:attention}已升阶{}牌型的",
+                    "升阶系数提升{X:gold,C:white}#2#{}",
                     "{C:inactive}（当前为{X:gold,C:white}+#3#{C:inactive} {C:chips}筹码{}+{C:mult}倍率{C:inactive}倍乘",
-                    "{C:inactive}每{C:attention}1{C:inactive}点升华之力）"
+                    "{C:inactive}每{C:attention}1{C:inactive}点升阶强度）"
                 }
             },
         },
         Other = {
             asc_misc2 = {
-                name = "升华手牌信息",
+                name = "升阶手牌信息",
                 text = {
-                    "{C:gold}#1#{} 点升华之力",
+                    "{C:gold}#1#{} 点升阶强度",
                     "{X:gold,C:white}X#2#{C:chips} 筹码{}与{C:mult}倍率",
                     "{C:inactive}（{C:gold}#3#{C:inactive} X {C:gold}#1#{C:inactive}）"
                 }
