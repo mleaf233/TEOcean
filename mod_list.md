@@ -3,6 +3,7 @@
 3. [FinalMix](https://github.com/cloudzXIII/FinalMix)
 4. [Bunco](https://github.com/jumbocarrot0/Bunco)
 5. [Cryptid](https://github.com/SpectralPack/Cryptid)
+6. [Entropy](https://github.com/lord-ruby/Entropy)
 
 如有其他mod汉化需求，请加群反馈：1074056375
 
