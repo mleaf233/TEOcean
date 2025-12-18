@@ -111,6 +111,9 @@ local function table_to_lua(tbl, indent)
     local parts = {}
     local is_array = true
     local max_index = 0
+    if type(tbl) ~= 'table' then
+        return 'nil'
+    end
     for k, _ in pairs(tbl) do
         if type(k) ~= 'number' then
             is_array = false; break
