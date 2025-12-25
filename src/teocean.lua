@@ -30,17 +30,18 @@ G.FUNCS.TEOcean_manual_reload = function(e)
 end
 
 if mod then
-
+    mod.process_loc_text = merge_impl_mod_localizations
+    -- 模组配置
     mod.config_tab = function()
         local adapted_mods_Button = UIBox_button({
             id = "TEOcean_adapted_mods_button",
             col = true,
             button = "TEOcean_adapted_mods_button",
             colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or
-            G.C.BOOSTER,
+                G.C.BOOSTER,
             text_colour = (SMODS.mod_button_alert and not G.SETTINGS.reduced_motion) and SMODS.Gradients.warning_text or
-            G.C.TEXT_LIGHT,
-            label = { localize('teo_adapted_mods') or '适配的模组' }, 
+                G.C.TEXT_LIGHT,
+            label = { localize('teo_adapted_mods') or '适配的模组' },
             scale = 0.5
         })
         return {
@@ -68,6 +69,5 @@ if mod then
     end
 end
 
-print('[TEOcean Language Packs] TEOcean 本地化框架 mod加载完成')
+print('[TEOcean] TEOcean 本地化框架mod加载完成')
 print('[TEOcean Language Packs] TEOcean 适配的汉化语言包预处理完成 尽情享受游戏吧！')
-print("是否支持中文：",G.LANG.font.FONT:getWidth("中"))

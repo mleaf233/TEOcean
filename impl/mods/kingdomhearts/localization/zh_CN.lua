@@ -27,7 +27,7 @@ return {
 				name = "{E:kh_pulse}米奇",
 				text = {
 					"第一张计分牌有",
-					"{C:green}#1#/#2#{}几率",
+					"{C:green}#1#/#2#{}概率",
 					"变为{C:attention}K{}",
 				},
 			},
@@ -58,7 +58,7 @@ return {
 				name = "{E:kh_pulse}王国卡套",
 				text = {
 					"{C:legendary}王国之心{} {C:attention}小丑牌{}",
-					"出现几率提高{C:attention}3倍{}",
+					"出现频率提高{C:attention}3X{}",
 					"开局拥有",
 					"{C:attention,T:v_overstock_norm}库存过剩{}优惠券",
 				}
@@ -68,7 +68,7 @@ return {
 				name = "{E:kh_pulse}王国卡套",
 				text = {
 					"{C:legendary}王国之心{} {C:attention}小丑牌{}",
-					"出现几率提高{C:attention}3倍{}",
+					"出现频率提高{C:attention}3X{}",
 					"开局拥有{C:attention,T:v_overstock_norm}库存过剩{}",
 					"和{C:attention,T:v_overstock_plus}库存过剩加强版{}",
 				}
@@ -85,7 +85,7 @@ return {
 			sleeve_kh_rechain_alt = {
 				name = "{E:kh_pulse}记忆之链卡套",
 				text = {
-					"{C:green}重掷{}花费在每个{C:attention}底注{}重置",
+					"{C:green}重掷{}费用在每个{C:attention}底注{}结束时重置",
 					"开局拥有{C:attention,T:v_kh_moogleskip}莫古跳过{}",
 					"和{C:attention,T:v_reroll_surplus}多次重掷{}",
 				},
@@ -97,8 +97,8 @@ return {
 			b_kh_rechain = {
 				name = "{E:kh_pulse}记忆之链牌组",
 				text = {
-					"{C:green}重掷{}花费",
-					"每个{C:attention}底注{}重置",
+					"{C:green}重掷{}费用",
+					"在每个{C:attention}底注{}结束时重置",
 					"开局拥有",
 					"{C:attention,T:v_kh_moogleskip}莫古跳过{}优惠券",
 				},
@@ -107,7 +107,7 @@ return {
 				name = "{E:kh_pulse}王国牌组",
 				text = {
 					"{C:legendary}王国之心{} {C:attention}小丑牌{}",
-					"出现几率提高{C:attention}3倍{}",
+					"出现频率提高{C:attention}3X{}",
 					"开局拥有",
 					"{C:attention,T:v_overstock_norm}库存过剩{}优惠券",
 				},
@@ -120,8 +120,8 @@ return {
 					"{C:attention}钢铁{}牌被移动到",
 					"你{C:attention}完整牌组{}的",
 					"顶部",
-					"并给予{C:money}$#1#{}",
 					"当被触发时",
+					"给予{C:money}$#1#{}",
 				},
 			},
 
@@ -290,7 +290,7 @@ return {
 					"每张计分的{C:diamonds}光之花色{}牌",
 					"给予{C:chips}+#3#{}筹码",
 					"每张计分的{C:spades}暗之花色{}牌",
-					"给予{C:chips}-#4#{}筹码",
+					"失去{C:chips}-#4#{}筹码",
 					"{C:inactive,s:0.8}我知道你会的！",
 				}
 			},
@@ -300,7 +300,7 @@ return {
 					"每张计分的{C:spades}暗之花色{}牌",
 					"给予{C:mult}+#3#{}倍率",
 					"每张计分的{C:diamonds}光之花色{}牌",
-					"给予{C:mult}-#4#{}倍率",
+					"失去{C:mult}-#4#{}倍率",
 					"{C:inactive,s:0.8}是我 娜米妮",
 				}
 			},
@@ -315,7 +315,7 @@ return {
 			j_kh_roxas = {
 				name = '{E:kh_pulse}罗克萨斯',
 				text = {
-					"第一次出牌中",
+					"第一次出牌",
 					"每有一种独特的{C:attention}花色{}",
 					"此小丑牌获得{C:chips}+#2#{}筹码",
 					"{C:inactive}（当前{C:chips}+#1#{C:inactive}筹码）",
@@ -370,9 +370,9 @@ return {
 				name = '{E:kh_pulse}米奇',
 				text = {
 					"打出的{C:attention}K{}有",
-					"{C:green}#1#/#2#{}几率",
+					"{C:green}#1#/#2#{}概率",
 					"添加{C:red}红色蜡封{}",
-					"{C:green}#1#/#3#{}几率",
+					"{C:green}#1#/#3#{}概率",
 					"变为{C:attention}钢铁{}牌",
 					"{C:inactive,s:0.8}有人提到过",
 					"{C:inactive,s:0.8}黑暗之门吗？",
@@ -408,7 +408,7 @@ return {
 				name = '{E:kh_pulse}大师叶尼塞',
 				text = {
 					"使用{C:purple}塔罗牌{}时",
-					"有{C:green}#1#/#2#{}几率",
+					"有{C:green}#1#/#2#{}概率",
 					"升级随机{C:attention}牌型{}的等级",
 					"{C:inactive,s:0.8}索拉 不要让我失望",
 				},
@@ -418,7 +418,7 @@ return {
 				name = '{E:kh_pulse}钥刃',
 				text = {
 					"如果回合的{C:attention}第一次出牌{}",
-					"是单张{C:attention}#1#{} 则将其摧毁",
+					"只有一张{C:attention}#1#{} 则将其摧毁",
 					"并生成一张{C:dark_edition}随机{} {C:attention}标签{}",
 					"{s:0.8}每回合点数改变",
 					"{C:inactive,s:0.8}愿你的心成为指引你的钥匙",
@@ -442,7 +442,7 @@ return {
 					"如果出牌包含",
 					"带{C:attention}蜡封{}的牌",
 					"则为一张随机",
-					"{C:attention}留在手中的游戏牌{}",
+					"{C:attention}留在手中的牌{}",
 					"添加随机{C:attention}蜡封{}",
 					"{C:inactive,s:0.8}伙计 这冰激凌真不错 对吧？",
 				},
@@ -453,7 +453,7 @@ return {
 				text = {
 					"所有{C:attention}留在手中的{}牌",
 					"都参与计分",
-					"并有{C:green}#1#/#2#{}几率",
+					"并有{C:green}#1#/#2#{}概率",
 					"重新触发",
 					"{C:inactive,s:0.8}无存？谁是无存？",
 				},
@@ -483,8 +483,8 @@ return {
 				text = {
 					"从{C:attention}商店{}",
 					"{C:attention}购买{}的小丑牌",
-					"有{C:green}#1#/#2#{}几率",
-					"获得{C:dark_edition}负片{}版本",
+					"有{C:green}#1#/#2#{}概率",
+					"添加{C:dark_edition}负片{}版本",
 					"{C:inactive,s:0.8}新的挑战者出现了……！",
 				},
 			},
@@ -553,7 +553,7 @@ return {
 			},
 
 			j_kh_helpwanted = {
-				name = "{E:kh_pulse}求助！",
+				name = "{E:kh_pulse}雇佣！",
 				text = {
 					{
 						"完成任务以获得奖励！",
@@ -578,7 +578,7 @@ return {
 						"{C:money}$#3#-$#4#{}",
 					},
 					{
-						"有{C:green}#1#/#2#{}几率",
+						"有{C:green}#1#/#2#{}概率",
 						"此小丑牌被{C:red}摧毁！{}",
 					},
 					{
@@ -598,7 +598,7 @@ return {
 			},
 
 			j_kh_randomjoker = {
-				name = '{E:kh_pulse}随机小丑牌',
+				name = '{E:kh_pulse}随机小丑',
 				text = {
 					"出牌时平衡",
 					"{C:mult}倍率{}和{C:chips}筹码{}",
@@ -611,7 +611,7 @@ return {
 				name = "王国标签",
 				text = {
 					"商店有一张免费的",
-					"{C:legendary}王国之心小丑牌",
+					"{C:legendary}王国之心{}小丑牌",
 				},
 			},
 		},
@@ -622,7 +622,7 @@ return {
 				name = "莫古跳过",
 				text = {
 					"盲注选择时",
-					"可用{C:attention}+1{}次跳过按钮",
+					"可用{C:attention}+1{}个跳过按钮",
 				},
 			},
 			v_kh_moogleshop = {
@@ -886,7 +886,7 @@ return {
 			c_kh_masterform = {
 				name = "大师形态",
 				text = {
-					"为下一次出牌",
+					"下一次出牌",
 					"计分时",
 					"{X:mult,C:white}X2{} {C:mult}倍率{}",
 				},
@@ -896,9 +896,8 @@ return {
 			c_kh_finalform = {
 				name = "终极形态",
 				text = {
-					"为下一次出牌",
+					"下一次出牌计分前",
 					"{C:enhanced}翻倍{}基础{C:chips}筹码{}和{C:mult}倍率{}",
-					"在计分前",
 				},
 			},
 

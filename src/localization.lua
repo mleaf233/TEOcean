@@ -8,7 +8,7 @@ local function diff_table(base, other)
         if type(v) == 'table' then
             -- 特例: 仅当 key 为 'text' 或 'unlock' 时应用特殊逻辑：
             -- 如果 base.text 中任意一行为非空（非 nil 且非空字符串），则认为该键不是缺失的，跳过标记。
-            if DEBUG == false and (k == 'text' or k == 'unlock') then
+            if TEO_DEBUG == false and (k == 'text' or k == 'unlock') then
                 local has_non_empty = false
                 for _, line in pairs(v) do
                     if line ~= nil and tostring(line) ~= '' then
@@ -60,26 +60,29 @@ function merge_impl_mod_localizations(in_memory)
         -- 检查该mod是否应该进行本地化合并
         -- 在SMODS.mod_list中查找对应的mod并检查should_teo_localize属性
         local should_localize = false
-        for _, mod_entry in ipairs(SMODS.mod_list) do
-            if mod_entry.id == target_mod.id then
-                if mod_entry.should_teo_localize ~= nil then
-                    should_localize = mod_entry.should_teo_localize
-                else
-                    -- 如果没有设置，则默认为false（不进行本地化合并）
-                    should_localize = false
-                end
-                break
+        if TEO.config then
+            local clicked_list = mod.config.clicked_list or {}
+            if clicked_list and clicked_list[target_mod.id] and clicked_list[target_mod.id] == true then
+                should_localize = true
             end
         end
 
-        if not should_localize then
+        -- for _, mod_entry in ipairs(TEO.config) do
+        --     if mod_entry.id == target_mod.id then
+        --         if mod_entry.should_teo_localize ~= nil then
+        --             should_localize = mod_entry.should_teo_localize
+        --         else
+        --             -- 如果没有设置，则默认为false（不进行本地化合并）
+        --             should_localize = false
+        --         end
+        --         break
+        --     end
+        -- end
+        if should_localize == true then
+            merge_single_mod_localization(target_mod, mod)
+        else
             print(('[TEOcean Language Packs] 跳过未勾选 mod: %s'):format(target_mod.id))
-            goto continue
         end
-
-        -- 对符合条件的mod执行本地化合并
-        merge_single_mod_localization(target_mod, mod)
-
         ::continue::
     end
 end
@@ -264,7 +267,6 @@ function merge_single_mod_localization(target_mod, mod)
             else
                 print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
             end
-
         end
     end
 end

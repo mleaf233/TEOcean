@@ -1,6 +1,6 @@
 {
   "id": "teocean",
-  "name": "TEOcean",
+  "name": "TEOcean Language Packs",
   "display_name": "TEOcean Language Packs",
   "prefix": "teocean",
   "author": [
@@ -10,7 +10,7 @@
   "description": "A lightweight localization framework for mods in the Balatro/SMODS, which also functions as a language pack.",
   "main_file": "main.lua",
   "badge_colour": "4d7fcf",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "dependencies": [
     "Steamodded (>=1.0.0~ALPHA-1423h)",
     "Lovely (>=0.7.1)"

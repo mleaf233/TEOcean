@@ -12,7 +12,7 @@ return {
                 name = "芭蕉",
                 text = {
                     "{C:chips}+#1#{}筹码",
-                    "在回合结束时有{C:green}#2#/#3#{}几率",
+                    "在回合结束时有{C:green}#2#/#3#{}概率",
                     "摧毁此牌"
                 }
             },
@@ -140,7 +140,7 @@ return {
                 name = "弹窗小丑",
                 text = {
                     "每次{C:attention}重掷{}有",
-                    "{C:green}#1#/#2#{}几率",
+                    "{C:green}#1#/#2#{}概率",
                     "在商店中加一{C:attention}补充包{}"
                 }
             },
@@ -168,7 +168,7 @@ return {
                     "回合结束时获得{C:money}$#1#{}",
                     "每使用一张{C:tarot}塔罗牌{}",
                     "奖励{C:money}+$#2#{}",
-                    "有{C:green}#3#/#4#{}几率摧毁此牌"
+                    "有{C:green}#3#/#4#{}概率摧毁此牌"
                 }
             },
             j_pl_three_body_problem = {
@@ -183,7 +183,7 @@ return {
                 name = "散装电池",
                 text = {
                     "重新触发所有打出的{C:attention}A{}",
-                    "并有{C:green}#1#/#2#{}几率再次重新触发"
+                    "并有{C:green}#1#/#2#{}概率再次重新触发"
                 }
             },
             j_pl_painterly_joker = {

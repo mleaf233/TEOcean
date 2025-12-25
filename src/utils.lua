@@ -1,5 +1,6 @@
 -- DEBUG 模式开关：开启后会打印更多调试信息
 local DEBUG = false
+TEO_DEBUG = DEBUG
 local mod = SMODS.current_mod
 
 -- Credits: Steamodded

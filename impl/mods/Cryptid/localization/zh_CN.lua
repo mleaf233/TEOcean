@@ -26,7 +26,7 @@ return {
                 text = {
                     "{C:cry_code}选中{}一个{C:cry_code}当前可见{}的牌型",
                     "下一手牌将{C:cry_code}被计算{}为该牌型",
-                    "并获得{C:cry_code}1{}点临时{C:cry_code}晋升强度{}"
+                    "并获得{C:cry_code}1{}点临时{C:cry_code}升阶强度{}"
                 }
             },
         },

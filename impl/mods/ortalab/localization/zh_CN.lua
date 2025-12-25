@@ -621,7 +621,7 @@ return {
 				name = "陀螺",
 				text = {
 					"抽取的牌",
-					"有{C:attention}#1#/#2#{}几率被削弱"
+					"有{C:attention}#1#/#2#{}概率被削弱"
 				}
 			},
 			bl_ortalab_all_in = {
@@ -739,11 +739,11 @@ return {
 				name = "再生牌",
 				text = {
 					{
-						"{C:green}#1#/#2#{}几率",
+						"{C:green}#1#/#2#{}概率",
 						"添加{C:blue}+#5#{}筹码"
 					},
 					{
-						"{C:green}#3#/#4#{}几率",
+						"{C:green}#3#/#4#{}概率",
 						"获得一个{C:attention}标签{}"
 					}
 				}
@@ -1204,7 +1204,7 @@ return {
 			c_ortalab_lot_pear = {
 				name = "梨子",
 				text = {
-					"{C:green}#1#/#2#{}几率为一张随机",
+					"{C:green}#1#/#2#{}概率为一张随机",
 					"{C:attention}小丑牌{}添加{C:dark_edition}立体浮雕{}、",
 					"{C:dark_edition}荧光{}、{C:dark_edition}灰度{}",
 					"或{C:dark_edition}过曝{}版本"
@@ -1485,7 +1485,7 @@ return {
 				name = "闰年",
 				text = {
 					"{C:ortalab_zodiac}星座牌{}有",
-					"{C:green}#2#/#3#{}几率给予",
+					"{C:green}#2#/#3#{}概率给予",
 					"{C:attention}+#1#{}级临时等级"
 				}
 			},

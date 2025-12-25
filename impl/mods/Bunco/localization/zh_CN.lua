@@ -613,7 +613,7 @@ return {
       c_bunc_wheel_of_fortune = {
         name = "命运之轮",
         text = {
-          "{C:green}#1#/#2#{}几率",
+          "{C:green}#1#/#2#{}概率",
           "为一张随机{C:attention}小丑牌",
           "添加{C:dark_edition}闪箔{}、{C:dark_edition}镭射{}、",
           "{C:dark_edition}多彩{}或{C:dark_edition}闪耀{}版本"
@@ -746,7 +746,7 @@ return {
         name = "腰包",
         text = {
           "每次跳过盲注时",
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "获得一个{C:attention}双倍标签"
         }
       }
@@ -977,7 +977,7 @@ return {
         text = {
           "{X:mult,C:white}X#1#{}倍率",
           "{C:attention}选中{}一张牌时",
-          "有{C:green}#2#/#3#{}几率",
+          "有{C:green}#2#/#3#{}概率",
           "打出选中的牌"
         }
       },
@@ -1014,7 +1014,7 @@ return {
         name = "捕鼠夹",
         text = {
           "{C:chips}+#1#{}筹码",
-          "有{C:green}#2#/#3#{}几率",
+          "有{C:green}#2#/#3#{}概率",
           "{C:attention}失去{}一张手牌"
         }
       },
@@ -1040,7 +1040,7 @@ return {
         name = "彩虹",
         text = {
           "如果留在手中的牌包含{C:attention}光谱{}",
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "为所有计分牌",
           "添加{C:dark_edition}多彩{}版本"
         }
@@ -1146,7 +1146,7 @@ return {
         text = {
           "出牌后每张计分的",
           "未增强牌有",
-          "{C:green}#1#/#2#{}几率被摧毁"
+          "{C:green}#1#/#2#{}概率被摧毁"
         }
       },
       j_bunc_vandalism = {
@@ -1157,7 +1157,7 @@ return {
         },
         name = "环境破坏",
         text = {
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "抽到背面朝上的牌",
           "背面朝上的牌计分时",
           "给予{X:mult,C:white}X#3#{}倍率"
@@ -1180,7 +1180,7 @@ return {
         name = "拼图板",
         text = {
           "当使用{C:tarot}塔罗牌{}时",
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "为一张随机选中的游戏牌",
           "添加{C:dark_edition}闪箔{}、{C:dark_edition}镭射{}、",
           "{C:dark_edition}多彩{}或{C:dark_edition}闪耀{}版本"
@@ -1265,7 +1265,7 @@ return {
       j_bunc_kite_experiment = {
         name = "风筝实验",
         text = {
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "让{C:attention}铜牌",
           "额外{C:attention}重新计分{}一次"
         }
@@ -1320,7 +1320,7 @@ return {
         name = "云端遐想",
         text = {
           "当你升级任何{C:attention}牌型{}时",
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "升级{C:attention}高牌{}"
         }
       },
@@ -1353,7 +1353,7 @@ return {
         text = {
           "如果打出的牌型包含{C:attention}光谱{}",
           "则提升该牌型等级",
-          "回合结束时此牌有{C:green}#1#/#2#{}几率",
+          "回合结束时此牌有{C:green}#1#/#2#{}概率",
           "被摧毁"
         }
       },
@@ -1391,7 +1391,7 @@ return {
         name = "恶魔小丑",
         text = {
           "所有资金来源翻倍",
-          "但有{C:green}#1#/#2#{}几率",
+          "但有{C:green}#1#/#2#{}概率",
           "仅支付{C:money}$1{}"
         }
       },
@@ -1414,7 +1414,7 @@ return {
       j_bunc_wishalloy = {
         name = "祈愿合金",
         text = {
-          "有{C:green}#1#/#2#{}几率",
+          "有{C:green}#1#/#2#{}概率",
           "使打出的{C:bunc_fleurons}花饰{}牌",
           "获得的{C:money}金钱{}",
           "等于该牌所获筹码数"
@@ -1628,7 +1628,7 @@ return {
         text = {
           "计分的{C:attention}K{}、{C:attention}Q{}、{C:attention}J{}",
           "或{C:attention}无点数牌{}",
-          "有{C:green}#1#/#2#{}的几率",
+          "有{C:green}#1#/#2#{}的概率",
           "生成一个{C:attention}D6标签"
         }
       },
@@ -1935,7 +1935,7 @@ return {
       bunc_exceeded_score = "超出上限！",
       bunc_robbed = "被抢了！",
       bunc_most_played_rank = "（最常出牌点数）",
-      bunc_chance = "几率",
+      bunc_chance = "概率",
       bunc_thoth_tarots = "透特塔罗牌",
       bunc_default_true = "默认启用",
       bunc_jokerlike_consumable_editions = "消耗牌槽位中的版本",

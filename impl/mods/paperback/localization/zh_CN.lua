@@ -15,14 +15,14 @@ return {
                     "便获得{C:attention}+#1#{}个消耗牌栏位",
                     "小丑牌槽位{C:red}#2#{}",
                     "{C:paperback_ego_gift}E.G.O饰品包{}",
-                    "有{C:attention}5X{}几率更可能出现"
+                    "有{C:attention}5X{}概率更可能出现"
                 }
             },
             b_paperback_paper = {
                 name = "纸质牌组",
                 text = {
                     "{C:legendary}传奇{C:attention}小丑牌{}有",
-                    "有{C:attention}3X{}的几率更可能出现",
+                    "有{C:attention}3X{}的概率更可能出现",
                     "开局时拥有",
                     "{C:attention,T:j_paperback_shopping_center}#1#{}小丑牌"
                 }
@@ -62,7 +62,7 @@ return {
                     "{C:tarot}秘术包{}不再",
                     "出现在商店中",
                     "{C:paperback_minor_arcana}秘仪包",
-                    "有{C:attention}3X{}的几率更可能出现"
+                    "有{C:attention}3X{}的概率更可能出现"
                 }
             },
             b_paperback_proud = {
@@ -184,7 +184,7 @@ return {
             c_paperback_nebulizer = {
                 name = "雾化器",
                 text = {
-                    "计分牌有{C:green}#1#/#2#{}几率",
+                    "计分牌有{C:green}#1#/#2#{}概率",
                     "给予{X:mult,C:white}X#3#{}倍率"
                 }
             },
@@ -193,7 +193,7 @@ return {
                 text = {
                     "每当恰好有{C:attention}1{}或{C:attention}2{}张牌被{C:attention}摧毁{}时",
                     "为每张被摧毁的牌生成{C:attention}两张复制{}",
-                    "之后有{C:green}#1#/#2#{}几率{C:red}自毁{}"
+                    "之后有{C:green}#1#/#2#{}概率{C:red}自毁{}"
                 }
             },
             c_paperback_pendant_of_nostalgia = {
@@ -257,7 +257,7 @@ return {
                 name = "避雷针",
                 text = {
                     "{C:attention}留在手中的{}牌",
-                    "有{C:green}#1#/#2#{}几率",
+                    "有{C:green}#1#/#2#{}概率",
                     "重新触发"
                 }
             },
@@ -474,7 +474,7 @@ return {
                 name = "钱币四",
                 text = {
                     "选择{C:attention}#1#{}张牌",
-                    "有{C:green}#2#/#3#{}几率",
+                    "有{C:green}#2#/#3#{}概率",
                     "摧毁手牌中每张",
                     "{C:attention}未被选中的{}牌"
                 }
@@ -597,7 +597,7 @@ return {
             sleeve_paperback_paper = {
                 name = "纸质牌套",
                 text = {
-                    "{C:legendary}Paperback{C:attention}小丑{}出现几率",
+                    "{C:legendary}Paperback{C:attention}小丑{}出现概率",
                     "{C:attention}3X{}开局时拥有",
                     "{C:attention,T:j_paperback_shopping_center}#1#{}"
                 }
@@ -693,7 +693,7 @@ return {
                     "便获得{C:attention}+#1#{}个消耗牌槽位",
                     "{C:red}#2#{}个小丑牌槽位",
                     "{C:paperback_ego_gift}E.G.O饰品包{}",
-                    "有{C:attention}5X{}的几率更可能出现"
+                    "有{C:attention}5X{}的概率更可能出现"
                 }
             },
             sleeve_paperback_shimmering_buff = {
@@ -794,7 +794,7 @@ return {
                 name = "生死境界",
                 text = {
                     "{C:attention}#1#{}有",
-                    "{C:green}#2#/#3#{}的几率",
+                    "{C:green}#2#/#3#{}的概率",
                     "额外提供{C:red}+#4#{}倍率"
                 }
             },
@@ -824,7 +824,7 @@ return {
                 name = "清酒杯",
                 text = {
                     "出牌后{C:attention}留在手中{}的{C:attention}#1#{}",
-                    "有{C:green}#2#/#3#{}几率生成",
+                    "有{C:green}#2#/#3#{}概率生成",
                     "对应打出{C:attention}牌型{}的",
                     "{C:planet}星球牌{}",
                     "{C:inactive}（必须有空位）"
@@ -859,7 +859,7 @@ return {
                 name = "小丑CD-i",
                 text = {
                     "如果打出的牌刚好有{C:attention}#3#{}张",
-                    "有{C:green}#1#/#2#{}几率生成",
+                    "有{C:green}#1#/#2#{}概率生成",
                     "一张随机{C:planet}星球牌{}",
                     "{C:inactive}（必须有空位）"
                 }
@@ -1166,7 +1166,7 @@ return {
                 text = {
                     "出牌后",
                     "{C:attention}留在手中{}的牌",
-                    "有{C:green}#1#/#2#{}几率",
+                    "有{C:green}#1#/#2#{}概率",
                     "获得随机{C:attention}增强{}、{C:attention}蜡封{}或{C:attention}版本{}",
                     "{C:attention}#3#{}次出牌后{S:1.1,C:red,E:2}自毁{}",
                     ""
@@ -1249,7 +1249,7 @@ return {
                 name = "流星",
                 text = {
                     "计分的{V:1}#1#{}有",
-                    "{C:green}#2#/#3#{}几率生成",
+                    "{C:green}#2#/#3#{}概率生成",
                     "对应打出{C:attention}牌型{}",
                     "的{C:planet}星球牌{}"
                 }
@@ -1325,7 +1325,7 @@ return {
                 name = "暗影披风",
                 text = {
                     "计分的{V:1}#1#{}有",
-                    "{C:green}#2#/#3#{}几率生成一个",
+                    "{C:green}#2#/#3#{}概率生成一个",
                     "{C:dark_edition}负片{C:attention}标签{}"
                 }
             },
@@ -1376,8 +1376,8 @@ return {
                 name = "待终冠主",
                 text = {
                     "如果打出的牌包含计分的{V:1}#1#",
-                    "{C:green}#2#/#3#{}几率获得{X:mult,C:white}X#4#{}倍率",
-                    "{C:green}#5#/#6#{}几率生成一张{C:tarot}#7#{}塔罗牌",
+                    "{C:green}#2#/#3#{}概率获得{X:mult,C:white}X#4#{}倍率",
+                    "{C:green}#5#/#6#{}概率生成一张{C:tarot}#7#{}塔罗牌",
                     "{C:inactive}（必须有空位）",
                     "{C:inactive}（当前为{X:mult,C:white}X#8#{C:inactive}倍率）"
                 }
@@ -1385,7 +1385,7 @@ return {
             j_paperback_moon_waltz = {
                 name = "月下圆舞曲",
                 text = {
-                    "这张小丑牌有{C:green}#3#{}在{C:green}#4#{}的几率获得",
+                    "这张小丑牌有{C:green}#3#{}在{C:green}#4#{}的概率获得",
                     "已使用的{C:planet}Moon{}或",
                     "{C:planet}Asteroid{}的一半{C:mult}+倍率{}或{C:chips}+筹码{}",
                     "{C:inactive}（当前为{C:mult}+#1#{C:inactive}倍率和{C:chips}+#2#{C:inactive}筹码）"
@@ -1448,7 +1448,7 @@ return {
                 name = "苹果",
                 text = {
                     "购买{C:attention}消耗牌{}时",
-                    "有{C:green}#1#/#2#{}几率",
+                    "有{C:green}#1#/#2#{}概率",
                     "生成它的{C:dark_edition}负片{}版本",
                     "{S:1.1,C:red,E:2}自毁{}"
                 }
@@ -1474,8 +1474,8 @@ return {
                 text = {
                     "{C:mult}+#1#{}倍率",
                     "{C:chips}+#2#{}筹码",
-                    "出牌后有{C:green}#3#/#4#{}几率{S:1.1,C:red,E:2}自毁{}",
-                    "每次出牌后几率+{C:green}#5#{}",
+                    "出牌后有{C:green}#3#/#4#{}概率{S:1.1,C:red,E:2}自毁{}",
+                    "每次出牌后概率+{C:green}#5#{}",
                     ""
                 }
             },
@@ -1487,7 +1487,7 @@ return {
                 name = "清酒杯",
                 text = {
                     "出牌后{C:attention}留在手中的{}",
-                    "{C:attention}#1#{}有{C:green}#2#/#3#{}几率",
+                    "{C:attention}#1#{}有{C:green}#2#/#3#{}概率",
                     "生成对应打出{C:attention}牌型{}的",
                     "{C:planet}星球牌",
                     "{C:inactive}(必须有空位)"
@@ -1497,8 +1497,8 @@ return {
                 name = "三月女神",
                 text = {
                     "如果打出的牌中包含{C:attention}三条{}",
-                    "有{C:green}#1#/#2#{}几率生成一张随机{C:tarot}塔罗牌{}",
-                    "有{C:green}#3#/#4#{}几率生成一张随机{C:paperback_minor_arcana}塔罗辅牌{}",
+                    "有{C:green}#1#/#2#{}概率生成一张随机{C:tarot}塔罗牌{}",
+                    "有{C:green}#3#/#4#{}概率生成一张随机{C:paperback_minor_arcana}塔罗辅牌{}",
                     "{C:inactive}(必须有空位)"
                 }
             },
@@ -1525,8 +1525,8 @@ return {
                 name = "工会劳工",
                 text = {
                     "当资金为{C:money}$#1#{}或更低时",
-                    "所有列出的{C:green,E:1,S:1.1}几率{}{C:attention}3X{}",
-                    "否则几率{C:attention}减半{}",
+                    "所有列出的{C:green,E:1,S:1.1}概率{}{C:attention}3X{}",
+                    "否则概率{C:attention}减半{}",
                     "{C:inactive}(例如{C:green}1/3{C:inactive} -> {C:green}#2#/#3#{C:inactive})"
                 }
             },
@@ -1554,7 +1554,7 @@ return {
                 text = {
                     "{X:chips,C:white}X#1#{}筹码",
                     "回合结束时",
-                    "有{C:green}#2#/#3#{}几率",
+                    "有{C:green}#2#/#3#{}概率",
                     "摧毁此牌"
                 }
             },
@@ -1643,7 +1643,7 @@ return {
                 name = "法蒂玛之手（倒转）",
                 text = {
                     "在每回合的{C:attention}最后一次{}出牌时",
-                    "所有列出的几率{}{C:green}+#1#{}"
+                    "所有列出的概率{}{C:green}+#1#{}"
                 }
             },
             j_paperback_hamsa = {
@@ -1662,7 +1662,7 @@ return {
                 name = "法蒂玛之手",
                 text = {
                     "在每回合的{C:attention}最后一次{}出牌时",
-                    "所有列出的几率{}{C:green}+#1#{}"
+                    "所有列出的概率{}{C:green}+#1#{}"
                 }
             },
             j_paperback_plague_doctor = {
@@ -1692,7 +1692,7 @@ return {
                 text = {
                     "如果打出的牌包含",
                     "计分的{C:attention}人头牌{}",
-                    "本回合有{C:green}#1#/#2#{}几率",
+                    "本回合有{C:green}#1#/#2#{}概率",
                     "{C:mult}+#3#{}次弃牌次数"
                 }
             },
@@ -1724,7 +1724,7 @@ return {
                 text = {
                     "计分的{C:hearts}红桃{}给予{C:mult}+#1#{}倍率",
                     "回合结束时",
-                    "有{C:green}#2#/#3#{}几率{S:1.1,C:red,E:2}自毁{}",
+                    "有{C:green}#2#/#3#{}概率{S:1.1,C:red,E:2}自毁{}",
                 }
             },
             j_paperback_book_of_vengeance = {
@@ -1740,7 +1740,7 @@ return {
                 name = "生命之书",
                 text = {
                     "跳过或击败一个{C:attention}盲注{}后",
-                    "有{C:green}#1#/#2#{}几率",
+                    "有{C:green}#1#/#2#{}概率",
                     "额外获得跳过盲注所奖励的{C:attention}标签{}的{C:attention}复制{}"
                 }
             },
@@ -1762,7 +1762,7 @@ return {
                 name = "小丑十字路口",
                 text = {
                     "{C:attention}增强牌{}",
-                    "有{C:green}#1#/#2#{}几率",
+                    "有{C:green}#1#/#2#{}概率",
                     "重新触发"
                 }
             },
@@ -1771,7 +1771,7 @@ return {
                 text = {
                     "{C:attention}留在手中{}的",
                     "{V:1}#1#{}和{V:2}#2#{}",
-                    "有{C:green}#3#/#4#{}几率",
+                    "有{C:green}#3#/#4#{}概率",
                     "获得{C:money}$#5#"
                 }
             },
@@ -1964,7 +1964,7 @@ return {
             j_paperback_banana_man = {
                 name = "香蕉人",
                 text = {
-                    "小丑牌有{C:green}#1#/#2#{}几率",
+                    "小丑牌有{C:green}#1#/#2#{}概率",
                     "给予{X:mult,C:white}X#3#{}倍率"
                 },
                 unlock = {
@@ -2183,7 +2183,7 @@ return {
                     "提现时这一数值增加{C:money}$#2#{}",
                     "{C:inactive}(最高{C:money}$#3#{C:inactive})",
                     "回合结束时",
-                    "有{C:green}#4#/#5#{}几率",
+                    "有{C:green}#4#/#5#{}概率",
                     "摧毁此牌",
                 }
             },
@@ -2205,7 +2205,7 @@ return {
                 text = {
                     "每张牌计分时",
                     "这张小丑牌获得{C:chips}+#1#{}筹码",
-                    "{C:mult}弃牌{}时有{C:green}#2#/#3#{}几率",
+                    "{C:mult}弃牌{}时有{C:green}#2#/#3#{}概率",
                     "摧毁此牌",
                     "{C:inactive}(当前{C:chips}+#4#{C:inactive}筹码)"
                 }
@@ -2269,8 +2269,8 @@ return {
             j_paperback_wild_prize = {
                 name = "[[万能大奖！1！]]",
                 text = {
-                    "{C:attention}万能牌{}有{C:green}#1#/#2#{}几率",
-                    "{C:attention}重新触发{}以及{C:green}#3#/#4#{}几率",
+                    "{C:attention}万能牌{}有{C:green}#1#/#2#{}概率",
+                    "{C:attention}重新触发{}以及{C:green}#3#/#4#{}概率",
                     "计分时获得{C:money}$#5#{}~{C:money}$#6#{}之间的随机资金"
                 }
             },
@@ -2304,11 +2304,11 @@ return {
             j_paperback_resurrections = {
                 name = "复活",
                 text = {
-                    "售出{C:attention}小丑牌{}时有{C:green}#1#/#2#{}几率",
+                    "售出{C:attention}小丑牌{}时有{C:green}#1#/#2#{}概率",
                     "使其{C:attention}回归{}并生成",
                     "一张售价为{C:money}-$#3#{}",
                     "且带有{C:dark_edition}负片{}版本的额外复制",
-                    "{s:0.8}失败时几率增加{s:0.8,C:green}#4#{}",
+                    "{s:0.8}失败时概率增加{s:0.8,C:green}#4#{}",
                     "{S:1.1,C:red,E:2}自毁"
                 }
             },
@@ -2361,9 +2361,9 @@ return {
                 name = "黄色别针",
                 text = {
                     "如果{C:attention}计分{}时{C:attention}留在手中{}的牌拥有{C:attention}别针{}",
-                    "留有黄色别针的牌计分时有{C:green}#1#/#2#{}几率{C:red}+#3#{}倍率",
-                    "{C:green}#4#/#5#{}几率{X:mult,C:white}X#6#{}倍率",
-                    "{C:green}#7#/#8#{}几率获得{C:money}$#9#{}"
+                    "留有黄色别针的牌计分时有{C:green}#1#/#2#{}概率{C:red}+#3#{}倍率",
+                    "{C:green}#4#/#5#{}概率{X:mult,C:white}X#6#{}倍率",
+                    "{C:green}#7#/#8#{}概率获得{C:money}$#9#{}"
                 }
             },
             paperback_sin_gluttony = {
