@@ -14,7 +14,6 @@ assert(SMODS.load_file('src/localization.lua'), "Failed to load localization fil
 --     print('[TEOcean Language Packs] 当前 mod 未就绪，无法注册本地化合并函数')
 -- end
 
-
 assert(SMODS.load_file('src/ui.lua'), "Failed to load UI file. ")()
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
@@ -71,3 +70,4 @@ end
 
 print('[TEOcean Language Packs] TEOcean 本地化框架 mod加载完成')
 print('[TEOcean Language Packs] TEOcean 适配的汉化语言包预处理完成 尽情享受游戏吧！')
+print("是否支持中文：",G.LANG.font.FONT:getWidth("中"))

@@ -1,6 +1,8 @@
 return {
+	translator = {
+		"mleaf233",
+	},
 	descriptions = {
-
 		Partner = {
 			pnr_kh_sora = {
 				name = "{E:kh_pulse}索拉",
@@ -734,7 +736,7 @@ return {
 			kh_kingdom_seal = {
 				name = '王国蜡封',
 				text = {
-                    "被{C:attention}弃掉{}时",
+					"被{C:attention}弃掉{}时",
 					"留在手中的牌",
 					"永久获得",
 					"{C:chips}+#1#{}筹码",

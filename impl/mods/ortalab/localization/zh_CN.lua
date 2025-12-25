@@ -1,9 +1,9 @@
 return {
-	translator = {
-		"jie65535",
-		"mleaf233",
-	},
 	misc = {
+		translator = {
+			"jie65535",
+			"mleaf233",
+		},
 		labels = {
 			ortalab_cyan_seal = "青蓝蜡封",
 			ortalab_anaglyphic = "立体浮雕",

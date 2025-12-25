@@ -12,6 +12,10 @@ function G.FUNCS.update_teo_mod_list(args)
     })
 end
 
+function G.FUNCS.openAdaptedModsDirectory(options)
+    love.system.openURL(TEO.path .. 'impl/mods/')
+end
+
 local function createTextColNode(text, scale, colour, node)
     return {
         n = node or G.UIT.R,
@@ -26,13 +30,13 @@ end
 local function get_adapted_mods_list()
     local adapted_mods = {}
     for _, modInfo in ipairs(SMODS.mod_list or {}) do
-        if not (modInfo and modInfo.id and modInfo.path) then goto continue end
-        -- 检查是否在 impl/mods/<modid>/ 下存在对应文件夹
-        local impl_mod_dir = TEO.path .. 'impl/mods/' .. modInfo.id .. '/'
-        if NFS.getInfo(impl_mod_dir) then
-            table.insert(adapted_mods, modInfo)
+        if (modInfo and modInfo.id and modInfo.path) then
+            -- 检查是否在 impl/mods/<modid>/ 下存在对应文件夹
+            local impl_mod_dir = TEO.path .. 'impl/mods/' .. modInfo.id .. '/'
+            if NFS.getInfo(impl_mod_dir) then
+                table.insert(adapted_mods, modInfo)
+            end
         end
-        ::continue::
     end
     return adapted_mods
 end
@@ -42,7 +46,7 @@ local function recalculateModsList(page)
     page = page or TEO.LAST_VIEWED_MODS_PAGE or 1
     TEO.LAST_VIEWED_MODS_PAGE = page
     local adapted_mods = get_adapted_mods_list()
-    local modsRowPerPage = 4
+    local modsRowPerPage = 1
     local modsColPerRow = 3
     local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
     local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
@@ -141,7 +145,7 @@ local function createClickableModBox(modInfo, scale)
     end
     if not modInfo.lovely_only then
         local translators = TEO_get_translators(modInfo, TEO_get_cur_language())
-        local tx = concatAuthors(translators, 12)
+        local tx = concatAuthors(translators)
         local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2)
         the_colour[4] = 0.8
         local authorDynatext = DynaText {
@@ -150,7 +154,7 @@ local function createClickableModBox(modInfo, scale)
             colours = { the_colour },
             shadow = true,
             maxw = 2.4,
-            marquee = true,
+            marquee = false,
         }
         table.insert(label_nodes,
             {
@@ -269,7 +273,8 @@ end
 
 function TEO.GUI.dynamicModListContent(page)
     local scale = 0.75
-    local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow, adapted_mods = recalculateModsList(page)
+    local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow, adapted_mods = recalculateModsList(
+        page)
 
     local modNodes = {}
 
@@ -381,7 +386,7 @@ function TEO.GUI.staticModListContent()
                                         shadow = true,
                                         scale = scale * 0.85,
                                         colour = G.C.BOOSTER,
-                                        button = "openModsDirectory",
+                                        button = "openAdaptedModsDirectory",
                                         minh = scale,
                                         minw = 9
                                     }),
@@ -438,7 +443,7 @@ function TEO.GUI.staticModListContent()
                                 label = "",
                                 scale = 0.8,
                                 options = pageOptions,
-                                opt_callback = 'update_mod_list',
+                                opt_callback = 'update_teo_mod_list',
                                 no_pips = true,
                                 current_option = (
                                     currentPage
@@ -456,7 +461,7 @@ function TEO_create_UIBox_mods_button()
     local scale = 0.75
     SMODS.browse_search = SMODS.browse_search or ''
     return (create_UIBox_generic_options({
-        back_func = 'exit_mods',
+        back_func = 'exit_teo_mods',
         contents = {
             {
                 n = G.UIT.R,
@@ -490,10 +495,49 @@ function TEO_create_UIBox_mods_button()
     }))
 end
 
+G.FUNCS.exit_teo_mods = function()
+    -- 检查当前配置与初始配置是否一致
+    local current_config = TEO.config.clicked_list
+    local initial_config = TEO.initial_config_state
+    local need_reload = false
+
+    if initial_config then
+        for k, v in pairs(current_config) do
+            if initial_config[k] ~= v then
+                need_reload = true
+                break
+            end
+        end
+        -- 也要检查反向，防止从nil变为false/true的情况（虽然这里主要是clicked_list变动）
+        if not need_reload then
+            for k, v in pairs(initial_config) do
+                if current_config[k] ~= v then
+                    need_reload = true
+                    break
+                end
+            end
+        end
+    end
+
+    if need_reload then
+        -- 执行手动重载
+        G.FUNCS.TEOcean_manual_reload()
+    else
+        -- 返回之前的配置页面 (TEO Config Tab)
+        if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
+            G.FUNCS["openModUI_" .. TEO.id]()
+        else
+            G.FUNCS.exit_overlay_menu()
+        end
+    end
+end
+
 G.FUNCS.TEOcean_adapted_mods_button = function()
     G.SETTINGS.paused = true
     SMODS.LAST_SELECTED_MOD_TAB = nil
-    -- SMODS.IN_MODS_TAB = true
+    -- 保存初始配置状态以供退出时对比
+    TEO.initial_config_state = copy_table(TEO.config.clicked_list or {})
+
     G.FUNCS.overlay_menu({
         definition = TEO_create_UIBox_mods_button()
     })

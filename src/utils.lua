@@ -23,19 +23,19 @@ function TEO_printTable(t, indent, visited)
     print("TEO_printTable 开始 =====================================")
     indent = indent or 0
     visited = visited or {}
-    
+
     -- 避免循环引用
     if visited[t] then
         print(string.rep(" ", indent) .. "*循环引用*\n")
         return
     end
     visited[t] = true
-    
+
     local spaces = string.rep(" ", indent)
-    
+
     for k, v in pairs(t) do
         local keyStr = type(k) == "string" and k or "[" .. tostring(k) .. "]"
-        
+
         if type(v) == "table" then
             print(spaces .. keyStr .. " = {\n")
             TEO_printTable(v, indent + 2, visited)
@@ -50,8 +50,8 @@ function TEO_printTable(t, indent, visited)
             print(spaces .. keyStr .. " = " .. valueStr .. "\n")
         end
     end
-    
-    visited[t] = nil  -- 清理visited标记
+
+    visited[t] = nil -- 清理visited标记
     print("TEO_printTable 结束 =====================================")
 end
 
@@ -243,7 +243,7 @@ function TEO_init_configs()
     if not mod.config.skip_backup_list then
         mod.config.skip_backup_list = {}
     end
-    
+
     for _, modInfo in ipairs(SMODS.mod_list or {}) do
         if mod.config.clicked_list[modInfo.id] ~= nil then
             modInfo.should_teo_localize = mod.config.clicked_list[modInfo.id]
@@ -265,7 +265,7 @@ function TEO_save_configs()
     if not mod.config.clicked_list then
         mod.config.clicked_list = {}
     end
-    
+
     -- 保存当前mod的配置
     SMODS.save_mod_config(mod)
     print('[TEOcean] 配置已保存到SMODS配置系统')
@@ -283,7 +283,14 @@ function TEO_get_translators(target_mod, lang)
             if type(loc_table.translator) == 'table' then
                 return loc_table.translator
             elseif type(loc_table.translator) == 'string' then
-                return {loc_table.translator}
+                return { loc_table.translator }
+            end
+        end
+        if loc_table and type(loc_table) == 'table' and loc_table.misc and loc_table.misc.translator then
+            if type(loc_table.misc.translator) == 'table' then
+                return loc_table.misc.translator
+            elseif type(loc_table.misc.translator) == 'string' then
+                return { loc_table.misc.translator }
             end
         end
     end
@@ -300,7 +307,6 @@ function TEO_get_cur_language()
     end
     return cur_lang
 end
-
 
 -- 在初始化时加载配置
 -- TEO_init_configs()
@@ -327,7 +333,7 @@ end
 --         recurse(loc_table, G.localization)
 --     else
 --         return
---     end 
+--     end
 -- end
 
 -- local init_localization_ref = init_localization

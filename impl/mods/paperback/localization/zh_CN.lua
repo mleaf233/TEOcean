@@ -1,7 +1,7 @@
 return {
     translator = {
-		"mleaf233",
-	},
+        "mleaf233",
+    },
     descriptions = {
         Back = {
             b_paperback_shimmering = {

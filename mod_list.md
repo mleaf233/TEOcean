@@ -6,6 +6,7 @@
 4. [Bunco](https://github.com/jumbocarrot0/Bunco)
 5. [Cryptid](https://github.com/SpectralPack/Cryptid)
 6. [Entropy](https://github.com/lord-ruby/Entropy)
+7. [Ortalab](https://github.com/EremelMods/Ortalab)
 
 如有其他mod汉化需求，请发起issue，或者加群反馈：1074056375
 
