@@ -8,7 +8,7 @@
   ],
   "priority": -10,
   "description": "第八大洋的个人汉化包",
-  "main_file": "mod.lua",
+  "main_file": "main.lua",
   "badge_colour": "4d7fcf",
   "version": "1.0.5",
   "dependencies": [
