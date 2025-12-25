@@ -1,15 +1,16 @@
 -- 译者注：对于涉及数字的描述文本，一般使用占位符（如#1#、#2#等）以便于动态替换具体数值。如果在代码里用了固定数值，可考虑替换为中文数字（一、二、三等）。
 return {
     translator = {
-		"mleaf233",
-	},
+        "mleaf233",
+        "brookling"
+    },
     descriptions = {
         --Blind={},
         --Edition={},
         --Enhanced={},
         Joker = {
             j_pl_plantain = {
-                name = "芭蕉",
+                name = "大蕉",
                 text = {
                     "{C:chips}+#1#{}筹码",
                     "在回合结束时有{C:green}#2#/#3#{}概率",
@@ -29,23 +30,23 @@ return {
                 text = {
                     "如果打出的牌正好有{C:attention}#2#{}张牌",
                     "获得{C:mult}+#1#{}倍率",
-                    "{s:0.8}每回合会在3、4、5张牌间随机选择",
+                    "{s:0.8}每回合会在3、4或5之间随机选择",
                     "{C:inactive}（当前为{C:mult}+#3#{C:inactive}倍率）"
                 }
             },
             j_pl_bingo_card = {
                 name = "宾果卡",
                 text = {
-                    "每打出一张{C:attention}#1#{}或{C:attention}#2#{}时",
-                    "在计分时给予{C:chips}+#3#{}筹码与{C:mult}+#4#{}倍率",
-                    "数字牌会在每个回合变化"
+                    "每张打出的{C:attention}#1#{}或{C:attention}#2#{}时",
+                    "在计分时给予{C:chips}+#3#{}筹码和{C:mult}+#4#{}倍率",
+                    "数字每个回合都会改变"
                 }
             },
             j_pl_apple_pie = {
                 name = "苹果派",
                 text = {
-                    "在回合结束时获得{C:money}$#1#{}",
-                    "并在之后每回合减少{C:money}$#2#{}"
+                    "回合结束时获得{C:money}$#1#{}",
+                    "之后每回合减少{C:money}$#2#{}"
                 }
             },
             j_pl_grape_soda = {
@@ -69,13 +70,13 @@ return {
                 name = "吉姆",
                 text = {
                     "重新触发所有打出",
-                    "且{C:attention}未被增强{}的计分卡牌"
+                    "且{C:attention}未被增强{}的计分牌"
                 }
             },
             j_pl_crystal_joker = {
                 name = "水晶小丑",
                 text = {
-                    "如果出牌中",
+                    "如果打出的牌中",
                     "包含{C:attention}石头牌{}",
                     "生成一张随机{C:tarot}塔罗牌{}"
                 }
@@ -84,7 +85,8 @@ return {
                 name = "黄金国",
                 text = {
                     "回合结束时",
-                    "牌组中每张{C:attention}万能牌{}可获得{C:money}$#1#{}",
+                    "你{C:attention}完整牌组{}中的每张{C:attention}万能牌",
+                    "使你获得{C:money}$#1#{}",
                     "{C:inactive}（当前为{C:money}$#2#{C:inactive}）"
                 }
             },
@@ -92,7 +94,7 @@ return {
                 name = "黑猫",
                 text = {
                     "每有一张{C:attention}幸运牌{}",
-                    "未能触发幸运效果",
+                    "概率判定失败时",
                     "这张小丑牌获得{C:chips}+#1#{}筹码",
                     "{C:inactive}（当前为{C:chips}+#2#{C:inactive}筹码）"
                 }
@@ -100,8 +102,8 @@ return {
             j_pl_mossy_joker = {
                 name = "苔藓小丑",
                 text = {
-                    "随机将一张{C:attention}手牌{}",
-                    "转化为随机{C:attention}已计分{}卡牌"
+                    "出牌时随机将一张{C:attention}手牌{}",
+                    "转化为随机一张{C:attention}计分牌{}"
                 }
             },
             j_pl_nametag = {
@@ -130,10 +132,10 @@ return {
                 }
             },
             j_pl_croissant = {
-                name = "牛角包",
+                name = "羊角面包",
                 text = {
-                    "重新触发接下来的",
-                    "{C:attention}#1#{}张{C:planet}星球牌{}",
+                    "重新触发接下来",
+                    "使用的{C:attention}#1#{}张{C:planet}星球牌{}",
                 }
             },
             j_pl_pop_up_joker = {
@@ -141,11 +143,11 @@ return {
                 text = {
                     "每次{C:attention}重掷{}有",
                     "{C:green}#1#/#2#{}概率",
-                    "在商店中加一{C:attention}补充包{}"
+                    "在商店中填充一{C:attention}补充包{}"
                 }
             },
             j_pl_lamp = {
-                name = "灯",
+                name = "提灯",
                 text = {
                     "每售出一张{C:attention}小丑牌{}",
                     "获得{C:mult}+#2#{}倍率",
@@ -154,10 +156,10 @@ return {
                 }
             },
             j_pl_odd_sock = {
-                name = "奇袜",
+                name = "单只袜子",
                 text = {
                     "如果{C:attention}被弃掉的牌{}中",
-                    "没有包含{C:attention}对子{}",
+                    "不包含{C:attention}对子{}",
                     "则获得{C:chips}+#1#{}筹码",
                     "{C:inactive}（当前为{C:chips}+#2#{C:inactive}筹码）"
                 }
@@ -167,7 +169,7 @@ return {
                 text = {
                     "回合结束时获得{C:money}$#1#{}",
                     "每使用一张{C:tarot}塔罗牌{}",
-                    "奖励{C:money}+$#2#{}",
+                    "这一数值提高{C:money}$#2#{}",
                     "有{C:green}#3#/#4#{}概率摧毁此牌"
                 }
             },
@@ -175,12 +177,12 @@ return {
                 name = "三体问题",
                 text = {
                     "如果打出的牌型是{C:attention}三条{}",
-                    "则升级上一手出牌的牌型等级",
+                    "则升级上一手打出的牌型",
                     "{C:inactive}（当前为{C:attention}#1#{C:inactive}）"
                 }
             },
             j_pl_loose_batteries = {
-                name = "散装电池",
+                name = "摇晃电池",
                 text = {
                     "重新触发所有打出的{C:attention}A{}",
                     "并有{C:green}#1#/#2#{}概率再次重新触发"
@@ -220,15 +222,16 @@ return {
             j_pl_archaeologist = {
                 name = "考古学家",
                 text = {
-                    "留在手牌中的{V:1}#1#{}牌",
-                    "在计分时给予{C:chips}+#2#{}筹码",
-                    "{s:0.8}花色在回合结束时变更"
+                    "手牌中每张",
+                    "{V:1}#1#{}花色的牌",
+                    "给予{C:chips}+#2#{}筹码",
+                    "{s:0.8}回合结束时改变花色"
                 }
             },
             j_pl_game_cartridge = {
                 name = "游戏卡带",
                 text = {
-                    "首次打出的{C:attention}2{}、{C:attention}4{}、{C:attention}8{}",
+                    "打出的第一张{C:attention}2{}、{C:attention}4{}和{C:attention}8{}",
                     "在计分时给予{X:mult,C:white}X#1#{}倍率"
                 }
             },
@@ -237,15 +240,15 @@ return {
                 text = {
                     "打出的牌在计分时",
                     "给予{C:mult}+#1#{}倍率",
-                    "并扣除其点数值"
+                    "并扣除其点数的倍率"
                 }
             },
             j_pl_extraterrestrial_joker = {
-                name = "外星小丑",
+                name = "天外来客",
                 text = {
                     "选择{C:attention}盲注{}时",
-                    "摧毁所有{C:attention}消耗牌{}",
-                    "并升级{C:attention}最常使用{}的牌型",
+                    "摧毁所有持有{C:attention}消耗牌{}",
+                    "并升级{C:attention}最常用{}的牌型等级",
                     "{C:inactive}（当前为{C:attention}#1#{C:inactive}）"
                 }
             },
@@ -265,7 +268,7 @@ return {
             c_pl_spec_aether = {
                 name = "以太",
                 text = {
-                    "为{C:attention}1{}张选中的手牌",
+                    "为{C:attention}1{}张选中的牌",
                     "添加{C:lavender}薰衣草蜡封{}"
                 }
             },
