@@ -1,5 +1,8 @@
 -- Cryptid 属于热门模组，一般更新较快，这里仅对缺失的翻译进行填充
 return {
+    translator = {
+		"mleaf233",
+	},
     descriptions = {
         Back = {
             b_cry_antimatter_custom = {

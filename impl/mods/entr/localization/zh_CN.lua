@@ -2,6 +2,10 @@
 -- [羖Kaa](https://space.bilibili.com/98617060)
 -- [mleaf233](https://github.com/mleaf233) 作部分校对
 return {
+	translator = {
+		"羖Kaa",
+		"mleaf233",
+	},
 	descriptions = {
 		Enhanced = {
 			m_entr_flesh = {

@@ -30,13 +30,11 @@ G.FUNCS.TEOcean_manual_reload = function(e)
     TEO_quick_reload_lang(G.LANG or {})
 end
 
-
 if mod then
+
     mod.config_tab = function()
         local adapted_mods_Button = UIBox_button({
             id = "TEOcean_adapted_mods_button",
-            minh = 1.55,
-            minw = 1.85,
             col = true,
             button = "TEOcean_adapted_mods_button",
             colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or
@@ -44,7 +42,7 @@ if mod then
             text_colour = (SMODS.mod_button_alert and not G.SETTINGS.reduced_motion) and SMODS.Gradients.warning_text or
             G.C.TEXT_LIGHT,
             label = { localize('teo_adapted_mods') or '适配的模组' }, 
-            scale = 0.45 * 1.2
+            scale = 0.5
         })
         return {
             n = G.UIT.ROOT,

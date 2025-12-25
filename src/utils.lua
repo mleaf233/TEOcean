@@ -271,6 +271,37 @@ function TEO_save_configs()
     print('[TEOcean] 配置已保存到SMODS配置系统')
 end
 
+-- 获取已适配mod列表的译者，在每个本地化文件的 translator表中
+function TEO_get_translators(target_mod, lang)
+    if lang == nil or type(lang) ~= "string" then
+        lang = G.SETTINGS.language or 'en-us'
+    end
+    loc_path = mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
+    if NFS.getInfo(loc_path) then
+        local loc_table = TEO_read_loc_file(loc_path)
+        if loc_table and type(loc_table) == 'table' and loc_table.translator then
+            if type(loc_table.translator) == 'table' then
+                return loc_table.translator
+            elseif type(loc_table.translator) == 'string' then
+                return {loc_table.translator}
+            end
+        end
+    end
+    return {}
+end
+
+function TEO_get_cur_language()
+    local cur_lang = nil
+    if G and G.SETTINGS and G.SETTINGS.language then
+        cur_lang = G.SETTINGS.language
+    end
+    if G and G.SETTINGS and G.SETTINGS.real_language then
+        cur_lang = G.SETTINGS.real_language
+    end
+    return cur_lang
+end
+
+
 -- 在初始化时加载配置
 -- TEO_init_configs()
 

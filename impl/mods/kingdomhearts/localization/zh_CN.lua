@@ -403,7 +403,7 @@ return {
 			},
 
 			j_kh_disney = {
-				name = '{E:kh_pulse}叶尼塞大师',
+				name = '{E:kh_pulse}大师叶尼塞',
 				text = {
 					"使用{C:purple}塔罗牌{}时",
 					"有{C:green}#1#/#2#{}几率",

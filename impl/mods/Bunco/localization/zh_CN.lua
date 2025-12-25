@@ -1,4 +1,7 @@
 return {
+  translator = {
+    "mleaf233",
+  },
   descriptions = {
     Sleeve = {
       sleeve_bunc_fairy_alt = {

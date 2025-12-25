@@ -76,6 +76,9 @@ local function createClickableModBox(modInfo, scale)
     if SMODS.full_restart == nil then
         SMODS.full_restart = 0
     end
+    if TEO.need_reload == nil then
+        TEO.need_reload = false
+    end
 
     local col, text_col, bg_col
     if modInfo.can_load then
@@ -137,7 +140,8 @@ local function createClickableModBox(modInfo, scale)
         })
     end
     if not modInfo.lovely_only then
-        local tx = concatAuthors(modInfo.author, 12)
+        local translators = TEO_get_translators(modInfo, TEO_get_cur_language())
+        local tx = concatAuthors(translators, 12)
         local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2)
         the_colour[4] = 0.8
         local authorDynatext = DynaText {
@@ -153,7 +157,7 @@ local function createClickableModBox(modInfo, scale)
                 n = G.UIT.R,
                 config = { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, },
                 nodes = {
-                    { n = G.UIT.T, config = { text = localize('b_by'), scale = scale * 0.7, colour = the_colour } },
+                    { n = G.UIT.T, config = { text = localize('b_t_by'), scale = scale * 0.7, colour = the_colour } },
                     {
                         n = G.UIT.O, config = { object = authorDynatext }
                     }
