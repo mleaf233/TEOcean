@@ -1,8 +1,8 @@
 -- Cryptid 属于热门模组，一般更新较快，这里仅对缺失的翻译进行填充
 return {
     translator = {
-		"mleaf233",
-	},
+        "mleaf233",
+    },
     descriptions = {
         Back = {
             b_cry_antimatter_custom = {
@@ -171,10 +171,8 @@ return {
             cry_gameset_modest = "轻度",
             cry_plus_code = "+1 代码牌",
             cry_blind_baneful_pack = "回合结束后",
-            "打开一个{C:attention}厄运小丑包",
             k_cry_baneful_pack = "厄运小丑包",
             rush_hour_reminder = "启用钟表与薰衣草循环",
-            "以游玩尖峰时刻模式",
             cry_joke_placeholder = "（8的倍数）",
             b_tag = "标签",
             cry_plus_card = "+1 卡牌",

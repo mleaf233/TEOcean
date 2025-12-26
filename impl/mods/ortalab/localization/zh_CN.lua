@@ -5,7 +5,7 @@ return {
 			"mleaf233",
 		},
 		labels = {
-			ortalab_cyan_seal = "青蓝蜡封",
+			ortalab_cyan_seal = "青色蜡封",
 			ortalab_anaglyphic = "立体浮雕",
 			ortalab_restrained = "拘束",
 			ortalab_infected = "感染",
@@ -430,7 +430,7 @@ return {
 			bl_ortalab_spike = {
 				name = "尖刺",
 				text = {
-					"首次打出的{C:attention}#1#{}",
+					"第一次打出的{C:attention}#1#{}",
 					"被削弱"
 				}
 			},
@@ -491,7 +491,7 @@ return {
 			bl_ortalab_lever = {
 				name = "杠杆",
 				text = {
-					"首次抽取的",
+					"第一次抽取的",
 					"牌被削弱"
 				}
 			},
@@ -553,7 +553,7 @@ return {
 			bl_ortalab_spike_collection = {
 				name = "尖刺",
 				text = {
-					"首次打出的",
+					"第一次打出的",
 					"最常用牌型被削弱"
 				}
 			},
@@ -1771,7 +1771,7 @@ return {
 				}
 			},
 			stake_ortalab_three = {
-				name = "紫水晶注",
+				name = "紫晶注",
 				text = {
 					"胜利所需底注{C:attention}+#1#{}",
 					"{C:inactive,s:0.9}目标分数随{C:attention,s:0.9}底注{}提升的速度更快",
@@ -1820,7 +1820,7 @@ return {
 				name = "蓝宝石注",
 				text = {
 					"{C:attention}底注1{}之后",
-					"{C:red}必须{}至少跳过{C:attention}#1#个盲注{}",
+					"{C:red}必须{}跳过至少{C:attention}#1#个盲注{}",
 					"{s:0.8}之前所有赌注也都起效{}"
 				}
 			}
@@ -1976,6 +1976,1901 @@ return {
 				}
 			}
 		},
-
+		Other = {
+			undiscovered_ortalab_zodiac = {
+				name = '未知的星座牌',
+				text = {
+					'在非预设局中',
+					'找到此牌以了解其效果'
+				}
+			},
+			undiscovered_ortalab_loteria = {
+				name = '未知的乐透牌',
+				text = {
+					'在非预设局中',
+					'找到此牌以了解其效果'
+				}
+			},
+			undiscovered_ortalab_mythos = {
+				name = '未知的神话牌',
+				text = {
+					'在非预设局中',
+					'找到此牌以了解其效果'
+				}
+			},
+			ortalab_cyan_seal = {
+				name = '青色蜡封',
+				text = {
+					'如果在回合结束时',
+					'还{C:attention}留在{}手牌中',
+					'升级一个{C:attention}随机{}牌型',
+					'{C:attention}#1#{}级'
+				}
+			},
+			ortalab_magenta_seal = {
+				name = '品红蜡封',
+				text = {
+					'被{C:attention}弃掉{}时',
+					'生成一张{C:ortalab_loteria}乐透牌{}',
+					'{C:inactive}（必须有空位）'
+				}
+			},
+			ortalab_kopi = {
+				name = '{C:kopi}复制品',
+				text = {
+					'在{C:attention}底注结束{}时',
+					'被移除'
+				}
+			},
+			ortalab_shinku = {
+				name = '{C:Ortalab}震坤',
+				text = {
+					'这张牌是',
+					'来自',
+					'{C:Ortalab,E:1}震坤{}的礼物'
+				}
+			},
+			ortalab_temporary = {
+				name = '临时',
+				text = {
+					'当{C:attention}盲注{}被击败时',
+					'被移除',
+					'{C:inactive,s:0.7}来源：#1#'
+				}
+			},
+			ortalab_chiselled = {
+				name = '凿刻',
+				text = {
+					'视作{C:attention}万能牌{}',
+					'和{C:attention}索引牌{}'
+				}
+			},
+			['p_ortalab_small_loteria_1'] = {
+				name = '乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_loteria_2'] = {
+				name = '乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_loteria_3'] = {
+				name = '乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_loteria_4'] = {
+				name = '乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_mid_loteria_1'] = {
+				name = '万宝乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_mid_loteria_2'] = {
+				name = '万宝乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_big_loteria_1'] = {
+				name = '千兆乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_big_loteria_2'] = {
+				name = '千兆乐透包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_loteria}乐透牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_zodiac_1'] = {
+				name = '星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_zodiac_2'] = {
+				name = '星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_zodiac_3'] = {
+				name = '星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_zodiac_4'] = {
+				name = '星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_mid_zodiac_1'] = {
+				name = '万宝星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_mid_zodiac_2'] = {
+				name = '万宝星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_big_zodiac_1'] = {
+				name = '千兆星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_big_zodiac_2'] = {
+				name = '千兆星座包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_zodiac}星座牌{}中',
+					'选择{C:attention}#1#{}张',
+					'即选即用'
+				}
+			},
+			['p_ortalab_small_mythos_1'] = {
+				name = '神话包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_mythos}神话牌{}中',
+					'选择{C:attention}#1#{}张',
+					'添加到消耗牌槽位'
+				}
+			},
+			['p_ortalab_small_mythos_2'] = {
+				name = '神话包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_mythos}神话牌{}中',
+					'选择{C:attention}#1#{}张',
+					'添加到消耗牌槽位'
+				}
+			},
+			['p_ortalab_mid_mythos'] = {
+				name = '万宝神话包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_mythos}神话牌{}中',
+					'选择{C:attention}#1#{}张',
+					'添加到消耗牌槽位'
+				}
+			},
+			['p_ortalab_big_mythos'] = {
+				name = '千兆神话包',
+				text = {
+					'从最多{C:attention}#2#张{C:ortalab_mythos}神话牌{}中',
+					'选择{C:attention}#1#{}张',
+					'添加到消耗牌槽位'
+				}
+			},
+			ortalab_one_sticker = {
+				name = '石英标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}石英注{}难度下获胜'
+				}
+			},
+			ortalab_two_sticker = {
+				name = '黄玉标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}黄玉注{}难度下获胜'
+				}
+			},
+			ortalab_three_sticker = {
+				name = '紫晶标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}紫晶注{}难度下获胜'
+				}
+			},
+			ortalab_four_sticker = {
+				name = '蓝宝标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}蓝宝注{}难度下获胜'
+				}
+			},
+			ortalab_five_sticker = {
+				name = '绿宝标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}绿宝注{}难度下获胜'
+				}
+			},
+			ortalab_six_sticker = {
+				name = '红宝标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}红宝注{}难度下获胜'
+				}
+			},
+			ortalab_seven_sticker = {
+				name = '钻石标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}钻石注{}难度下获胜'
+				}
+			},
+			ortalab_eight_sticker = {
+				name = '黑曜标贴',
+				text = {
+					'使用这张小丑牌',
+					'在{C:Ortalab}黑曜注{}难度下获胜'
+				}
+			}
+		},
+		Curse = {
+			ortalab_all_curses = {
+				name = '施加每种诅咒'
+			},
+			ortalab_random_curses = {
+				name = '被随机诅咒'
+			},
+			ortalab_wendigo = {
+				name = '感染或附身'
+			},
+			['ortalab_corroded'] = {
+				name = '腐蚀',
+				text = {
+					'当{C:blue}打出{}时损失{C:money}$#1#{}',
+					'如果被{C:attention}弃掉{}，则{C:attention}售出花费{}增加',
+					'{C:money}$#2#{}并洗回牌组'
+				}
+			},
+			['ortalab_corroded_joker'] = {
+				name = '腐蚀',
+				text = {
+					'每{C:attention}打出{}一次{C:blue}牌型',
+					'{C:money}售价{} {C:red}减少{C:money}$#1#{}'
+				}
+			},
+			['ortalab_possessed'] = {
+				name = '附身',
+				text = {
+					'被抽到时',
+					'强制被选中'
+				}
+			},
+			['ortalab_possessed_joker'] = {
+				name = '附身',
+				text = {
+					'每出一次{C:blue}牌',
+					'移动位置',
+					'位置无法',
+					'手动更改'
+				}
+			},
+			['ortalab_restrained'] = {
+				name = '束缚',
+				text = {
+					'若留在手牌中',
+					'打出的{C:attention}牌型{}等级{C:red}降低 #1#{}级'
+				}
+			},
+			['ortalab_restrained_joker'] = {
+				name = '束缚',
+				text = {
+					'打出的{C:attention}牌型{}',
+					'等级{C:red}降低 #1#{}级'
+				}
+			},
+			['ortalab_infected'] = {
+				name = '感染',
+				text = {
+					'卡牌{C:attention}不{}计分',
+					'被{C:red}弃掉{}时，{C:infected}感染{}会',
+					'转移到手牌中另一张未受诅咒的牌上'
+				}
+			},
+			['ortalab_infected_joker'] = {
+				name = '感染',
+				text = {
+					'每次{C:blue}出牌{}有',
+					'{C:green}#1#/#2#{}几率被{C:red}禁用{}'
+				}
+			},
+		},
+		ortalab_mythos = {
+			c_ortalab_one_joker = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}对其施加',
+					'{V:1,E:2,s:0.9}#2#{}诅咒',
+				},
+			},
+			c_ortalab_one_selected = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒手牌中随机{C:attention}#1#{}张牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				},
+			},
+			c_ortalab_one_deck = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒牌组中随机{C:attention}#1#{}张牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				},
+			},
+			c_ortalab_mult_random = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒手牌中随机{C:attention}#1#{}张牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				},
+			},
+			c_ortalab_mult_random_deck = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒牌组中随机{C:attention}#1#{}张牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				},
+			},
+			c_ortalab_mult_random_joker = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒随机{C:attention}#1#{}张小丑牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				},
+			},
+			c_ortalab_ya_te_veo_curse = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒随机{C:attention}#1#{}张小丑牌',
+					'{s:0.9}和牌组中随机{C:attention}#3#{}张牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}'
+				},
+			},
+			c_ortalab_mult_pandora = {
+				text = {
+					'{C:ortalab_mythos,s:0.9}诅咒{C:attention}复制牌',
+					'{s:0.9}使其{V:1,E:2,s:0.9}#2#{}',
+				}
+			},
+			c_ortalab_gnome = {
+				name = '地精',
+				text = {
+					'获得所有{C:attention}小丑牌{}的{C:money}售出价值{}',
+					'然后使所有{C:attention}小丑牌{}的',
+					'{C:money}售出价值{}增加{C:money}$#1#{}',
+					'{C:inactive,s:0.8}（上限$100）',
+					'{C:inactive,s:0.8}（当前$#2#）'
+				},
+			},
+			c_ortalab_crawler = {
+				name = '爬行者',
+				text = {
+					'为一张随机{C:attention}小丑牌{}',
+					'添加一个{C:dark_edition}版本{}'
+				},
+			},
+			c_ortalab_basilisk = {
+				name = '蛇怪',
+				text = {
+					'创建一张{C:attention}增强{}',
+					'{C:dark_edition}版本{}',
+					'和{C:attention}带蜡封{}的人头牌'
+				},
+			},
+			c_ortalab_abaia = {
+				name = '阿拜亚',
+				text = {
+					'创建一张{C:attention}增强{}',
+					'{C:dark_edition}版本{}',
+					'和{C:attention}带蜡封{}的{C:attention}#2#{}'
+				},
+			},
+			c_ortalab_jormungand = {
+				name = '耶梦加得',
+				text = {
+					'创建一张{C:attention}增强{}',
+					'{C:dark_edition}版本{}',
+					'和{C:attention}带蜡封{}的A'
+				},
+			},
+			c_ortalab_excalibur = {
+				name = '誓约胜利之剑',
+				text = {
+					'{C:ortalab_zodiac}强化{}你',
+					'{C:attention}上一次打出的牌型{}',
+					'{C:inactive,s:0.8}（当前为#1#）'
+				},
+			},
+			c_ortalab_wendigo = {
+				name = '温迪戈',
+				text = {
+					'为一张选定{C:attention}小丑牌{}',
+					'添加{C:dark_edition}过曝{}',
+					'或{C:dark_edition}灰度{}版本'
+				},
+			},
+			c_ortalab_genie = {
+				name = '神灯',
+				text = {
+					'将{C:attention}#1#{}个随机牌型的等级',
+					'提升{C:attention}#2#{}级'
+				},
+			},
+			c_ortalab_kraken = {
+				name = '北海巨妖',
+				text = {
+					'为{C:attention}#1#{}张选定',
+					'游戏牌添加{C:attention}增强{}'
+				},
+			},
+			c_ortalab_holy_grail = {
+				name = '圣杯',
+				text = {
+					'为一张选定游戏牌',
+					'添加随机{C:attention}蜡封{}'
+				},
+			},
+			c_ortalab_jackalope = {
+				name = '鹿角兔',
+				text = {
+					'永久获得{C:red}+#1#{}次弃牌',
+					'{C:blue}或{C:attention}+#1#{}手牌上限'
+				},
+			},
+			c_ortalab_ya_te_veo = {
+				name = 'Ya Te Veo · 祂看见你了！',
+				text = {
+					'创建{C:attention}#1#{}个随机{C:attention}标签{}'
+				},
+			},
+			c_ortalab_anubis = {
+				name = '阿努比斯',
+				text = {
+					'将你拥有的选定{C:attention}小丑牌{}',
+					'移至{C:attention}消耗牌槽位{}',
+					'并对其施加{C:ortalab_mythos}感染{}诅咒'
+				},
+			},
+			c_ortalab_talaria = {
+				name = '塔拉利亚',
+				text = {
+					'{C:attention}兑换{}一张随机优惠券'
+				},
+			},
+			c_ortalab_tree_of_life = {
+				name = '生命之树',
+				text = {
+					{ '{C:dark_edition}+#1#{}个小丑牌槽位' },
+					{ '为{C:attention}#2#{}张随机小丑牌',
+						'添加{C:attention}易腐{}效果' }
+				},
+			},
+			c_ortalab_pandora = {
+				name = '潘多拉魔盒',
+				text = {
+					'{C:red}摧毁{}选定牌',
+					'并将{C:attention}#1#{}张',
+					'其复制牌添加进牌组'
+				},
+			},
+			c_ortalab_corpus = {
+				name = '圣体',
+				text = {
+					'{C:ortalab_mythos_alt}献祭{C:ortalab_mythos}被诅咒的卡牌',
+					'以强化{C:ortalab_mythos,E:2}圣体{}'
+				},
+			},
+			corpus_curse = {
+				text = { '{V:1}#1#' }
+			},
+			c_ortalab_ophiuchus = {
+				name = '蛇夫座',
+				text = {
+					'{C:ortalab_zodiac}强化{}你下一次{C:attention}出牌',
+				}
+			},
+		},
+		Joker = {
+			j_ortalab_20_20 = {
+				name = '20/20 视力',
+				text = {
+					'如果{C:attention}计分牌{}包含多种',
+					'不同的点数',
+					'重新触发所有打出的牌'
+				}
+			},
+			['j_ortalab_televangelist'] = {
+				["name"] = "电视布道者",
+				["text"] = {
+					"{C:ortalab_loteria}乐透牌{}使用时",
+					"有 {C:green}#1#/#2#{} 几率被保留",
+					"{C:inactive}（每张牌只能被保留一次）"
+				}
+			},
+			['j_ortalab_pictographer'] = {
+				["name"] = "象形文字家",
+				["text"] = {
+					"打出{C:attention}#2#{}张{C:ortalab_loteria}乐透牌{}后",
+					"获得{C:money}$#1#{}",
+					"{C:attention}盲注{}被击败时重置",
+					"{C:inactive}（当前为#3#/#2#）"
+				}
+			},
+			['j_ortalab_jester'] = {
+				["name"] = "弄臣",
+				["text"] = {
+					"{C:chips}+#1#{}筹码"
+				}
+			},
+			['j_ortalab_abstemious'] = {
+				["name"] = "节制小丑",
+				["text"] = {
+					"打出的",
+					"{C:clubs}#2#{}花色牌",
+					"在计分时给予{C:chips}+#1#{}筹码"
+				}
+			},
+			j_ortalab_actor = {
+				name = '演员',
+				text = {
+					'手牌数量每比{C:attention}#3#{}多或少一张',
+					'获得{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）',
+					'{C:inactive,s:0.7}不包括负片游戏牌'
+				}
+			},
+			['j_ortalab_afterburner'] = {
+				["name"] = "加力燃烧室",
+				["text"] = {
+					"回合结束时获得{C:money}$#1#{}",
+					"当{C:attention}Boss盲注{}被击败时",
+					"数值减少{C:red}$#2#{}"
+				}
+			},
+			['j_ortalab_amber_mosquito'] = {
+				["name"] = "琥珀蚊子",
+				["text"] = {
+					"留在手牌中的",
+					"每一张{V:1}#2#{}",
+					"有{C:green}#3#/#4#{}几率",
+					"给予{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			['j_ortalab_art_gallery'] = {
+				["name"] = "艺术画廊",
+				["text"] = {
+					"每有一张{C:attention}小丑牌{}和",
+					"{C:tarot}消耗牌{}，{C:chips}+#1#{}筹码",
+					"{C:inactive}（当前为{C:chips}+#2#{C:inactive}筹码）"
+				}
+			},
+			['j_ortalab_artist_proof'] = {
+				["name"] = "艺术家试版",
+				["text"] = {
+					"选择{C:attention}盲注{}时",
+					"获得{C:red}-$#1#{}~{C:money}$#2#{}",
+					"之间的资金"
+				}
+			},
+			['j_ortalab_astrologist'] = {
+				["name"] = "占星家",
+				["text"] = {
+					'{C:ortalab_zodiac}星座牌{}提供的',
+					'临时等级翻倍',
+					'但不激活其特殊效果'
+				}
+			},
+			j_ortalab_attached = {
+				name = '附属',
+				text = {
+					'选择{C:attention}盲注{}时',
+					'给{C:attention}最右边的小丑牌{}添加{C:dark_edition}#2#{}',
+					'{C:dark_edition}#2#{}小丑牌每张给予{X:red,C:white}X#1#{}倍率'
+				}
+			},
+			['j_ortalab_bank_loan'] = {
+				["name"] = "银行贷款",
+				["text"] = {
+					{
+						"获得{C:money}$#1#",
+						"售出费用为{C:red}$#1#{}"
+					},
+					{
+						'回合结束时',
+						'失去{C:red}$#2#{}'
+					}
+				}
+			},
+			['j_ortalab_basalt_column'] = {
+				["name"] = "玄武岩柱",
+				["text"] = {
+					"留在手牌中的",
+					"每一张{V:1}#2#{}",
+					"给予{C:red}+#1#{}倍率"
+				}
+			},
+			j_ortalab_bear = {
+				name = '熊',
+				text = {
+					'在上个商店每花费{C:money}$1{}',
+					'{C:red}+#1#{}倍率',
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_belmont = {
+				name = '牧师',
+				text = {
+					'牌组中每有一张',
+					'{C:ortalab_mythos}诅咒牌{}，{C:red}+#1#{}倍率',
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_beyond_the_mask'] = {
+				["name"] = "破碎假面",
+				["text"] = {
+					"回合结束时获得{C:money}$#1#{}",
+					"每张计分的{C:attention,E:1}宇宙牌{}",
+					"使其增加 {C:money}$#2#{}",
+					"计分的{C:attention,E:1}宇宙牌{} 会被摧毁"
+				}
+			},
+			j_ortalab_biker = {
+				name = '骑手',
+				text = {
+					'每一张打出的{C:attention}牌',
+					'在计分时',
+					'永久获得{C:red}+1{}倍率'
+				}
+			},
+			['j_ortalab_blacklist'] = {
+				["name"] = "黑名单",
+				["text"] = {
+					"如果打出的{C:attention}牌型{}",
+					"不是 {C:attention}#2#{}",
+					"或 {C:attention}#3#{}，获得{C:money}$#1#{}",
+					"{C:inactive}（每次支付后牌型会改变）"
+				}
+			},
+			['j_ortalab_black_cat'] = {
+				["name"] = "黑猫",
+				["text"] = {
+					"每当打出的牌计分",
+					"超过 {C:blue}#3#筹码",
+					"或收集到一个{C:attention}标签{}时",
+					"这张小丑牌获得{X:red,C:white}X#1#{}倍率",
+					"{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_black_friday'] = {
+				["name"] = "黑色市场",
+				["text"] = {
+					"商店里的所有牌",
+					"都有{C:money}#1#%{}的折扣"
+				}
+			},
+			['j_ortalab_blue_card'] = {
+				["name"] = "蓝卡",
+				["text"] = {
+					"每使用一张",
+					"{C:attention}补充包{}里的{C:attention}卡牌{}",
+					"这张小丑牌获得{C:blue}+#1#{}筹码",
+					"{C:inactive}（当前为{C:blue}+#2#{C:inactive}筹码）"
+				}
+			},
+			j_ortalab_bowling_ball = {
+				["name"] = "占星术",
+				["text"] = {
+					"如果手牌中",
+					"持有一张 {C:attention}10",
+					"则生成一张随机 {C:ortalab_zodiac}星座牌"
+				}
+			},
+			['j_ortalab_business'] = {
+				["name"] = "商务小丑",
+				["text"] = {
+					"商店重掷时",
+					"获得{C:money}$#1#{}"
+				}
+			},
+			['j_ortalab_caffeyne'] = {
+				["name"] = "Caffeyne",
+				["text"] = {
+					"每计分{C:attention}#2#{}张牌",
+					'这张小丑牌获得{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#3#{C:inactive}倍率）',
+					'{C:inactive}#4#/#2#'
+				}
+			},
+			['j_ortalab_calm'] = {
+				["name"] = "冷静小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_cardist'] = {
+				["name"] = "花切师",
+				["text"] = {
+					"选择{C:attention}盲注{}时",
+					"+#1#{C:blue}出牌次数{}"
+				}
+			},
+			['j_ortalab_chameleon'] = {
+				["name"] = "变色龙小丑",
+				["text"] = {
+					"选择{C:attention}盲注{}时",
+					"复制一张随机",
+					"{C:attention}小丑牌{}的能力",
+					"{C:inactive}（当前为：{C:attention}#1#{C:inactive}）"
+				}
+			},
+			['j_ortalab_chastful'] = {
+				["name"] = "贞洁小丑",
+				["text"] = {
+					"打出的",
+					"{C:hearts}#2#{}花色牌",
+					"在计分时给予{C:chips}+#1#{}筹码"
+				}
+			},
+			['j_ortalab_collatz'] = {
+				["name"] = "素数小丑",
+				["text"] = {
+					"每张打出的{C:attention}A{}、{C:attention}10{}、{C:attention}9{}、{C:attention}8{}",
+					"{C:attention}6{}或{C:attention}4{}",
+					"在计分时给予{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			j_ortalab_collectors = {
+				name = '典藏版',
+				text = {
+					'回合第一次{C:red}弃牌{}时',
+					'{C:red}摧毁{}一张弃掉的牌',
+					'并将其{C:attention}增强{}、{C:attention}蜡封{}',
+					'或{C:dark_edition}版本{}赋予手牌中{C:attention}最左边{}的牌'
+				}
+			},
+			['j_ortalab_crime_scene'] = {
+				["name"] = "犯罪现场",
+				["text"] = {
+					"已被{C:attention}售出{}或{C:attention}摧毁{}的小丑牌",
+					"不会再出现在商店中"
+				}
+			},
+			['j_ortalab_croupier'] = {
+				["name"] = "荷官",
+				["text"] = {
+					'商店内',
+					'卡牌槽位{C:attention}+#1#{}'
+				}
+			},
+			j_ortalab_crowd_pleaser = {
+				name = '万人迷',
+				text = {
+					'击败{C:attention}盲注{}时',
+					'升级你使用{C:attention}第三多',
+					'的牌型',
+					'{C:inactive}（当前升级 #1#）'
+				}
+			},
+			['j_ortalab_cutout'] = {
+				["name"] = "剪纸小丑",
+				["text"] = {
+					"{X:mult,C:white}X#1#{}倍率",
+					'当一张 {C:attention}小丑牌{}被售出时',
+					'{S:1.1,C:red,E:2}自毁{}'
+				}
+			},
+			['j_ortalab_damp'] = {
+				["name"] = "潮湿小丑",
+				["text"] = {
+					"如果第一次{C:attention}打出的{}牌型",
+					"击败了盲注",
+					"则提升该牌型等级"
+				}
+			},
+			['j_ortalab_dawn'] = {
+				["name"] = "黎明",
+				["text"] = {
+					"重新触发本回合",
+					"{C:attention}第一次{C:attention}出牌{}中",
+					"所有打出的牌"
+				}
+			},
+			['j_ortalab_direct'] = {
+				["name"] = "直接小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			j_ortalab_dnd = {
+				name = '请勿打扰',
+				text = {
+					'回合结束时获得{C:money}$#1#{}',
+					'如果离开商店时没有{C:green}重掷{}',
+					'收益增加 {C:money}$#2#'
+				}
+			},
+			['j_ortalab_dripstone'] = {
+				["name"] = "滴水石",
+				["text"] = {
+					"留在手牌中的",
+					"每一张 {V:1}#2#{}",
+					"给予{C:blue}+#1#{}筹码"
+				}
+			},
+			j_ortalab_driver = {
+				name = '司机',
+				text = {
+					'{C:attention}数字{}牌计分时',
+					'每种已计分的{C:attention}不同点数{}',
+					'给予{C:chips}+#1#{}筹码'
+				}
+			},
+			j_ortalab_dropout = {
+				["name"] = "毕业生",
+				["text"] = {
+					{
+						'{C:attention}重新触发{}所有打出的',
+						'{C:attention}#1#{}'
+					},
+					{
+						'打出的 {C:attention}#1#{}',
+						'在计分时给予{C:chips}+#2#{}筹码',
+						'和 {C:mult}+#3#{}倍率'
+					}
+				}
+			},
+			j_ortalab_drunk_driving = {
+				name = '酒驾',
+				text = {
+					'如果{C:attention}牌型{}包含一张',
+					'{C:attention}人头{}牌和一张{C:attention}数字{}牌',
+					'获得{C:red}+#2#{}倍率',
+					'{C:inactive}（当前为{C:red}+#1#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_dull'] = {
+				["name"] = "迟钝小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			['j_ortalab_evil_eye'] = {
+				["name"] = "邪眼",
+				["text"] = {
+					"回合结束时，每张",
+					"已{C:attention}售出{}的{C:spectral}幻灵牌{}",
+					"使你获得{C:money}$#1#{}",
+					"{C:inactive}（当前为{C:money}$#2#{C:inactive}）"
+				}
+			},
+			j_ortalab_false_phd = {
+				name = '假博士学位',
+				text = {
+					'回合开始时，添加 {C:attention}#1#{} 张',
+					'带有{C:attention}增强{}、{C:dark_edition}版本{}',
+					'和{C:attention}蜡封{}的',
+					'相同{C:attention}临时游戏牌{}到手牌中'
+				}
+			},
+			['j_ortalab_fine_wine'] = {
+				["name"] = "陈年美酒",
+				["text"] = {
+					"{C:red}+#1#{} 弃牌次数",
+					"选择盲注时",
+					"获得{C:red}+#4#{} 弃牌次数",
+					"回合结束时有 {C:green}#2#/#3#{} 几率",
+					"摧毁此小丑牌"
+				}
+			},
+			['j_ortalab_flashback'] = {
+				["name"] = "闪回",
+				["text"] = {
+					"{C:attention}跳过{}盲注时",
+					"生成一张 {C:attention}#1#"
+				}
+			},
+			['j_ortalab_foolish'] = {
+				["name"] = "愚蠢小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			['j_ortalab_fools_gold'] = {
+				["name"] = "愚人金",
+				["text"] = {
+					"留在手牌中的",
+					"每一张 {V:1}#4#{}",
+					"有 {C:green}#1#/#2#{} 几率",
+					"获得{C:money}$#3#{}"
+				}
+			},
+			j_ortalab_fools = {
+				name = '愚人小丑',
+				text = {
+					'回合结束时',
+					'每张其他{C:attention}小丑牌{}',
+					'使你获得其 {C:money}$#1#{}的{C:attention}售价'
+				}
+			},
+			['j_ortalab_forklift'] = {
+				["name"] = "叉车证",
+				["text"] = {
+					"使用#2#张消耗牌后",
+					"{C:attention}+#1#{} 消耗牌槽位",
+					'{C:inactive}（当前为#3#/#2#）'
+				}
+			},
+			['j_ortalab_forklift_granted'] = {
+				["name"] = "叉车证",
+				["text"] = {
+					"使用#2#张消耗牌后",
+					"{C:attention}+#1#{} 消耗牌槽位",
+					'{C:inactive}（已激活！）'
+				}
+			},
+			j_ortalab_foundation = {
+				name = '粉底',
+				text = {
+					'每{C:attention}连续{}打出一次',
+					'你最常使用的{C:attention}牌型{}',
+					'获得{X:red,C:white}X#2#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#1#{C:inactive}倍率）',
+					'{C:inactive}（#3#）'
+				}
+			},
+			['j_ortalab_freezer'] = {
+				["name"] = "冰柜",
+				["text"] = {
+					'本盲注期间每使用',
+					'一张{C:attention}消耗牌{}',
+					'获得{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_frowny_face'] = {
+				["name"] = "苦瓜脸",
+				["text"] = {
+					"每张打出的 {C:attention}2{}、{C:attention}3{}、{C:attention}4{}",
+					"或 {C:attention}5{} 在计分时",
+					"给予{C:mult}+#1#{}倍率"
+				}
+			},
+			j_ortalab_futuristic = {
+				["name"] = "未来小丑",
+				["text"] = {
+					'如果{C:attention}打出的牌{}包含',
+					'高一点数或低一点数的{C:attention}点数{}',
+					'每张{C:attention}打出的牌{}给予{X:red,C:white}X#1#{}倍率'
+				}
+			},
+			['j_ortalab_generous'] = {
+				["name"] = "慷慨小丑",
+				["text"] = {
+					"打出的",
+					"{C:diamonds}#2#{}花色牌",
+					"在计分时给予{C:chips}+#1#{}筹码"
+				}
+			},
+			j_ortalab_gloomy_gus = {
+				name = '忧郁古斯',
+				text = {
+					{
+						'手牌上限{C:attention}+#1#{}'
+					},
+					{
+						'每次只能',
+						'弃掉{C:red}#2#{}张牌'
+					}
+				}
+			},
+			['j_ortalab_glum'] = {
+				["name"] = "忧愁小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_gnomic'] = {
+				["name"] = "格言小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_white_flag'] = {
+				["name"] = "白旗",
+				["text"] = {
+					"每剩一次弃牌次数",
+					"{C:mult}+#1#{}倍率",
+					"{C:inactive}（当前为{C:mult}+#2#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_gratification'] = {
+				["name"] = "即时满足",
+				["text"] = {
+					"当你使用{C:red}弃牌{}时",
+					"获得{C:money}$#1#{}"
+				}
+			},
+			['j_ortalab_grave_digger'] = {
+				["name"] = "掘墓人",
+				["text"] = {
+					{
+						'{C:attention}+#1#{}小丑牌槽位'
+					},
+					{
+						'盲注要求分数{X:attention,C:white}X#2#{}'
+					}
+				}
+			},
+			['j_ortalab_head_honcho'] = {
+				["name"] = "头目",
+				["text"] = {
+					"每当{C:blue}出牌{}时",
+					"生成一张随机",
+					"{C:ortalab_loteria}乐透牌{}并",
+					"失去{C:red}$#1#{}"
+				}
+			},
+			j_ortalab_heresy = {
+				name = '异端',
+				text = {
+					'当游戏牌{C:attention}加入{}牌组时',
+					'获得{C:blue}+#1#{}筹码',
+					'当游戏牌从牌组{C:attention}移除{}时',
+					'获得{C:red}+#2#{}倍率',
+					'{C:inactive}（当前为{C:blue}+#3#{C:inactive}筹码和 {C:red}+#4#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_hit_the_gym = {
+				name = '健身房',
+				text = {
+					'本回合{C:attention}计分的牌{}中',
+					'每有一张{C:attention}#3#{}',
+					'获得{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_honest'] = {
+				["name"] = "诚实小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			j_ortalab_graffiti = {
+				name = '涂鸦',
+				text = {
+					{
+						'Boss盲注要求分数{X:attention,C:white}X#1#{}'
+					},
+					{
+						'击败{C:attention}Boss盲注{}时',
+						'{C:attention}兑换{}一张随机{C:attention}优惠券'
+					}
+				}
+			},
+			['j_ortalab_hot_chocolate'] = {
+				["name"] = "热可可",
+				["text"] = {
+					'每次出牌{C:chips}+#2#{}筹码',
+					'达到{C:attention}+#3#{}筹码时自毁',
+					'{C:inactive}（当前为{C:blue}+#1#{C:inactive}）'
+				}
+			},
+			['j_ortalab_hypercalculia'] = {
+				["name"] = "超计算障碍",
+				["text"] = {
+					'{X:mult,C:white}X#1#{}倍率',
+					'每有一张独特的计分人头牌',
+					'获得{X:mult,C:white}X#2#{}',
+					'{C:inactive}（每次出牌后重置）'
+				}
+			},
+			['j_ortalab_joker_miles'] = {
+				["name"] = "小丑里程卡",
+				["text"] = {
+					{
+						"每次{C:blue}出牌{}",
+						"获得{C:red}+#1#{}倍率",
+						"{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）"
+					},
+					{
+						"每次{C:blue}出牌{}有{C:green}#3#/#4#{}几率",
+						"重置倍率"
+					}
+				}
+			},
+			j_ortalab_klutz = {
+				name = '笨手笨脚',
+				text = {
+					{
+						'手牌上限{C:attention}+#1#{}',
+						'每回合弃牌次数{C:red}+#3#{}'
+					},
+					{
+						'每回合弃牌次数{C:red}#2#{}'
+					}
+				}
+			},
+			['j_ortalab_knitted_sweater'] = {
+				["name"] = "针织毛衣",
+				["text"] = {
+					'如果打出的牌包含',
+					'一张{C:attention}#3#',
+					'获得{C:blue}+#1#{}筹码',
+					'{C:inactive}（当前为{C:blue}+#2#{C:inactive}筹码）'
+				}
+			},
+			j_ortalab_koko = {
+				name = 'Koko',
+				text = {
+					'选择{C:attention}盲注{}时',
+					'使所有牌型{C:ortalab_zodiac}强化{}',
+					'{C:attention}#1#{}个等级'
+				}
+			},
+			j_ortalab_kopi = {
+				name = 'Kopi',
+				text = {
+					'使用{C:attention}#1#{}张消耗牌后',
+					'创建一张随机小丑牌的',
+					'{C:kopi}副本{}，持续到',
+					'本底注{C:attention}结束{}',
+					'{C:inactive}（当前为#2#/#1#）'
+				}
+			},
+			['j_ortalab_mathmagician'] = {
+				["name"] = "数术师",
+				["text"] = {
+					"如果弃掉的手牌包含",
+					"2张 {C:attention}奇数牌{}和2张 {C:attention}偶数牌{}",
+					"生成一张随机{C:ortalab_loteria}乐透牌{}",
+					"或{C:ortalab_zodiac}星座牌{}"
+				}
+			},
+			j_ortalab_memorial = {
+				name = '纪念碑',
+				text = {
+					'{C:attention}售出{}这张小丑牌',
+					'{C:attention}升级{}你最常打出的牌型',
+					'{C:inactive}（当前升级 #1#）'
+				}
+			},
+			['j_ortalab_mill'] = {
+				["name"] = "磨坊",
+				["text"] = {
+					"当至少{C:attention}#3#{}张牌",
+					"同时改变{C:attention}花色{}时",
+					"获得{X:mult,C:white}X#2#{}倍率",
+					"{C:inactive}（当前为{X:mult,C:white}X#1#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_mint_condition'] = {
+				["name"] = "崭新出厂",
+				["text"] = {
+					"计分期间获得{C:money}资金{}时",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			['j_ortalab_miracle_cure'] = {
+				["name"] = "奇迹疗法",
+				["text"] = {
+					"{C:attention}打出{}{C:attention}被削弱{}、{C:attention}背面朝上{}和",
+					"{C:ortalab_mythos}被诅咒{}的牌时",
+					"改为{C:attention}重新触发{}"
+				}
+			},
+			['j_ortalab_mirage'] = {
+				["name"] = "海市蜃楼",
+				["text"] = {
+					'每摧毁一张{C:attention}游戏牌{}',
+					'获得{X:mult,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}）'
+				}
+			},
+			j_ortalab_misfits = {
+				["name"] = "不合群者",
+				["text"] = {
+					{
+						'如果{C:attention}牌型{}包含',
+						'至少{C:attention}#2#{}种花色，{X:red,C:white}X#1#{}倍率'
+					},
+					{
+						'如果{C:attention}牌型{}包含',
+						'至少{C:attention}#2#{}种点数，{X:red,C:white}X#1#{}倍率'
+					}
+				}
+			},
+			['j_ortalab_mixtape'] = {
+				["name"] = "混音带",
+				["text"] = {
+					'单次出牌中',
+					'每击败过一次{C:attention}盲注{}',
+					'获得{X:mult,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}）'
+				}
+			},
+			['j_ortalab_monochrome'] = {
+				["name"] = "棱镜小丑",
+				["text"] = {
+					"所有牌在{C:attention}计分{}时",
+					"视为拥有所有花色"
+				}
+			},
+			['j_ortalab_multiplyers'] = {
+				["name"] = "倍增钳",
+				["text"] = {
+					"{C:attention}重新触发{}所有打出的",
+					"和留在手牌中的",
+					"{C:attention}6{}、{C:attention}7{}、{C:attention}8{}、{C:attention}9{}或{C:attention}10{}"
+				}
+			},
+			['j_ortalab_mysterium'] = {
+				["name"] = "神秘",
+				["text"] = {
+					"如果打出的牌是",
+					"{C:dark_edition,E:1}隐藏牌型{}",
+					"则{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			['j_ortalab_mystery_soda'] = {
+				["name"] = "神秘苏打",
+				["text"] = {
+					"售出这张小丑牌可以创建",
+					"#1#个免费{C:attention}标签"
+				}
+			},
+			['j_ortalab_naive'] = {
+				["name"] = "天真小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			j_ortalab_newton = {
+				name = '第三定律',
+				text = {
+					'回合{C:attention}第一次{}',
+					'{C:attention}出牌{}{C:red}-#1#{}筹码',
+					'之后每次出牌',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			j_ortalab_no_parking = {
+				name = '禁止停车',
+				text = {
+					'如果留在手牌中的牌',
+					'没有{C:attention}人头牌{}',
+					'每张牌{C:red}+#1#{}倍率'
+				}
+			},
+			['j_ortalab_occultist'] = {
+				["name"] = "玄学家",
+				["text"] = {
+					"商店里所有的",
+					"{C:spectral}幻灵牌{}和{C:spectral}幻灵包{}均",
+					"{C:attention}免费"
+				}
+			},
+			['j_ortalab_watching_eye'] = {
+				["name"] = "观察之眼",
+				["text"] = {
+					"将 {C:red}#1#{} 减去 {C:attention}#2#X{} 手牌中",
+					"{C:attention}最大{}点数牌的点数",
+					"添加到 {C:red}倍率"
+				}
+			},
+			j_ortalab_other_half = {
+				name = '另一半小丑',
+				text = {
+					'如果{C:attention}打出的牌{}',
+					'包含至少{C:attention}#2#{}张计分牌',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_patient'] = {
+				["name"] = "耐心小丑",
+				["text"] = {
+					"打出的",
+					"{C:spades}#2#{}花色牌",
+					"在计分时给予{C:chips}+#1#{}筹码"
+				}
+			},
+			j_ortalab_peasant = {
+				name = '农夫',
+				text = {
+					"每张{C:attention}留在手牌中{}的牌",
+					"使{C:red}倍率{}增加",
+					"{C:red}#1#{}减去该牌的点数"
+				}
+			},
+			['j_ortalab_pickaxe'] = {
+				["name"] = "鹤嘴锄",
+				["text"] = {
+					"摧毁打出的{C:attention}无点数{}牌",
+					"每以这张方式摧毁一张牌",
+					"获得{X:mult,C:white}X#2#{}倍率",
+					"{C:inactive}（当前为{X:mult,C:white}X#1#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_pin_point'] = {
+				["name"] = "精准定位",
+				["text"] = {
+					"生成一张击败{C:attention}盲注{}的",
+					"{C:attention}牌型{}对应的",
+					"{C:ortalab_zodiac}星座牌{}"
+				}
+			},
+			j_ortalab_pinkprint = {
+				name = '粉图',
+				text = {
+					'复制{C:attention}最后售出{}的',
+					'小丑牌的能力',
+					'{C:inactive}（当前为 #1#）'
+				}
+			},
+			['j_ortalab_pitch_mitch'] = {
+				["name"] = "黑杰克",
+				["text"] = {
+					"如果打出的{C:attention}牌型{}",
+					'包含{V:1}#2#{}和{V:2}#3#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			j_ortalab_priest = {
+				name = '收藏家',
+				text = {
+					'所有带{C:dark_edition}版本{}的{C:attention}小丑牌{}',
+					'每{C:money}$1{}售价',
+					'给予{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_policeman = {
+				["name"] = "警察",
+				["text"] = {
+					{
+						'选择{C:attention}盲注{}时',
+						'弃牌次数{C:red}+#2#{}',
+						'出牌次数设为{C:blue}#1#'
+					},
+					{
+						'回合结束时每剩余',
+						'一次弃牌获得{C:money}$#3#{}'
+					}
+				}
+			},
+			['j_ortalab_polydactyly'] = {
+				name = '多指',
+				text = {
+					'如果{C:attention}牌型{}包含',
+					'一张{C:attention}#3#{}或{C:attention}#2#',
+					'手牌中{C:attention}#1#{}张最左边的牌',
+					'视为已打出'
+				}
+			},
+			['j_ortalab_popcorn_bag'] = {
+				["name"] = "野餐篮",
+				["text"] = {
+					"{C:mult}+#1#{}倍率",
+					"每回合{C:mult}+#2#{}倍率",
+					"倍率大于{C:mult}+#3#{}时自毁"
+				}
+			},
+			['j_ortalab_prediction_dice'] = {
+				["name"] = "预言骰子",
+				["text"] = {
+					"{C:green}#1#/#2#{}几率使",
+					"{C:ortalab_zodiac}星座牌{}激活时",
+					"不衰减"
+				}
+			},
+			j_ortalab_proletaire = {
+				name = '无产者',
+				text = {
+					'每张{C:ortalab_mythos}受诅咒的{C:attention}小丑牌',
+					'给予{X:red,C:white}X#1#{}倍率',
+					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_protostar'] = {
+				["name"] = "原恒星",
+				["text"] = {
+					"{C:blue}+#1#{}筹码",
+					"本局每打出一次该{C:attention}牌型{}",
+					"失 {C:blue}#2#{}筹码",
+					"{C:inactive}（归零时替换为一张{C:green}罕见{}",
+					"或{C:red}稀有{}小丑牌）"
+				}
+			},
+			j_ortalab_purple = {
+				name = '紫色小丑',
+				text = {
+					'出牌后{C:blue}-#1#{}筹码，{C:red}+#2#{}倍率',
+					'弃牌后{C:blue}+#1#{}筹码，{C:red}-#2#{}倍率',
+					'{C:inactive}（当前为{C:blue}#3#{C:inactive}筹码，{C:red}#4#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_rea = {
+				name = 'Rea',
+				text = {
+					'计分牌中每种{C:attention}独特的增强{}、{C:dark_edition}版本{}',
+					'{C:attention}蜡封{}和{C:ortalab_mythos}诅咒{}',
+					'使打出的牌给予{X:red,C:white}X#2#{}倍率'
+				}
+			},
+			['j_ortalab_red_fred'] = {
+				["name"] = "红弗雷德",
+				["text"] = {
+					'如果打出的{C:attention}牌型{}',
+					'包含{V:1}#2#{}和{V:2}#3#',
+					'{C:red}+#1#{}倍率'
+				}
+			},
+			['j_ortalab_reduce_reuse'] = {
+				["name"] = "减量、重用、循环",
+				["text"] = {
+					'如果第一次出牌击败{C:attention}盲注{}',
+					'回合结束时每剩一次{C:blue}出牌{}',
+					"获得{C:money}$#1#{}"
+				}
+			},
+			['j_ortalab_revolver'] = {
+				["name"] = "左轮手枪",
+				["text"] = {
+					"选择{C:attention}盲注{}时",
+					"摧毁最左边的{C:attention}小丑牌{}",
+					"并将其售价的{C:attention}#1#倍{}",
+					"永久增加到此{C:blue}筹码",
+					"{C:inactive}（当前为{C:blue}+#2#{C:inactive}筹码）",
+					'{C:inactive}不能射击自己'
+				}
+			},
+			j_ortalab_right_hand = {
+				name = '原理图',
+				text = {
+					'复制最右边',
+					'{C:attention}小丑牌{}的能力'
+				}
+			},
+			j_ortalab_rockstar = {
+				name = '摇滚巨星',
+				text = {
+					'选择{C:attention}盲注{}时',
+					'手牌上限{C:attention}-#1#{}',
+					'出牌次数{C:blue}+#2#{}'
+				}
+			},
+			['j_ortalab_roscharch'] = {
+				["name"] = "罗夏测试",
+				["text"] = {
+					"每打出一张{C:attention}2{}或{C:attention}5{}",
+					"在计分时给予{C:chips}+#1#{}筹码和{C:mult}+#2#{}倍率"
+				}
+			},
+			['j_ortalab_royal_gala'] = {
+				["name"] = "Royal Gala",
+				["text"] = {
+					{
+						"{X:blue,C:white}X#1#{}筹码"
+					},
+					{
+						"回合结束时",
+						"有{C:green}#2#/#3#{}几率",
+						"摧毁此牌"
+					}
+				}
+			},
+			['j_ortalab_rusty'] = {
+				["name"] = "生锈小丑",
+				["text"] = {
+					'打出的{C:attention}牌型{}中',
+					'每有一张{C:attention}生锈牌{}',
+					'让{C:attention}生锈牌{}额外获得{X:red,C:white}X#1#{}倍率'
+				}
+			},
+			['j_ortalab_salad'] = {
+				["name"] = "沙拉",
+				["text"] = {
+					{
+						"每剩一次{C:red}弃牌{}",
+						"获得{X:mult,C:white}X#1#{}倍率",
+						'{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}）'
+					},
+					{
+						"{C:red}弃牌{}时",
+						"有{C:green}#3#/#4#{}几率摧毁此小丑牌"
+					}
+				}
+			},
+			['j_ortalab_sandstone'] = {
+				["name"] = "砂岩小丑",
+				["text"] = {
+					{
+						"打出的{C:attention}沙牌{}",
+						"不再失去倍率"
+					},
+					{
+						"每打出一张 {C:attention}沙牌{}",
+						"获得{X:mult,C:white}X#2#{}倍率",
+						"{C:inactive}（当前为{X:mult,C:white}X#1#{C:inactive}）"
+					}
+				}
+			},
+			['j_ortalab_sane'] = {
+				["name"] = "理智小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_scam_email'] = {
+				["name"] = "诈骗邮件",
+				["text"] = {
+					"打出的{C:attention}#2#{}计分时",
+					"获得{C:money}$#1#{}",
+					"{C:inactive}（点数每回合改变）"
+				}
+			},
+			['j_ortalab_scantron'] = {
+				["name"] = "答题卡",
+				["text"] = {
+					"打出的牌有",
+					"{C:green}#1#/#2#{}几率{C:attention}重新触发"
+				}
+			},
+			['j_ortalab_scared_face'] = {
+				["name"] = "惊恐面孔",
+				["text"] = {
+					"每打出一张{C:attention}2{}、{C:attention}3{}、{C:attention}4{}",
+					"或{C:attention}5{}，在计分时",
+					"给予{C:chips}+#1#{}筹码"
+				}
+			},
+			['j_ortalab_scenic'] = {
+				["name"] = "风景路线",
+				["text"] = {
+					{
+						"{C:attention}顺子{}可以用",
+						"{C:attention}对子{}组成",
+						"{C:inactive}（例如：{C:attention}7 7 6 6 5{C:inactive}）"
+					},
+					{
+						"击败{C:attention}Boss盲注{}后",
+						"升级{C:attention}#1#{}和{C:attention}#2#"
+					}
+				}
+			},
+			['j_ortalab_sedimentation'] = {
+				["name"] = "沉积",
+				["text"] = {
+					"你完整牌组中每有一张",
+					"大于{C:attention}#3#{}的牌",
+					"给予{C:red}+#1#{}倍率",
+					"{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_serious'] = {
+				["name"] = "严肃小丑",
+				["text"] = {
+					'如果{C:attention}手牌{}',
+					'不包含{C:attention}#2#',
+					'{C:blue}+#1#{}筹码'
+				}
+			},
+			['j_ortalab_shrine'] = {
+				["name"] = "神龛",
+				["text"] = {
+					"如果打出的牌至少有{C:attention}#1#{}张",
+					"计分牌，生成一张 {C:ortalab_mythos,E:1}神话牌{}",
+					"并{C:ortalab_mythos}诅咒{}你的一张手牌"
+				}
+			},
+			['j_ortalab_skydiving'] = {
+				["name"] = "高空跳伞",
+				["text"] = {
+					'打出的{C:attention}牌型{}等级{C:red}-#3#{}',
+					"获得{X:mult,C:white}X#1#{}倍率",
+					"{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_slot_machine'] = {
+				["name"] = "老虎机",
+				["text"] = {
+					"如果打出的牌包含",
+					"三张{C:attention}幸运7{}",
+					"生成一张随机{C:spectral}幻灵{}牌"
+				}
+			},
+			['j_ortalab_scratch_card'] = {
+				["name"] = "刮刮乐",
+				["text"] = {
+					"打出的{C:attention}数字牌{}",
+					"在计分时有{C:green}#1#/#2#{}几率",
+					"给予{C:money}$#3#{}"
+				}
+			},
+			j_ortalab_seventh_sense = {
+				name = '第七感',
+				text = {
+					'如果回合的{C:attention}第一次{}出牌',
+					'只有一张{C:attention}#1#{}',
+					'将其摧毁并生成一张',
+					'随机{C:ortalab_mythos}神话牌'
+				}
+			},
+			['j_ortalab_shelter'] = {
+				["name"] = "枣椰树",
+				["text"] = {
+					"如果打出的牌",
+					"包含一张{C:attention}#2#",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			['j_ortalab_shinku'] = {
+				["name"] = "真紅",
+				["text"] = {
+					"生成#1#张随机{C:attention}小丑牌{}",
+					"当{C:attention}Boss盲注{}被击败时",
+					"将其替换"
+				}
+			},
+			['j_ortalab_soil'] = {
+				["name"] = "土壤",
+				["text"] = {
+					'{X:mult,C:white}X#1#{}倍率',
+					'每张连续触发的',
+					'相同点数的牌',
+					'获得{X:mult,C:white}X#2#{}',
+					'{C:inactive}（每次出牌后重置）'
+				}
+			},
+			['j_ortalab_solo'] = {
+				["name"] = "独奏",
+				["text"] = {
+					"如果打出的牌",
+					"是{C:attention}#2#",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			['j_ortalab_still_water'] = {
+				["name"] = "静水",
+				["text"] = {
+					'如果打出的牌包含',
+					'{C:attention}未计分{}牌',
+					'获得{C:red}+#1#{}倍率',
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_space_ticket = {
+				name = '太空船票',
+				text = {
+					'如果击败盲注的{C:attention}最后一手牌型{}包含一张',
+					'{C:purple}宇宙牌{}，{C:attention}升级{}',
+					'对应的{C:attention}牌型等级'
+				}
+			},
+			['j_ortalab_spectator'] = {
+				["name"] = "观众",
+				["text"] = {
+					'回合的{C:attention}第一次出牌{}',
+					'获得{X:red,C:white}X#1#{}倍率'
+				}
+			},
+			['j_ortalab_stargazing'] = {
+				["name"] = "观星",
+				["text"] = {
+					"每激活一个{C:ortalab_zodiac}星座{}",
+					"获得{X:mult,C:white}X#1#{}倍率",
+					"{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}）"
+				}
+			},
+			j_ortalab_stonehenge = {
+				name = '巨石阵',
+				text = {
+					'{C:attention}无点数{}牌在组成',
+					'{C:attention}牌型{}时，视作',
+					'其{C:attention}左侧{}的牌'
+				}
+			},
+			j_ortalab_storm_6 = {
+				name = '风暴6',
+				text = {
+					'你{C:attention}完整牌组{}每有一张{C:attention}6{}',
+					'获得{C:red}+#1#{}倍率',
+					'你{C:attention}完整牌组{}每有一张{C:attention}9{}',
+					'减少{C:red}#2#{}倍率',
+					'{C:inactive}（当前为{C:red}+#3#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_street_rat = {
+				name = '过街老鼠',
+				text = {
+					'击败{C:attention}盲注{}时',
+					'摧毁右边的{C:blue}普通{}小丑牌',
+					'并获得其售价的{C:gold}#1#X{}'
+				}
+			},
+			['j_ortalab_sun_sign'] = {
+				["name"] = "太阳星座",
+				["text"] = {
+					"每回合结束时",
+					"本局每激活过一种{C:ortalab_zodiac}星座{}",
+					"获得{C:gold}$#1#{}",
+					"{C:inactive}（当前为{C:gold}$#2#{C:inactive}）"
+				}
+			},
+			['j_ortalab_sunnyside'] = {
+				["name"] = "单面煎蛋",
+				["text"] = {
+					"选择{C:attention}盲注{}时",
+					"最左边的{C:attention}消耗牌{}",
+					"增加{C:money}$#1#{}{C:attention}售价"
+				}
+			},
+			['j_ortalab_spectrum'] = {
+				["name"] = "光谱",
+				["text"] = {
+					"如果打出的手牌",
+					"不包含{C:attention}#2#",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			j_ortalab_taking_the_trick = {
+				name = '吃墩',
+				text = {
+					'在{C:attention}牌型{}中',
+					'每有一张{V:1}#3#{}大于{C:attention}#4#{}',
+					'获得{C:mult}+#1#{}倍率',
+					"{C:inactive}（点数/花色每回合改变）",
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+			['j_ortalab_taliaferro'] = {
+				["name"] = "塔利亚费罗",
+				["text"] = {
+					{
+						"{C:chips}+#1#{}筹码"
+					},
+					{
+						"回合结束时",
+						"有{C:green}#2#/#3#{}几率",
+						"摧毁这张牌"
+					}
+				}
+			},
+			['j_ortalab_triangle'] = {
+				["name"] = "三角小丑",
+				["text"] = {
+					"如果打出的牌",
+					"恰好有{C:attention}3{}张计分牌",
+					"这张小丑牌获得{C:mult}+#1#{}倍率",
+					"{C:inactive}（当前为{C:mult}+#2#{C:inactive}倍率）"
+				}
+			},
+			['j_ortalab_vinyl'] = {
+				["name"] = "黑胶唱片",
+				["text"] = {
+					'每有一种已计分的',
+					'不同点数，用于计分的',
+					'{C:attention}最后{}一张出牌',
+					'给予{X:mult,C:white}X#1#{}倍率'
+				}
+			},
+			['j_ortalab_virus'] = {
+				["name"] = "病毒",
+				["text"] = {
+					"如果回合的{C:attention}第一次出牌{}",
+					"只有{C:attention}1{}张牌，摧毁它并",
+					"将手牌中{C:attention}#1#张随机牌",
+					"转换为打出的牌"
+				}
+			},
+			j_ortalab_wallet = {
+				name = '钱包',
+				text = {
+					'{C:attention}计分牌{}触发',
+					'{C:attention}留在手牌中{}的能力'
+				}
+			},
+			['j_ortalab_whiteboard'] = {
+				["name"] = "白板",
+				["text"] = {
+					"如果手牌中所有牌",
+					"都是{C:hearts}红桃{}或{C:diamonds}方片{}",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			j_ortalab_wide = {
+				name = '宽幅小丑',
+				text = {
+					'打出的{C:attention}#3#{}计分时',
+					'获得{C:red}+#1#{}倍率',
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+			j_ortalab_woo_all_1 = {
+				["name"] = "哇！全是1",
+				["text"] = {
+					"当选择{C:attention}Boss盲注{}时",
+					"所有{C:attention}列出的{C:green,E:1,S:1.1}概率{}",
+					"都会成功，直到选择另一个{C:attention}盲注{}"
+				}
+			},
+			j_ortalab_yellow = {
+				name = '黄色小丑',
+				text = {
+					'每张计分或弃掉的牌',
+					'给予{C:red}+#1#{}倍率',
+					'在回合{C:attention}结束时{}重置',
+					'{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）'
+				}
+			},
+		},
 	},
 }
