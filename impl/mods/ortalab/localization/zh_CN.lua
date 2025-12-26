@@ -1686,7 +1686,7 @@ return {
 			v_ortalab_pulse_wave = {
 				name = "脉冲波动",
 				text = {
-					"拥有{C:dark_edition}版本{}{C:attention}小丑牌{}",
+					"拥有{C:dark_edition}版本的{}{C:attention}小丑牌{}",
 					"如果有给予{C:money}金钱{}或{C:red}分数{}的效果",
 					"则{C:dark_edition}版本{}效果会触发{C:attention}两次{}"
 				}
