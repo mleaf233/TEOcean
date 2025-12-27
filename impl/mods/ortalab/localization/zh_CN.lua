@@ -1,8 +1,9 @@
 return {
 	misc = {
 		translator = {
-			"jie65535",
-			"mleaf233",
+			"jie65535", -- 主要翻译
+			"mleaf233", -- 校对精修
+			"希唯zs", -- 早期参考了一部分
 		},
 		labels = {
 			ortalab_cyan_seal = "青色蜡封",
@@ -2579,7 +2580,7 @@ return {
 				}
 			},
 			['j_ortalab_amber_mosquito'] = {
-				["name"] = "琥珀蚊子",
+				["name"] = "琥珀蚊",
 				["text"] = {
 					"留在手牌中的",
 					"每一张{V:1}#2#{}",
@@ -2615,7 +2616,7 @@ return {
 				name = '附属',
 				text = {
 					'选择{C:attention}盲注{}时',
-					'给{C:attention}最右边的小丑牌{}添加{C:dark_edition}#2#{}',
+					'将{C:attention}最右边的小丑牌{}变成{C:dark_edition}#2#{}',
 					'{C:dark_edition}#2#{}小丑牌每张给予{X:red,C:white}X#1#{}倍率'
 				}
 			},
@@ -2624,7 +2625,7 @@ return {
 				["text"] = {
 					{
 						"获得{C:money}$#1#",
-						"售出费用为{C:red}$#1#{}"
+						"售出费用为{C:red}-$#1#{}"
 					},
 					{
 						'回合结束时',
@@ -2661,8 +2662,8 @@ return {
 				["text"] = {
 					"回合结束时获得{C:money}$#1#{}",
 					"每张计分的{C:attention,E:1}宇宙牌{}",
-					"使其增加 {C:money}$#2#{}",
-					"计分的{C:attention,E:1}宇宙牌{} 会被摧毁"
+					"使其数值增加{C:money}$#2#{}",
+					"计分的{C:attention,E:1}宇宙牌{}会被摧毁"
 				}
 			},
 			j_ortalab_biker = {
@@ -2677,16 +2678,16 @@ return {
 				["name"] = "黑名单",
 				["text"] = {
 					"如果打出的{C:attention}牌型{}",
-					"不是 {C:attention}#2#{}",
-					"或 {C:attention}#3#{}，获得{C:money}$#1#{}",
-					"{C:inactive}（每次支付后牌型会改变）"
+					"不是{C:attention}#2#{}",
+					"或{C:attention}#3#{}，获得{C:money}$#1#{}",
+					"{C:inactive}（每次触发后牌型会改变）"
 				}
 			},
 			['j_ortalab_black_cat'] = {
 				["name"] = "黑猫",
 				["text"] = {
 					"每当打出的牌计分",
-					"超过 {C:blue}#3#筹码",
+					"超过{C:blue}#3#筹码",
 					"或收集到一个{C:attention}标签{}时",
 					"这张小丑牌获得{X:red,C:white}X#1#{}倍率",
 					"{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）"
@@ -2712,7 +2713,7 @@ return {
 				["name"] = "占星术",
 				["text"] = {
 					"如果手牌中",
-					"持有一张 {C:attention}10",
+					"持有一张{C:attention}10",
 					"则生成一张随机 {C:ortalab_zodiac}星座牌"
 				}
 			},
@@ -2735,7 +2736,7 @@ return {
 			['j_ortalab_calm'] = {
 				["name"] = "冷静小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:blue}+#1#{}筹码'
 				}
@@ -2773,7 +2774,7 @@ return {
 				}
 			},
 			j_ortalab_collectors = {
-				name = '典藏版',
+				name = '典藏卡',
 				text = {
 					'回合第一次{C:red}弃牌{}时',
 					'{C:red}摧毁{}一张弃掉的牌',
@@ -2808,7 +2809,7 @@ return {
 				["name"] = "剪纸小丑",
 				["text"] = {
 					"{X:mult,C:white}X#1#{}倍率",
-					'当一张 {C:attention}小丑牌{}被售出时',
+					'当一张{C:attention}小丑牌{}被售出时',
 					'{S:1.1,C:red,E:2}自毁{}'
 				}
 			},
@@ -2831,7 +2832,7 @@ return {
 			['j_ortalab_direct'] = {
 				["name"] = "直接小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:red}+#1#{}倍率'
 				}
@@ -2848,15 +2849,15 @@ return {
 				["name"] = "滴水石",
 				["text"] = {
 					"留在手牌中的",
-					"每一张 {V:1}#2#{}",
+					"每一张{V:1}#2#{}",
 					"给予{C:blue}+#1#{}筹码"
 				}
 			},
 			j_ortalab_driver = {
 				name = '司机',
 				text = {
+					'每一张{C:attention}不同点数{}的',
 					'{C:attention}数字{}牌计分时',
-					'每种已计分的{C:attention}不同点数{}',
 					'给予{C:chips}+#1#{}筹码'
 				}
 			},
@@ -2886,7 +2887,7 @@ return {
 			['j_ortalab_dull'] = {
 				["name"] = "迟钝小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:red}+#1#{}倍率'
 				}
@@ -2903,19 +2904,19 @@ return {
 			j_ortalab_false_phd = {
 				name = '假博士学位',
 				text = {
-					'回合开始时，添加 {C:attention}#1#{} 张',
-					'带有{C:attention}增强{}、{C:dark_edition}版本{}',
-					'和{C:attention}蜡封{}的',
+					'回合开始时',
+					'添加{C:attention}#1#{}张带有',
+					'{C:attention}增强{}、{C:dark_edition}版本{}和{C:attention}蜡封{}的',
 					'相同{C:attention}临时游戏牌{}到手牌中'
 				}
 			},
 			['j_ortalab_fine_wine'] = {
 				["name"] = "陈年美酒",
 				["text"] = {
-					"{C:red}+#1#{} 弃牌次数",
+					"弃牌次数{C:red}+#1#{}",
 					"选择盲注时",
-					"获得{C:red}+#4#{} 弃牌次数",
-					"回合结束时有 {C:green}#2#/#3#{} 几率",
+					"获得{C:red}+#4#{}弃牌次数",
+					"回合结束时有{C:green}#2#/#3#{}几率",
 					"摧毁此小丑牌"
 				}
 			},
@@ -2923,13 +2924,13 @@ return {
 				["name"] = "闪回",
 				["text"] = {
 					"{C:attention}跳过{}盲注时",
-					"生成一张 {C:attention}#1#"
+					"生成一个{C:attention}#1#"
 				}
 			},
 			['j_ortalab_foolish'] = {
 				["name"] = "愚蠢小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:red}+#1#{}倍率'
 				}
@@ -2938,17 +2939,17 @@ return {
 				["name"] = "愚人金",
 				["text"] = {
 					"留在手牌中的",
-					"每一张 {V:1}#4#{}",
-					"有 {C:green}#1#/#2#{} 几率",
+					"每一张{V:1}#4#{}",
+					"有{C:green}#1#/#2#{}几率",
 					"获得{C:money}$#3#{}"
 				}
 			},
 			j_ortalab_fools = {
 				name = '愚人小丑',
 				text = {
-					'回合结束时',
-					'每张其他{C:attention}小丑牌{}',
-					'使你获得其 {C:money}$#1#{}的{C:attention}售价'
+					'在回合结束时',
+					'每有一张其他{C:attention}小丑牌{}',
+					'这张小丑牌的售价增加{C:money}$#1#{}',
 				}
 			},
 			['j_ortalab_forklift'] = {
@@ -2968,19 +2969,20 @@ return {
 				}
 			},
 			j_ortalab_foundation = {
-				name = '粉底',
+				name = '基金会',
 				text = {
-					'每{C:attention}连续{}打出一次',
+					'{C:attention}连续{}打出',
 					'你最常使用的{C:attention}牌型{}',
 					'获得{X:red,C:white}X#2#{}倍率',
+					'失败则会重置',
 					'{C:inactive}（当前为{X:red,C:white}X#1#{C:inactive}倍率）',
 					'{C:inactive}（#3#）'
 				}
 			},
 			['j_ortalab_freezer'] = {
-				["name"] = "冰柜",
+				["name"] = "冰箱",
 				["text"] = {
-					'本盲注期间每使用',
+					'盲注期间每使用',
 					'一张{C:attention}消耗牌{}',
 					'获得{X:red,C:white}X#1#{}倍率',
 					'{C:inactive}（当前为{X:red,C:white}X#2#{C:inactive}倍率）'
@@ -3025,7 +3027,7 @@ return {
 			['j_ortalab_glum'] = {
 				["name"] = "忧愁小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:blue}+#1#{}筹码'
 				}
@@ -3033,7 +3035,7 @@ return {
 			['j_ortalab_gnomic'] = {
 				["name"] = "格言小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:blue}+#1#{}筹码'
 				}
@@ -3095,7 +3097,7 @@ return {
 			['j_ortalab_honest'] = {
 				["name"] = "诚实小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:red}+#1#{}倍率'
 				}
@@ -3151,7 +3153,7 @@ return {
 						'每回合弃牌次数{C:red}+#3#{}'
 					},
 					{
-						'每回合弃牌次数{C:red}#2#{}'
+						'每回合出牌次数{C:red}#2#{}'
 					}
 				}
 			},
@@ -3159,7 +3161,7 @@ return {
 				["name"] = "针织毛衣",
 				["text"] = {
 					'如果打出的牌包含',
-					'一张{C:attention}#3#',
+					'{C:attention}#3#',
 					'获得{C:blue}+#1#{}筹码',
 					'{C:inactive}（当前为{C:blue}+#2#{C:inactive}筹码）'
 				}
@@ -3247,8 +3249,8 @@ return {
 			['j_ortalab_mixtape'] = {
 				["name"] = "混音带",
 				["text"] = {
-					'单次出牌中',
-					'每击败过一次{C:attention}盲注{}',
+					'如果第一次出牌',
+					'击败了{C:attention}盲注{}',
 					'获得{X:mult,C:white}X#1#{}倍率',
 					'{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}）'
 				}
@@ -3256,7 +3258,7 @@ return {
 			['j_ortalab_monochrome'] = {
 				["name"] = "棱镜小丑",
 				["text"] = {
-					"所有牌在{C:attention}计分{}时",
+					"{C:attention}计分{}时所有打出的牌和手牌",
 					"视为拥有所有花色"
 				}
 			},
@@ -3286,7 +3288,7 @@ return {
 			['j_ortalab_naive'] = {
 				["name"] = "天真小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:red}+#1#{}倍率'
 				}
@@ -3305,7 +3307,7 @@ return {
 				text = {
 					'如果留在手牌中的牌',
 					'没有{C:attention}人头牌{}',
-					'每张牌{C:red}+#1#{}倍率'
+					'则每张牌给予{C:red}+#1#{}倍率'
 				}
 			},
 			['j_ortalab_occultist'] = {
@@ -3325,7 +3327,7 @@ return {
 				}
 			},
 			j_ortalab_other_half = {
-				name = '另一半小丑',
+				name = '半张小丑',
 				text = {
 					'如果{C:attention}打出的牌{}',
 					'包含至少{C:attention}#2#{}张计分牌',
@@ -3352,8 +3354,8 @@ return {
 				["name"] = "鹤嘴锄",
 				["text"] = {
 					"摧毁打出的{C:attention}无点数{}牌",
-					"每以这张方式摧毁一张牌",
-					"获得{X:mult,C:white}X#2#{}倍率",
+					"每以这种方式摧毁一张牌",
+					"就获得{X:mult,C:white}X#2#{}倍率",
 					"{C:inactive}（当前为{X:mult,C:white}X#1#{C:inactive}倍率）"
 				}
 			},
@@ -3408,8 +3410,8 @@ return {
 				name = '多指',
 				text = {
 					'如果{C:attention}牌型{}包含',
-					'一张{C:attention}#3#{}或{C:attention}#2#',
-					'手牌中{C:attention}#1#{}张最左边的牌',
+					'{C:attention}#3#{}或{C:attention}#2#',
+					'手牌中最左边的{C:attention}#1#{}张牌',
 					'视为已打出'
 				}
 			},
@@ -3441,10 +3443,10 @@ return {
 				["name"] = "原恒星",
 				["text"] = {
 					"{C:blue}+#1#{}筹码",
-					"本局每打出一次该{C:attention}牌型{}",
-					"失 {C:blue}#2#{}筹码",
-					"{C:inactive}（归零时替换为一张{C:green}罕见{}",
-					"或{C:red}稀有{}小丑牌）"
+					"本局每次{C:attention}出牌{}",
+					"失去{C:blue}#2#{}筹码",
+					"{C:inactive}（筹码归零时将这张小丑牌",
+					"替换为一张{C:green}罕见{}或{C:red}稀有{}小丑牌）"
 				}
 			},
 			j_ortalab_purple = {
@@ -3485,7 +3487,7 @@ return {
 					"选择{C:attention}盲注{}时",
 					"摧毁最左边的{C:attention}小丑牌{}",
 					"并将其售价的{C:attention}#1#倍{}",
-					"永久增加到此{C:blue}筹码",
+					"永久添加到此{C:blue}筹码",
 					"{C:inactive}（当前为{C:blue}+#2#{C:inactive}筹码）",
 					'{C:inactive}不能射击自己'
 				}
@@ -3555,7 +3557,7 @@ return {
 						"不再失去倍率"
 					},
 					{
-						"每打出一张 {C:attention}沙牌{}",
+						"每打出一张{C:attention}沙牌{}",
 						"获得{X:mult,C:white}X#2#{}倍率",
 						"{C:inactive}（当前为{X:mult,C:white}X#1#{C:inactive}）"
 					}
@@ -3564,7 +3566,7 @@ return {
 			['j_ortalab_sane'] = {
 				["name"] = "理智小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:blue}+#1#{}筹码'
 				}
@@ -3588,7 +3590,7 @@ return {
 				["name"] = "惊恐面孔",
 				["text"] = {
 					"每打出一张{C:attention}2{}、{C:attention}3{}、{C:attention}4{}",
-					"或{C:attention}5{}，在计分时",
+					"或{C:attention}5{}在计分时",
 					"给予{C:chips}+#1#{}筹码"
 				}
 			},
@@ -3609,16 +3611,16 @@ return {
 			['j_ortalab_sedimentation'] = {
 				["name"] = "沉积",
 				["text"] = {
-					"你完整牌组中每有一张",
-					"大于{C:attention}#3#{}的牌",
-					"给予{C:red}+#1#{}倍率",
+					"在你的牌组中",
+					"每比完整的{C:attention}#3#{}张牌多一张",
+					"就获得{C:red}+#1#{}倍率",
 					"{C:inactive}（当前为{C:red}+#2#{C:inactive}倍率）"
 				}
 			},
 			['j_ortalab_serious'] = {
 				["name"] = "严肃小丑",
 				["text"] = {
-					'如果{C:attention}手牌{}',
+					'如果{C:attention}打出的牌{}',
 					'不包含{C:attention}#2#',
 					'{C:blue}+#1#{}筹码'
 				}
@@ -3627,7 +3629,7 @@ return {
 				["name"] = "神龛",
 				["text"] = {
 					"如果打出的牌至少有{C:attention}#1#{}张",
-					"计分牌，生成一张 {C:ortalab_mythos,E:1}神话牌{}",
+					"计分牌，生成一张{C:ortalab_mythos,E:1}神话牌{}",
 					"并{C:ortalab_mythos}诅咒{}你的一张手牌"
 				}
 			},
@@ -3710,9 +3712,9 @@ return {
 			j_ortalab_space_ticket = {
 				name = '太空船票',
 				text = {
-					'如果击败盲注的{C:attention}最后一手牌型{}包含一张',
-					'{C:purple}宇宙牌{}，{C:attention}升级{}',
-					'对应的{C:attention}牌型等级'
+					'如果击败盲注的{C:attention}最后一手牌型{}',
+					'包含一张{C:purple}宇宙牌{}',
+					'{C:attention}升级{}对应的{C:attention}牌型等级'
 				}
 			},
 			['j_ortalab_spectator'] = {
@@ -3742,9 +3744,9 @@ return {
 				name = '风暴6',
 				text = {
 					'你{C:attention}完整牌组{}每有一张{C:attention}6{}',
-					'获得{C:red}+#1#{}倍率',
+					'{C:red}+#1#{}倍率',
 					'你{C:attention}完整牌组{}每有一张{C:attention}9{}',
-					'减少{C:red}#2#{}倍率',
+					'-{C:red}#2#{}倍率',
 					'{C:inactive}（当前为{C:red}+#3#{C:inactive}倍率）'
 				}
 			},
@@ -3792,7 +3794,7 @@ return {
 				}
 			},
 			['j_ortalab_taliaferro'] = {
-				["name"] = "塔利亚费罗",
+				["name"] = "Taliaferro苹果",
 				["text"] = {
 					{
 						"{C:chips}+#1#{}筹码"
@@ -3801,14 +3803,20 @@ return {
 						"回合结束时",
 						"有{C:green}#2#/#3#{}几率",
 						"摧毁这张牌"
-					}
+					},
+					-- {
+					-- 	"译者注：Taliaferro是一种苹果品种",
+					-- 	"“Taliaferro”实际上指的是一种名为“Taliaferro”的苹果品种",
+					-- 	"它在美国历史上，特别是18世纪和19世纪，曾因其卓越的品质而备受赞誉",
+					-- 	"它是一种已经失传的古老地方品种，未曾在华人地区广泛种植或为人所知"
+					-- }
 				}
 			},
 			['j_ortalab_triangle'] = {
 				["name"] = "三角小丑",
 				["text"] = {
 					"如果打出的牌",
-					"恰好有{C:attention}3{}张计分牌",
+					"只有{C:attention}3{}张计分牌",
 					"这张小丑牌获得{C:mult}+#1#{}倍率",
 					"{C:inactive}（当前为{C:mult}+#2#{C:inactive}倍率）"
 				}
@@ -3816,19 +3824,19 @@ return {
 			['j_ortalab_vinyl'] = {
 				["name"] = "黑胶唱片",
 				["text"] = {
-					'每有一种已计分的',
-					'不同点数，用于计分的',
-					'{C:attention}最后{}一张出牌',
-					'给予{X:mult,C:white}X#1#{}倍率'
+					'打出的牌每有一种',
+					'不同点数的计分牌',
+					'就给予计分的',
+					'{C:attention}最后{}一张牌{X:mult,C:white}X#1#{}倍率',
 				}
 			},
 			['j_ortalab_virus'] = {
 				["name"] = "病毒",
 				["text"] = {
 					"如果回合的{C:attention}第一次出牌{}",
-					"只有{C:attention}1{}张牌，摧毁它并",
-					"将手牌中{C:attention}#1#张随机牌",
-					"转换为打出的牌"
+					"只有{C:attention}1{}张牌",
+					"将其摧毁并将手牌中的随机{C:attention}#1#张牌",
+					"变成打出的牌"
 				}
 			},
 			j_ortalab_wallet = {
@@ -3841,9 +3849,9 @@ return {
 			['j_ortalab_whiteboard'] = {
 				["name"] = "白板",
 				["text"] = {
-					"如果手牌中所有牌",
-					"都是{C:hearts}红桃{}或{C:diamonds}方片{}",
-					"{X:mult,C:white}X#1#{}倍率"
+					"如果留在手牌中的",
+					"所有牌都是{C:hearts}红桃{}或{C:diamonds}方片{}",
+					"则{X:mult,C:white}X#1#{}倍率"
 				}
 			},
 			j_ortalab_wide = {
