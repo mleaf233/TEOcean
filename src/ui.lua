@@ -46,7 +46,7 @@ local function recalculateModsList(page)
     page = page or TEO.LAST_VIEWED_MODS_PAGE or 1
     TEO.LAST_VIEWED_MODS_PAGE = page
     local adapted_mods = get_adapted_mods_list()
-    local modsRowPerPage = 1
+    local modsRowPerPage = 2
     local modsColPerRow = 3
     local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
     local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
