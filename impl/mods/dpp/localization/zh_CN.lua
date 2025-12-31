@@ -1,6 +1,6 @@
 return {
     misc = {
-        thanslator = {
+        translator = {
             "mleaf233",
         },
         dictionary = {

@@ -12,6 +12,7 @@
 | 7    | Ortalab              | 大      | https://github.com/EremelMods/Ortalab                    | ✅完全汉化        |
 | 8    | JoyousSpring         | 大      | https://github.com/nh6574/JoyousSpring                   | ✅完全汉化        |
 | 9    | DebugPlusPlus        | -       | https://github.com/Joglacraft/DebugPlusPlus              | ✅完全汉化        |
+| 10   | RevosVault           | 大      | https://github.com/Cdrvo/Revos-Vault---Balatro-Mod       | ✅完全汉化        |
 
 如有其他mod汉化需求，请发起issue，或者加群反馈：1074056375
 
