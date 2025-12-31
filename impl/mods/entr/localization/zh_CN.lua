@@ -1834,6 +1834,73 @@ return {
 					"中的{C:attention}一{}张随机卡牌"
 				},
 			},
+			j_entr_milk_chocolate = {
+				name = "牛奶巧克力",
+				text = {
+					"售出此牌",
+					"免费创建一个",
+					"{C:attention}#1#",
+				},
+			},
+			j_entr_brownies = {
+				name = "布朗尼",
+				text = {
+					"接下来{C:attention}#2#{}张消耗牌",
+					"被使用时",
+					"获得{C:gold}$#1#{}",
+				}
+			},
+			j_entr_box_of_chocolates = {
+				name = "巧克力盒",
+				text = {
+					"{C:attention}强制触发{}接下来{C:attention}#1#{}个",
+					"打开的{C:attention}补充包{}中的",
+					"一张随机卡牌",
+				},
+			},
+			j_entr_cooking_pot = {
+				name = "烹饪锅",
+				text = {
+					"获得的{C:attention}食物{}小丑牌",
+					"改为添加至此小丑牌",
+					"且不会变质",
+					"在获得{C:attention}3{}张",
+					"{C:attention}食物{}小丑牌后{C:red}自毁{}",
+					"{C:inactive}（当前：{C:attention}#1#{C:inactive}、{C:attention}#2#{C:inactive}、{C:attention}#3#{C:inactive}）"
+				},
+			},
+			j_entr_amaryllis_yellow = {
+				name = "黄朱顶红",
+				text = {
+					{
+						"回合结束时",
+						"获得{C:gold}$#2#{}",
+					},
+					{
+						"回合结束时",
+						"切换颜色"
+					}
+				},
+			},
+			j_entr_texas_hold_em = {
+				name = "德州扑克",
+				text = {
+					"卡牌选取上限{C:red}-#1#{}",
+					"为每次盲注",
+					"前{C:attention}#2#{}张抽出的牌",
+					"添加{C:attention}标记{}"
+				},
+			},
+			j_entr_arachnophobia = {
+				name = "蜘蛛恐惧症",
+				text = {
+					"如果打出的牌",
+					"至少有{C:attention}#1#{}张",
+					"计分的{C:attention}8{}",
+					"创建一张{C:entr_omen}厄兆{}牌",
+					"{C:inactive}（必须有空位）"
+				}
+			},
 		},
 		mtx = {
 			c_entr_generousdonation = {
@@ -6003,6 +6070,24 @@ return {
 					"留在手中时{C:gold}#1#{} 升阶强度"
 				}
 			},
+			entr_marked = {
+				name = "标记",
+				text = {
+					"总是被添加至",
+					"本回合每一手",
+					"打出的牌中"
+				}
+			},
+			asc_power_tutorial = {
+				name = "升阶强度说明",
+				text = {
+					"升阶（晋升）强度将{C:blue}筹码{}",
+					"与{C:mult}倍率{}的数值",
+					"{X:gold,C:white}X(1.25 ^ 强度)",
+					"{C:inactive,s:0.8}例：+0.5升阶强度 -> 筹码/倍率X1.11",
+					"{C:inactive,s:0.6}可在配置中禁用此说明"
+				}
+			},
 		},
 
 		Partner = {
@@ -6311,7 +6396,15 @@ return {
 			k_switch_ex = "切换！",
 			k_bounce_ex = "弹!",
 			k_entr_profile_prefix = "为熵启用自定义配置",
-			k_saved_heroic = "非英雄模式！"
+			k_saved_heroic = "非英雄模式！",
+			ph_red_1 = "？？？",
+			k_music_sound = "音乐/音效",
+			k_spoiled_ex = "已变质！",
+			ph_red_2 = "？？？",
+			k_cooked_ex = "已加工！",
+			k_forcetrigger_ex = "强制触发！",
+			k_entr_asc_tutorial = "启用升阶强度提示",
+			k_downgrade_ex = "降级！",
 		},
 		v_dictionary = {
 			card_art = "卡牌美术: #1#",
@@ -6355,6 +6448,7 @@ return {
 			entr_sharp_seal = "锋利蜡封",
 			entr_vantablack_seal = "纳米黑蜡封",
 			entr_gilded = "镀金",
+			entr_marked = "标记",
 		},
 		poker_hands = {
 			["entr_All"] = Cryptid_config.family_mode and "万物" or "字面上TMD宇宙万物",
