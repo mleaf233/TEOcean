@@ -820,16 +820,6 @@ return {
                     "变为{C:attention}#3#{}"
                 }
             },
-            j_paperback_sake_cup = {
-                name = "清酒杯",
-                text = {
-                    "出牌后{C:attention}留在手中{}的{C:attention}#1#{}",
-                    "有{C:green}#2#/#3#{}概率生成",
-                    "对应打出{C:attention}牌型{}的",
-                    "{C:planet}星球牌{}",
-                    "{C:inactive}（必须有空位）"
-                }
-            },
             j_paperback_in_case_i_make_it = {
                 name = "如果我成功了",
                 text = {
@@ -951,16 +941,6 @@ return {
                     "{C:inactive}（当前为{X:chips,C:white}X#2#{C:inactive}筹码）"
                 }
             },
-            j_paperback_pear = {
-                name = "梨",
-                text = {
-                    "如果打出的牌包含{C:attention}#1#{}",
-                    "获得{C:chips}+#2#{}筹码",
-                    "否则{C:chips}-#3#{}筹码",
-                    "筹码低于0时{S:1.1,C:red,E:2}自毁{}",
-                    "{C:inactive}（当前为{C:chips}+#4#{C:inactive}筹码）"
-                }
-            },
             j_paperback_one_sin_and_hundreds_of_good_deeds_fed = {
                 name = "{C:red}一罪百善+{}",
                 text = {
@@ -1004,19 +984,6 @@ return {
                 text = {
                     "接下来{C:attention}#1#{}次{C:attention}#2#",
                     "触发时给予额外{C:mult}#3#{}倍率"
-                }
-            },
-            j_paperback_white_night = {
-                unlock = {
-                    "牌组中拥有#1#张",
-                    "或更多{C:attention}使徒{}"
-                },
-                name = "白夜",
-                text = {
-                    "计分结束时摧毁所有计分的非{C:attention}使徒{}牌",
-                    "计分的{C:attention}使徒{}给予{X:mult,C:white}X#1#{}倍率",
-                    "打出的牌不含{C:attention}使徒{}时{C:attention}摧毁{}一张随机小丑牌",
-                    "被弃掉的{C:attention}使徒{}会被{C:attention}摧毁{}"
                 }
             },
             j_paperback_as_above_so_below = {
@@ -1346,15 +1313,6 @@ return {
                     "第一张被弃掉的",
                     "{C:attention}#1#{}获得",
                     "一个随机{C:attention}蜡封{}"
-                }
-            },
-            j_paperback_plague_doctor = {
-                name = "瘟疫医生",
-                text = {
-                    "如果打出的牌型是{C:attention}高牌",
-                    "将计分牌转换为{C:attention}使徒{}",
-                    "手牌中每持有一张{C:attention}使徒{}",
-                    "给予{X:mult,C:white}X#1#{}倍率"
                 }
             },
             j_paperback_blood_rain = {
