@@ -1,8 +1,10 @@
 -- 现在UI界面大部分都是改自smod，所以有很多按钮都是不对的，目前只有勾选框是正常工作的，TODO：改UI对应按钮的回调逻辑
 
-TEO = SMODS.current_mod
-TEO.GUI = {}
-TEO.LAST_VIEWED_MODS_PAGE = nil
+TEO = TEO_get_mod()
+if TEO then
+    TEO.GUI = TEO.GUI or {}
+    TEO.LAST_VIEWED_MODS_PAGE = TEO.LAST_VIEWED_MODS_PAGE or nil
+end
 
 
 function G.FUNCS.update_teo_mod_list(args)
@@ -72,7 +74,7 @@ local function createClickableModBox(modInfo, scale)
     local function invert(c)
         return { 1 - c[1], 1 - c[2], 1 - c[3], c[4] }
     end
-    TEO_init_configs()
+    TEO_init_UI_configs()
     -- 修改默认值为false，即初始状态下所有mod都不勾选
     if modInfo.should_teo_localize == nil then
         modInfo.should_teo_localize = false

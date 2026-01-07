@@ -2,19 +2,13 @@ local mod = SMODS.current_mod
 
 -- 加载工具函数
 assert(SMODS.load_file('src/utils.lua'), "Failed to load utils file. ")()
+TEO_init_configs()
 
 -- 加载本地化函数
 assert(SMODS.load_file('src/localization.lua'), "Failed to load localization file. ")()
 
--- print('[TEOcean Language Packs] 正在合并 impl/mods 下的本地化文件...')
--- if mod then
---     mod.process_loc_text = merge_impl_mod_localizations
---     print('[TEOcean Language Packs] 已注册本地化合并函数，将在本地化注入阶段运行')
--- else
---     print('[TEOcean Language Packs] 当前 mod 未就绪，无法注册本地化合并函数')
--- end
-
 assert(SMODS.load_file('src/ui.lua'), "Failed to load UI file. ")()
+assert(SMODS.load_file('src/original_translation.lua'), "Failed to load original translation file. ")()
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
 G.FUNCS.TEOcean_manual_reload = function(e)
@@ -42,28 +36,111 @@ if mod then
             text_colour = (SMODS.mod_button_alert and not G.SETTINGS.reduced_motion) and SMODS.Gradients.warning_text or
                 G.C.TEXT_LIGHT,
             label = { localize('teo_adapted_mods') or '适配的模组' },
-            scale = 0.5
+            scale = 0.4
         })
+
         return {
             n = G.UIT.ROOT,
-            config = { align = "cm", padding = 0.05, colour = G.C.CLEAR },
+            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = G.C.BLACK },
             nodes = {
                 {
                     n = G.UIT.R,
-                    config = { align = "cm", scale = 0.5 },
+                    config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('3E4C59') },
                     nodes = {
-                        UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 3.0, minh = 1.2, scale = 0.5 })
+                        {
+                            n = G.UIT.R,
+                            config = { align = 'cm', minh = 1, padding = 0.1 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_actions') or "Actions", colour = G.C.WHITE, scale = 0.5 } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 6 },
+                            nodes = {
+                                {
+                                    n = G.UIT.R,
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm", padding = 0.05 },
+                                            nodes = {
+                                                UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 3.0, minh = 0.8, scale = 0.4 })
+                                            }
+                                        },
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm", padding = 0.05 },
+                                            nodes = {
+                                                adapted_mods_Button,
+                                            }
+                                        }
+                                    }
+                                },
+                            }
+                        },
                     }
                 },
+                { n = G.UIT.R, config = { minh = 0.05 } }, -- Spacer
                 {
                     n = G.UIT.R,
-                    config = { align = "cm", scale = 0.5 },
+                    config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('3E4C59') },
                     nodes = {
-                        adapted_mods_Button,
+                        {
+                            n = G.UIT.R,
+                            config = { align = 'cm', minh = 1, padding = 0.1 },
+                            nodes = {
+                                {
+                                    n = G.UIT.T,
+                                    config = {
+                                        text = localize('teo_optional_config') or "Optional Config",
+                                        colour = G.C.WHITE,
+                                        scale = 0.5
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 6 },
+                            nodes = {
+                                {
+                                    n = G.UIT.R,
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
+                                                create_toggle({
+                                                    label = localize('teo_show_original') or '显示原版翻译',
+                                                    ref_table = mod.config,
+                                                    ref_value = 'show_original_translation',
+                                                    callback = function(_set_toggle)
+                                                        TEO_save_configs()
+                                                    end
+                                                }),
+                                            },
+                                        },
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
+                                                create_toggle({
+                                                    label = localize('teo_show_original_blind') or '显示盲注原版翻译',
+                                                    ref_table = mod.config,
+                                                    ref_value = 'show_original_blind_translation',
+                                                    callback = function(_set_toggle)
+                                                        TEO_save_configs()
+                                                    end
+                                                })
+                                            }
+                                        }
+                                    }
+                                },
+                            }
+                        },
                     }
-                },
-
-
+                }
             }
         }
     end

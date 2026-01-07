@@ -1,7 +1,17 @@
 -- DEBUG 模式开关：开启后会打印更多调试信息
 local DEBUG = false
 TEO_DEBUG = DEBUG
-local mod = SMODS.current_mod
+function TEO_get_mod()
+    return SMODS.current_mod or TEO
+end
+
+function TEO_ensure_slash(path)
+    if not path then return "" end
+    if path:sub(-1) ~= '/' and path:sub(-1) ~= '\\' then
+        return path .. '/'
+    end
+    return path
+end
 
 -- Credits: Steamodded
 -- I was lazy and it's not like I'm going to code anything different from this anyways~
@@ -110,9 +120,13 @@ function TEO_read_loc_file(path)
         return nil
     else
         local chunk, errc = load(tostring(content), ('=[TEOcean loc "%s"]'):format(path))
-        if not chunk then return nil end
+        if not chunk then
+            TEO_dbg_print('[TEOcean] load 失败:', path, errc)
+            return nil
+        end
         local ok_exec, res = pcall(chunk)
         if ok_exec then return res end
+        TEO_dbg_print('[TEOcean] 执行失败:', path, res)
         return nil
     end
 end
@@ -135,7 +149,7 @@ function TEO_table_to_lua(tbl, indent, visited)
 
     -- 循环引用检测
     if visited[tbl] then
-        return '"<cycle>"' -- 或 error / nil
+        return '"<cycle>"'
     end
     visited[tbl] = true
 
@@ -148,14 +162,21 @@ function TEO_table_to_lua(tbl, indent, visited)
     local count = 0
 
     for k, _ in pairs(tbl) do
+        count = count + 1
         if type(k) ~= 'number' or k <= 0 or k % 1 ~= 0 then
             is_array = false
             break
         end
         if k > max_index then max_index = k end
-        count = count + 1
     end
 
+    -- 空表直接返回
+    if count == 0 then
+        visited[tbl] = nil
+        return '{}'
+    end
+
+    -- 数组必须是连续的
     if is_array and count == max_index then
         -- array
         for i = 1, max_index do
@@ -167,6 +188,8 @@ function TEO_table_to_lua(tbl, indent, visited)
                 val = string.format('%q', v)
             elseif type(v) == 'number' or type(v) == 'boolean' then
                 val = tostring(v)
+            elseif v == nil then
+                val = 'nil' -- 明确处理 nil
             else
                 val = 'nil'
             end
@@ -176,32 +199,39 @@ function TEO_table_to_lua(tbl, indent, visited)
         -- map
         for k, v in pairs(tbl) do
             local key
-            if type(k) == 'string' and k:match('^%a[_%w]*$') then
+            if type(k) == 'string' and k:match('^[%a_][%w_]*$') then -- 允许下划线开头
                 key = k
             elseif type(k) == 'number' then
                 key = '[' .. k .. ']'
+            elseif type(k) == 'string' then
+                -- 修复：其他字符串 key 也序列化
+                key = '[' .. string.format('%q', k) .. ']'
             else
-                -- 跳过不可序列化 key
-                goto continue
+                key = nil
             end
 
-            local val
-            if type(v) == 'table' then
-                val = TEO_table_to_lua(v, next_indent, visited)
-            elseif type(v) == 'string' then
-                val = string.format('%q', v)
-            elseif type(v) == 'number' or type(v) == 'boolean' then
-                val = tostring(v)
-            else
-                val = 'nil'
-            end
+            if key then
+                local val
+                if type(v) == 'table' then
+                    val = TEO_table_to_lua(v, next_indent, visited)
+                elseif type(v) == 'string' then
+                    val = string.format('%q', v)
+                elseif type(v) == 'number' or type(v) == 'boolean' then
+                    val = tostring(v)
+                else
+                    val = 'nil'
+                end
 
-            parts[#parts + 1] = next_indent .. key .. ' = ' .. val
-            ::continue::
+                parts[#parts + 1] = next_indent .. key .. ' = ' .. val
+            end
         end
     end
 
     visited[tbl] = nil
+    if #parts == 0 then
+        return '{}'
+    end
+
     return '{\n' .. table.concat(parts, ',\n') .. '\n' .. indent .. '}'
 end
 
@@ -229,24 +259,32 @@ function TEO_quick_reload_lang(e)
 end
 
 local initialized = false
--- 初始化配置，从当前mod的配置中加载
-function TEO_init_configs()
-    -- 如果当前mod的配置中没有teocean_configs项，则初始化为空表
-    if initialized == true then
-        return
-    end
-    if not mod.config then
+
+function TEO_init_UI_configs()
+    local mod = TEO_get_mod()
+    -- if initialized == true then
+    --     return
+    -- end
+    if mod and not mod.config then
         mod.config = {}
     end
-    if not mod.config.clicked_list then
+    if mod and mod.config and not mod.config.clicked_list then
         mod.config.clicked_list = {}
     end
-    if not mod.config.skip_backup_list then
+    if mod and mod.config and not mod.config.skip_backup_list then
         mod.config.skip_backup_list = {}
+    end
+    -- 初始化"显示原版翻译"配置项
+    if mod and mod.config and mod.config.show_original_translation == nil then
+        mod.config.show_original_translation = false
+    end
+    -- 初始化"显示原版盲注翻译"配置项
+    if mod and mod.config and mod.config.show_original_blind_translation == nil then
+        mod.config.show_original_blind_translation = false
     end
 
     for _, modInfo in ipairs(SMODS.mod_list or {}) do
-        if mod.config.clicked_list[modInfo.id] ~= nil then
+        if mod and mod.config and mod.config.clicked_list and mod.config.clicked_list[modInfo.id] ~= nil then
             modInfo.should_teo_localize = mod.config.clicked_list[modInfo.id]
         elseif modInfo.should_teo_localize == nil then
             -- 默认值为false
@@ -256,42 +294,57 @@ function TEO_init_configs()
     initialized = true
 end
 
+-- 初始化配置，从当前mod的配置中加载
+function TEO_init_configs()
+    TEO_init_UI_configs()
+end
+
 -- 保存配置到当前mod的配置中
 function TEO_save_configs()
+    local mod = TEO_get_mod()
     -- 确保配置表存在
 
-    if not mod.config then
+    if mod and not mod.config then
         mod.config = {}
     end
-    if not mod.config.clicked_list then
+    if mod and mod.config and not mod.config.clicked_list then
         mod.config.clicked_list = {}
     end
 
     -- 保存当前mod的配置
-    SMODS.save_mod_config(mod)
-    print('[TEOcean] 配置已保存到SMODS配置系统')
+    if mod then
+        SMODS.save_mod_config(mod)
+        print('[TEOcean] 配置已保存到SMODS配置系统')
+    end
 end
 
 -- 获取已适配mod列表的译者，在每个本地化文件的 translator表中
 function TEO_get_translators(target_mod, lang)
+    local TEO_mod = TEO_get_mod()
+    if not TEO_mod or not TEO_mod.path then return {} end
+    local teo_path = TEO_ensure_slash(TEO_mod.path)
+    local mod_id = target_mod.id
+
     if lang == nil or type(lang) ~= "string" then
         lang = G.SETTINGS.language or 'en-us'
     end
-    loc_path = mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
+    loc_path = TEO_mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
     if NFS.getInfo(loc_path) then
         local loc_table = TEO_read_loc_file(loc_path)
-        if loc_table and type(loc_table) == 'table' and loc_table.translator then
-            if type(loc_table.translator) == 'table' then
-                return loc_table.translator
-            elseif type(loc_table.translator) == 'string' then
-                return { loc_table.translator }
+        if loc_table and type(loc_table) == 'table' then
+            if loc_table.translator then
+                if type(loc_table.translator) == 'table' then
+                    return loc_table.translator
+                elseif type(loc_table.translator) == 'string' then
+                    return { loc_table.translator }
+                end
             end
-        end
-        if loc_table and type(loc_table) == 'table' and loc_table.misc and loc_table.misc.translator then
-            if type(loc_table.misc.translator) == 'table' then
-                return loc_table.misc.translator
-            elseif type(loc_table.misc.translator) == 'string' then
-                return { loc_table.misc.translator }
+            if loc_table.misc and loc_table.misc.translator then
+                if type(loc_table.misc.translator) == 'table' then
+                    return loc_table.misc.translator
+                elseif type(loc_table.misc.translator) == 'string' then
+                    return { loc_table.misc.translator }
+                end
             end
         end
     end
@@ -306,6 +359,7 @@ function TEO_get_cur_language()
     if G and G.SETTINGS and G.SETTINGS.real_language then
         cur_lang = G.SETTINGS.real_language
     end
+    -- TEO_dbg_print('[TEOcean] 当前语言检测:', tostring(cur_lang))
     return cur_lang
 end
 
