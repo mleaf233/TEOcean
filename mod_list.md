@@ -16,7 +16,7 @@
 | 11   | All in Jest                   | 大      | https://github.com/survovoaneend/All-In-Jest              | 🩹补充缺失部分 |
 | 12   | Balatro-Aikoyoris-Shenanigans | 大      | https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans |   ✅完全汉化   |
 | 13   | LuckyRabbit                   | 中      | https://github.com/Trif3ctal/Lucky-Rabbit                 |   ✅完全汉化   |
-| 13   | CryptidMoreMarioJokers        | 小      | https://github.com/smg9000/Cryptid-MoreMarioJokers        |   ✅完全汉化   |
+| 13   | Cryptid-MoreMarioJokers       | 小      | https://github.com/smg9000/Cryptid-MoreMarioJokers        |   ✅完全汉化   |
 
 如有其他mod汉化需求，请发起issue，或者加群反馈：1074056375
 
