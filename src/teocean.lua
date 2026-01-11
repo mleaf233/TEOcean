@@ -23,6 +23,7 @@ G.FUNCS.TEOcean_manual_reload = function(e)
     TEO_quick_reload_lang(G.LANG or {})
 end
 
+
 if mod then
     mod.process_loc_text = merge_impl_mod_localizations
     -- 模组配置
@@ -137,6 +138,34 @@ if mod then
                                         }
                                     }
                                 },
+                                {
+                                    n = G.UIT.R,
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
+                                                create_toggle({
+                                                    label = localize('teo_runtime_override'),
+                                                    ref_table = mod.config,
+                                                    ref_value = 'use_runtime_override',
+                                                    callback = function(_set_toggle)
+                                                        -- 只保存配置，不执行任何业务逻辑
+                                                        -- 业务逻辑由单个 mod 的勾选触发
+                                                        TEO_save_configs()
+
+                                                        -- 提示用户模式已切换
+                                                        if mod.config.use_runtime_override then
+                                                            TEO_dbg_print('[TEOcean] 已切换到运行时模式（内存中覆盖）')
+                                                        else
+                                                            TEO_dbg_print('[TEOcean] 已切换到磁盘模式（写入文件）')
+                                                        end
+                                                    end
+                                                })
+                                            }
+                                        }
+                                    }
+                                },
                             }
                         },
                     }
@@ -144,7 +173,6 @@ if mod then
             }
         }
     end
+    print('[TEOcean] TEOcean 本地化框架mod加载完成')
+    print('[TEOcean Language Packs] TEOcean 适配的汉化语言包预处理完成 尽情享受游戏吧！')
 end
-
-print('[TEOcean] TEOcean 本地化框架mod加载完成')
-print('[TEOcean Language Packs] TEOcean 适配的汉化语言包预处理完成 尽情享受游戏吧！')
