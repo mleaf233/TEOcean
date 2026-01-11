@@ -11,6 +11,7 @@ return {
             teo_original_tooltip = "Original Translation",
             teo_actions = "Actions",
             teo_optional_config = "Optional Config",
+            teo_runtime_override = "Runtime Override (In-Memory)",
         },
     }
 }

@@ -12,20 +12,58 @@ assert(SMODS.load_file('src/original_translation.lua'), "Failed to load original
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
 G.FUNCS.TEOcean_manual_reload = function(e)
-    TEO_dbg_print('[TEOcean Language Packs] 手动重载触发')
-    local ok, err = pcall(merge_impl_mod_localizations, false)
-    if ok then
-        TEO_dbg_print('[TEOcean Language Packs] 手动重载完成')
+    local teo_mod = TEO_get_mod()
+    if teo_mod.config and teo_mod.config.use_runtime_override == true then
+        TEO_dbg_print('[TEOcean Runtime] 检测到运行时模式已启用，自动应用内存覆盖')
+        local ok, err = pcall(TEO_apply_all_runtime_localizations)
+        if ok then
+            print('[TEOcean Runtime] 手动重载时自动应用运行时覆盖成功')
+        else
+            print(('[TEOcean Runtime] 手动重载时自动应用失败: %s'):format(tostring(err)))
+        end
     else
-        print(('[TEOcean Language Packs] 手动重载失败: %s'):format(tostring(err)))
+        TEO_dbg_print('[TEOcean Language Packs] 手动重载触发')
+        local ok, err = pcall(merge_impl_mod_localizations, false)
+        if ok then
+            TEO_dbg_print('[TEOcean Language Packs] 手动重载完成')
+        else
+            print(('[TEOcean Language Packs] 手动重载失败: %s'):format(tostring(err)))
+        end
+        -- 给玩家一点可见反馈（控制台日志即可）；如需弹窗，可在这里增加 UI 提示
+        TEO_quick_reload_lang(G.LANG or {})
     end
-    -- 给玩家一点可见反馈（控制台日志即可）；如需弹窗，可在这里增加 UI 提示
-    TEO_quick_reload_lang(G.LANG or {})
 end
 
 
 if mod then
-    mod.process_loc_text = merge_impl_mod_localizations
+    mod.process_loc_text = function()
+        -- 在游戏启动时（process_loc_text被调用时）自动应用运行时覆盖
+        -- 这个函数在 SMODS 初始化后被调用，确保所有 mod 都已加载
+        if mod.config and mod.config.use_runtime_override == true then
+            -- 此处分支有bug，无法在启动游戏时运行，本地化覆盖会失败
+            -- local clicked_list = mod.config.clicked_list or {}
+            -- local has_checked_mods = false
+
+            -- for _, is_checked in pairs(clicked_list) do
+            --     if is_checked == true then
+            --         has_checked_mods = true
+            --         break
+            --     end
+            -- end
+
+            -- if has_checked_mods then
+            --     TEO_dbg_print('[TEOcean Runtime] 检测到运行时模式已启用，自动应用内存覆盖')
+            --     local ok, err = pcall(TEO_apply_all_runtime_localizations)
+            --     if ok then
+            --         print('[TEOcean Runtime] 启动时自动应用运行时覆盖成功')
+            --     else
+            --         print(('[TEOcean Runtime] 自动应用失败: %s'):format(tostring(err)))
+            --     end
+            -- end
+        else
+            merge_impl_mod_localizations()
+        end
+    end
     -- 模组配置
     mod.config_tab = function()
         local adapted_mods_Button = UIBox_button({

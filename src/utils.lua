@@ -13,19 +13,6 @@ function TEO_ensure_slash(path)
     return path
 end
 
--- Credits: Steamodded
--- I was lazy and it's not like I'm going to code anything different from this anyways~
-local function recurse(target, ref_table)
-    if type(target) ~= 'table' then return end --this shouldn't happen unless there's a bad return value
-    for k, v in pairs(target) do
-        if not ref_table[k] or (type(v) ~= 'table') then
-            ref_table[k] = v
-        else
-            recurse(v, ref_table[k])
-        end
-    end
-end
-
 function TEO_printTable(t, indent, visited)
     if type(t) ~= "table" then
         print("TEO_printTable: 传入的参数不是表格类型")
@@ -282,6 +269,10 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.show_original_blind_translation == nil then
         mod.config.show_original_blind_translation = false
     end
+    -- 初始化"启用运行时覆盖"配置项
+    if mod and mod.config and mod.config.runtime_override == nil then
+        mod.config.runtime_override = true
+    end
 
     for _, modInfo in ipairs(SMODS.mod_list or {}) do
         if mod and mod.config and mod.config.clicked_list and mod.config.clicked_list[modInfo.id] ~= nil then
@@ -362,50 +353,3 @@ function TEO_get_cur_language()
     -- TEO_dbg_print('[TEOcean] 当前语言检测:', tostring(cur_lang))
     return cur_lang
 end
-
--- 在初始化时加载配置
--- TEO_init_configs()
-
--- local card_h_popup_ref = G.UIDEF.card_h_popup
-
--- function G.UIDEF.card_h_popup(card)
---     -- print('G.UIDEF.card_h_popup: \n', inspectDepth(card, nil, 5))
---     local ret_val = card_h_popup_ref(card)
---     return ret_val
--- end
-
--- local generate_card_ui_ref = generate_card_ui
--- function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
---     if full_UI_table and type(full_UI_table) == 'table' then
---         print('generate_card_ui_name: ', inspectDepth(localize{type = 'name', set = _c.set, key = _c.key, nodes = full_UI_table}))
---     end
---     local t = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
---     return t
--- end
-
--- local function load_localization(loc_table)
---     if loc_table and type(loc_table) == 'table' then
---         recurse(loc_table, G.localization)
---     else
---         return
---     end
--- end
-
--- local init_localization_ref = init_localization
--- function init_localization(loc_table)
---     load_localization(loc_table)
---     return init_localization_ref()
--- end
-
--- local set_language_ref = Game.set_language
-
--- function Game:set_language(localization)
---     print('Game:set_language_1')
-
---     if localization and type(localization) == 'table' then
---         init_localization(localization)
---     end
---     print('Game:set_language_2')
---     -- 调用原函数，保持参数不变
---     set_language_ref(G, localization)
--- end

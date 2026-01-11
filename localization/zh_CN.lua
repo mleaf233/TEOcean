@@ -12,6 +12,7 @@ return {
             teo_original_tooltip = "原版翻译",
             teo_actions = "操作",
             teo_optional_config = "可选配置",
+            teo_runtime_override = "运行时动态覆盖（内存中）",
         },
     },
 }

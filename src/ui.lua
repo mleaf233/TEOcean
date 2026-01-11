@@ -1,4 +1,4 @@
--- 现在UI界面大部分都是改自smod，所以有很多按钮都是不对的，目前只有勾选框是正常工作的，TODO：改UI对应按钮的回调逻辑
+-- 现在UI界面大部分都是改自smod
 
 TEO = TEO_get_mod()
 if TEO then
@@ -235,21 +235,21 @@ local function createClickableModBox(modInfo, scale)
                                             function(_set_toggle)
                                                 -- 检查是否启用运行时覆盖模式
                                                 local use_runtime = TEO.config and TEO.config.use_runtime_override or
-                                                false
+                                                    false
 
                                                 if modInfo.should_teo_localize then
                                                     -- 勾选：根据模式执行不同操作
                                                     if use_runtime then
                                                         -- 运行时模式：内存中覆盖
                                                         TEO_dbg_print(('[TEOcean Runtime] 为 %s 应用内存覆盖'):format(modInfo
-                                                        .id))
+                                                            .id))
                                                         local ok, err = pcall(TEO_apply_runtime_localization, modInfo.id)
                                                         if ok then
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖完成'):format(modInfo
-                                                            .id))
+                                                                .id))
                                                         else
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖失败: %s'):format(
-                                                            modInfo.id, tostring(err)))
+                                                                modInfo.id, tostring(err)))
                                                         end
                                                     else
                                                         -- 磁盘模式：写入文件
@@ -268,15 +268,15 @@ local function createClickableModBox(modInfo, scale)
                                                     if use_runtime then
                                                         -- 运行时模式：移除内存覆盖
                                                         TEO_dbg_print(('[TEOcean Runtime] 为 %s 移除内存覆盖'):format(modInfo
-                                                        .id))
+                                                            .id))
                                                         local ok, err = pcall(TEO_remove_runtime_localization, modInfo
-                                                        .id)
+                                                            .id)
                                                         if ok then
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖已移除'):format(
-                                                            modInfo.id))
+                                                                modInfo.id))
                                                         else
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 移除失败: %s'):format(
-                                                            modInfo.id, tostring(err)))
+                                                                modInfo.id, tostring(err)))
                                                         end
                                                     else
                                                         -- 磁盘模式：恢复原始本地化
@@ -535,38 +535,53 @@ function TEO_create_UIBox_mods_button()
 end
 
 G.FUNCS.exit_teo_mods = function()
-    -- 检查当前配置与初始配置是否一致
-    local current_config = TEO.config.clicked_list
-    local initial_config = TEO.initial_config_state
-    local need_reload = false
+    -- 检查是否使用运行时模式
+    local use_runtime = TEO.config and TEO.config.use_runtime_override or false
 
-    if initial_config then
-        for k, v in pairs(current_config) do
-            if initial_config[k] ~= v then
-                need_reload = true
-                break
-            end
-        end
-        -- 也要检查反向，防止从nil变为false/true的情况（虽然这里主要是clicked_list变动）
-        if not need_reload then
-            for k, v in pairs(initial_config) do
-                if current_config[k] ~= v then
-                    need_reload = true
-                    break
-                end
-            end
-        end
-    end
-
-    if need_reload then
-        -- 执行手动重载
-        G.FUNCS.TEOcean_manual_reload()
-    else
-        -- 返回之前的配置页面 (TEO Config Tab)
+    if use_runtime then
+        -- 运行时模式：不需要重载，直接返回
+        -- 因为内存覆盖已经即时生效了
+        TEO_dbg_print('[TEOcean] 运行时模式，无需重载')
         if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
             G.FUNCS["openModUI_" .. TEO.id]()
         else
             G.FUNCS.exit_overlay_menu()
+        end
+    else
+        -- 磁盘模式：检查是否有配置变化
+        local current_config = TEO.config.clicked_list
+        local initial_config = TEO.initial_config_state
+        local need_reload = false
+
+        if initial_config then
+            for k, v in pairs(current_config) do
+                if initial_config[k] ~= v then
+                    need_reload = true
+                    break
+                end
+            end
+            -- 也要检查反向，防止从nil变为false/true的情况
+            if not need_reload then
+                for k, v in pairs(initial_config) do
+                    if current_config[k] ~= v then
+                        need_reload = true
+                        break
+                    end
+                end
+            end
+        end
+
+        if need_reload then
+            -- 执行手动重载（磁盘模式需要）
+            print('[TEOcean] 磁盘模式检测到配置变化，执行重载')
+            G.FUNCS.TEOcean_manual_reload()
+        else
+            -- 返回之前的配置页面 (TEO Config Tab)
+            if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
+                G.FUNCS["openModUI_" .. TEO.id]()
+            else
+                G.FUNCS.exit_overlay_menu()
+            end
         end
     end
 end

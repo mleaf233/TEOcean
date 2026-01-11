@@ -261,12 +261,12 @@ function merge_single_mod_localization(target_mod, mod)
             end
 
             -- 写入合并后的内容
-            -- local okw, errw = pcall(NFS.write, out_path, content)
-            -- if okw then
-            --     print(('[TEOcean Language Packs] 写入合并本地化: %s -> %s'):format(target_mod.id, out_path))
-            -- else
-            --     print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
-            -- end
+            local okw, errw = pcall(NFS.write, out_path, content)
+            if okw then
+                print(('[TEOcean Language Packs] 写入合并本地化: %s -> %s'):format(target_mod.id, out_path))
+            else
+                print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
+            end
         end
     end
 end
@@ -337,22 +337,16 @@ end
 -- 为单个mod执行本地化合并
 function merge_impl_mod_localizations_for_mod(target_mod)
     merge_single_mod_localization(target_mod, TEO)
-    -- TEO_quick_reload_lang()
-    -- G:set_language()
-    -- G:delete_run()
-    -- init_localization()
-    -- G:init_item_prototypes()
-    -- G:main_menu()
 end
 
 -- ========================================================================================
--- 运行时本地化覆盖系统（内存操作，不修改磁盘文件）
+-- 运行时本地化合并系统（内存操作，不修改磁盘文件）
 -- ========================================================================================
 
 -- 全局备份表，存储原始 G.localization 内容
 TEO_localization_backup = TEO_localization_backup or {}
 
--- 记录当前已应用覆盖的 mod 列表
+-- 记录当前已应用合并的 mod 列表
 TEO_active_overrides = TEO_active_overrides or {}
 
 -- 深拷贝函数（避免引用污染）
@@ -431,7 +425,7 @@ local function backup_mod_localization(mod_id)
                     if is_key_belongs_to_mod(key, mod_id) then
                         backup.descriptions[set_name] = backup.descriptions[set_name] or {}
                         backup.descriptions[set_name][key] = deep_copy(data)
-                        TEO_dbg_print('[TEOcean Runtime] 备份:', set_name, key)
+                        -- TEO_dbg_print('[TEOcean Runtime] 备份:', set_name, key)
                     end
                 end
             end
@@ -442,10 +436,11 @@ local function backup_mod_localization(mod_id)
     TEO_dbg_print('[TEOcean Runtime] 备份完成:', mod_id)
 end
 
--- 应用运行时本地化覆盖（单个 mod）
-function TEO_apply_runtime_localization(mod_id)
-    if not mod_id or mod_id == 'base' then
-        TEO_dbg_print('[TEOcean Runtime] 跳过基础游戏:', mod_id)
+-- 应用运行时本地化合并（单个 mod）
+-- @param mod_id string mod ID
+-- @param skip_init boolean 是否跳过 init_localization（批量操作时使用）
+function TEO_apply_runtime_localization(mod_id, skip_init)
+    if not mod_id then
         return false
     end
 
@@ -482,14 +477,14 @@ function TEO_apply_runtime_localization(mod_id)
     -- 首次应用时创建备份
     backup_mod_localization(mod_id)
 
-    -- 读取覆盖数据
+    -- 读取数据
     local override_data = TEO_read_loc_file(impl_file)
     if not override_data or type(override_data) ~= 'table' then
         print(('[TEOcean Runtime] 读取 impl 文件失败: %s'):format(impl_file))
         return false
     end
 
-    TEO_dbg_print('[TEOcean Runtime] 开始应用覆盖:', mod_id, '语言:', lang)
+    TEO_dbg_print('[TEOcean Runtime] 开始进行合并操作:', mod_id, '语言:', lang)
 
     -- 深度合并到 G.localization
     if not G.localization then
@@ -504,12 +499,12 @@ function TEO_apply_runtime_localization(mod_id)
     -- 标记为已应用
     TEO_active_overrides[mod_id] = true
 
-    -- 重新解析本地化文本
-    if init_localization then
+    -- 重新解析本地化文本（批量操作时跳过，最后统一调用）
+    if not skip_init and init_localization then
         pcall(init_localization)
     end
 
-    print(('[TEOcean Runtime] 成功应用覆盖: %s'):format(mod_id))
+    print(('[TEOcean Runtime] 成功应用合并操作: %s'):format(mod_id))
     return true
 end
 
@@ -531,13 +526,12 @@ function TEO_remove_runtime_localization(mod_id)
             if G.localization.descriptions[set_name] then
                 for key, data in pairs(set_data) do
                     G.localization.descriptions[set_name][key] = deep_copy(data)
-                    TEO_dbg_print('[TEOcean Runtime] 恢复:', set_name, key)
                 end
             end
         end
     end
 
-    -- 移除覆盖标记
+    -- 移除合并覆盖标记
     TEO_active_overrides[mod_id] = nil
 
     -- 重新解析本地化文本
@@ -549,7 +543,7 @@ function TEO_remove_runtime_localization(mod_id)
     return true
 end
 
--- 批量应用运行时本地化覆盖
+-- 批量应用运行时本地化合并操作
 function TEO_apply_all_runtime_localizations()
     local TEO_mod = TEO_get_mod()
     if not TEO_mod or not TEO_mod.config then return end
@@ -557,15 +551,22 @@ function TEO_apply_all_runtime_localizations()
     local clicked_list = TEO_mod.config.clicked_list or {}
     local count = 0
 
+    -- 批量应用时跳过每个 mod 的 init_localization
     for mod_id, is_checked in pairs(clicked_list) do
         if is_checked == true then
-            if TEO_apply_runtime_localization(mod_id) then
+            if TEO_apply_runtime_localization(mod_id, true) then -- skip_init = true
                 count = count + 1
             end
         end
     end
 
-    print(('[TEOcean Runtime] 批量应用完成，已覆盖 %d 个 mod'):format(count))
+    -- 所有 mod 应用完成后，统一调用一次 init_localization
+    if count > 0 and init_localization then
+        TEO_dbg_print('[TEOcean Runtime] 批量应用完成，重新初始化本地化')
+        pcall(init_localization)
+    end
+
+    print(('[TEOcean Runtime] 批量应用完成，已进行合并操作 %d 个 mod'):format(count))
 end
 
 -- 批量恢复运行时本地化
@@ -581,4 +582,4 @@ function TEO_restore_all_runtime_localizations()
     print(('[TEOcean Runtime] 批量恢复完成，已恢复 %d 个 mod'):format(count))
 end
 
-print('[TEOcean] 运行时本地化覆盖系统已加载')
+print('[TEOcean] 运行时本地化合并系统已加载')

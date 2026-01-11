@@ -1788,6 +1788,15 @@ return {
                     '游戏牌添加{C:attention}闪箔{}版本'
                 }
             },
+            j_aij_flying_ace = {
+                name = "空中王牌",
+                text = {
+                    "本回合中每打出一张",
+                    "不重复的{C:attention}花色{}的{C:attention}A{}",
+                    "回合结束时获得{C:money}$#1#{} ",
+                    "{C:inactive}（当前为{} {C:money}$#2#{}{C:inactive}）"
+                }
+            },
             j_aij_youve_got_mail = {
                 name = "你有新邮件",
                 text = {
@@ -1982,7 +1991,7 @@ return {
                 }
             },
             j_aij_straight_to_hell = {
-                name = "顺子地狱",  -- Straight to Hell 为双关翻译
+                name = "顺子地狱", -- Straight to Hell 为双关翻译
                 text = {
                     "如果弃牌中包含{C:attention}顺子{}",
                     "此{C:attention}小丑牌{}获得{X:mult,C:white}X#1#{}倍率",
