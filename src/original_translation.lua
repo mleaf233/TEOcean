@@ -174,6 +174,81 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
         end
     end
 
+    -- 数据规范化：确保返回的数据格式安全
+    if original_text and type(original_text) == 'table' then
+        local normalized = {}
+
+        -- 确保 name 是字符串
+        if original_text.name then
+            if type(original_text.name) == 'string' then
+                normalized.name = original_text.name
+            elseif type(original_text.name) == 'table' then
+                -- 如果 name 是 table，提取文本
+                local name_parts = {}
+                local function extract_name(t)
+                    if type(t) == 'string' then
+                        table.insert(name_parts, t)
+                    elseif type(t) == 'table' then
+                        if #t > 0 then
+                            for i = 1, #t do
+                                extract_name(t[i])
+                            end
+                        else
+                            for _, v in pairs(t) do
+                                extract_name(v)
+                            end
+                        end
+                    end
+                end
+                extract_name(original_text.name)
+                normalized.name = table.concat(name_parts, " ")
+            else
+                normalized.name = tostring(original_text.name)
+            end
+        end
+
+        -- 确保 text 是字符串数组
+        if original_text.text then
+            if type(original_text.text) == 'string' then
+                normalized.text = { original_text.text }
+            elseif type(original_text.text) == 'table' then
+                normalized.text = {}
+                local function extract_text(t, target)
+                    if type(t) == 'string' then
+                        table.insert(target, t)
+                    elseif type(t) == 'table' then
+                        if #t > 0 then
+                            for i = 1, #t do
+                                extract_text(t[i], target)
+                            end
+                        else
+                            -- 可能是嵌套的控制结构，尝试展平
+                            for _, v in pairs(t) do
+                                if type(v) == 'string' then
+                                    table.insert(target, v)
+                                elseif type(v) == 'table' then
+                                    extract_text(v, target)
+                                end
+                            end
+                        end
+                    elseif t ~= nil then
+                        table.insert(target, tostring(t))
+                    end
+                end
+                extract_text(original_text.text, normalized.text)
+            end
+        end
+
+        -- 保留其他字段
+        for k, v in pairs(original_text) do
+            if k ~= 'name' and k ~= 'text' then
+                normalized[k] = v
+            end
+        end
+
+        original_text = normalized
+    end
+
     original_loc_cache[cache_key] = original_text
     return original_text
 end
@@ -248,74 +323,60 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     local result = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
         main_end)
 
-    -- 关键检测：是否启用了功能
+    -- 只有在启用原文翻译功能时才执行以下逻辑
     local lang = TEO_get_cur_language() or 'en-us'
+    local should_show_original = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_translation
 
-    if not TEO_mod or not TEO_mod.config or not TEO_mod.config.show_original_translation then
-        return result
-    end
-
-    if lang == 'en-us' or lang == 'default' then
-        return result
-    end
-
-    -- 提取关键信息
-    if not _c or not _c.key or not _c.set then
-        return result
-    end
-
-    -- 探测 Mod ID
-    local mod_id = nil
-    local detection_method = "none"
-    if _c.mod and _c.mod.id then
-        mod_id = _c.mod.id
-        detection_method = "center.mod.id"
-    elseif _c.mod_id then
-        mod_id = _c.mod_id
-        detection_method = "center.mod_id"
-    elseif _c.key and SMODS.Centers and SMODS.Centers[_c.key] and SMODS.Centers[_c.key].mod then
-        mod_id = SMODS.Centers[_c.key].mod.id
-        detection_method = "SMODS.Centers.mod"
-    elseif _c.config and _c.config.mod and _c.config.mod.id then
-        mod_id = _c.config.mod.id
-        detection_method = "center.config.mod.id"
-    end
-
-    TEO_dbg_print('[TEOcean] Mod 探测结果:', tostring(mod_id), '方式:', detection_method)
-
-    if not mod_id or mod_id == 'base' then
-        return result
-    end
-
-    TEO_dbg_print('[TEOcean] Hover!', _c.key, 'Mod:', mod_id)
-
-    -- 获取原文数据
-    local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key)
-
-    if original_data then
-        TEO_dbg_print('[TEOcean] 找到原文数据，准备插入 UI. ModID:', mod_id, 'Key:', _c.key)
-
-        local vars = specific_vars
-
-        local target_queue = nil
-        if type(result) == 'table' then
-            result.info_queue = result.info_queue or {}
-            target_queue = result.info_queue
-        elseif type(full_UI_table) == 'table' then
-            full_UI_table.info_queue = full_UI_table.info_queue or {}
-            target_queue = full_UI_table.info_queue
+    if should_show_original and lang ~= 'en-us' and lang ~= 'default' and _c and _c.key and _c.set then
+        -- 探测 Mod ID
+        local mod_id = nil
+        local detection_method = "none"
+        if _c.mod and _c.mod.id then
+            mod_id = _c.mod.id
+            detection_method = "center.mod.id"
+        elseif _c.mod_id then
+            mod_id = _c.mod_id
+            detection_method = "center.mod_id"
+        elseif _c.key and SMODS.Centers and SMODS.Centers[_c.key] and SMODS.Centers[_c.key].mod then
+            mod_id = SMODS.Centers[_c.key].mod.id
+            detection_method = "SMODS.Centers.mod"
+        elseif _c.config and _c.config.mod and _c.config.mod.id then
+            mod_id = _c.config.mod.id
+            detection_method = "center.config.mod.id"
         end
 
-        if target_queue then
-            table.insert(target_queue, {
-                key = 'teo_original_' .. _c.key,
-                set = 'Other',
-                vars = {},
-                generate_ui = function(info_queue_card)
-                    TEO_dbg_print('[TEOcean] 正在渲染 info_queue 节点...')
-                    return TEO_build_original_translation_ui(original_data, vars)
+        TEO_dbg_print('[TEOcean] ModID 探测结果:', tostring(mod_id), '方式:', detection_method)
+
+        if mod_id and mod_id ~= 'base' then
+            -- 获取原文数据
+            local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key)
+
+            if original_data then
+                TEO_dbg_print('[TEOcean] 找到原文数据，准备插入UI，ModID:', mod_id, 'Key:', _c.key)
+
+                local vars = specific_vars
+
+                local target_queue = nil
+                if type(result) == 'table' then
+                    result.info_queue = result.info_queue or {}
+                    target_queue = result.info_queue
+                elseif type(full_UI_table) == 'table' then
+                    full_UI_table.info_queue = full_UI_table.info_queue or {}
+                    target_queue = full_UI_table.info_queue
                 end
-            })
+
+                if target_queue then
+                    table.insert(target_queue, {
+                        key = 'teo_original_' .. _c.key,
+                        set = 'Other',
+                        vars = {},
+                        generate_ui = function(info_queue_card)
+                            TEO_dbg_print('[TEOcean] 正在渲染 info_queue 节点...')
+                            return TEO_build_original_translation_ui(original_data, vars)
+                        end
+                    })
+                end
+            end
         end
     end
 

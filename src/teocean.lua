@@ -9,6 +9,9 @@ assert(SMODS.load_file('src/localization.lua'), "Failed to load localization fil
 
 assert(SMODS.load_file('src/ui.lua'), "Failed to load UI file. ")()
 assert(SMODS.load_file('src/original_translation.lua'), "Failed to load original translation file. ")()
+assert(SMODS.load_file('src/llm_demo.lua'), "Failed to load LLM demo file. ")()
+assert(SMODS.load_file('src/ai_manager.lua'), "Failed to load AI Manager. ")()
+assert(SMODS.load_file('src/ai_translation.lua'), "Failed to load AI Translation UI. ")()
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
 G.FUNCS.TEOcean_manual_reload = function(e)
@@ -197,6 +200,19 @@ if mod then
                                                             TEO_dbg_print('[TEOcean] 已切换到运行时模式（内存中覆盖）')
                                                         else
                                                             TEO_dbg_print('[TEOcean] 已切换到磁盘模式（写入文件）')
+                                                        end
+                                                    end
+                                                }),
+                                                create_toggle({
+                                                    label = "启用 AI 翻译", -- 临时硬编码，建议稍后添加 localize
+                                                    ref_table = mod.config,
+                                                    ref_value = 'enable_ai_translation',
+                                                    callback = function(_set_toggle)
+                                                        TEO_save_configs()
+                                                        if mod.config.enable_ai_translation then
+                                                            print('[TEOcean] AI 翻译功能已启用')
+                                                        else
+                                                            print('[TEOcean] AI 翻译功能已禁用')
                                                         end
                                                     end
                                                 })

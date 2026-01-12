@@ -582,4 +582,99 @@ function TEO_restore_all_runtime_localizations()
     print(('[TEOcean Runtime] 批量恢复完成，已恢复 %d 个 mod'):format(count))
 end
 
+-- ========================================================================================
+-- 卡牌级本地化获取（集成AI翻译）
+-- ========================================================================================
+
+--- 获取卡片本地化数据，优先级：impl/mods > impl/ai > AI请求
+-- @param mod_id string mod ID
+-- @param set_key string set类型 (如 'Joker', 'Tarot' 等)
+-- @param card_key string 卡片key
+-- @return table|nil 本地化数据，如果未找到返回nil
+function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
+    if not mod_id or not set_key or not card_key then return nil end
+
+    local TEO_mod = TEO_get_mod()
+    if not TEO_mod or not TEO_mod.path then return nil end
+
+    local lang = TEO_get_cur_language() or 'zh_CN'
+
+    -- 1. 检查 impl/mods 手动翻译（最高优先级）
+    local impl_file = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
+    if NFS.getInfo(impl_file) then
+        local impl_data = TEO_read_loc_file(impl_file)
+        if impl_data and
+            impl_data.descriptions and
+            impl_data.descriptions[set_key] and
+            impl_data.descriptions[set_key][card_key] then
+            if TEO_dbg_print then
+                TEO_dbg_print('[TEOcean Card Loc] 使用手动翻译:', mod_id, set_key, card_key)
+            end
+            return impl_data.descriptions[set_key][card_key]
+        end
+    end
+
+    -- 2. 检查 impl/ai AI缓存
+    if TEO_get_ai_card_translation then
+        local ai_cached = TEO_get_ai_card_translation(mod_id, set_key, card_key)
+        if ai_cached then
+            if TEO_dbg_print then
+                TEO_dbg_print('[TEO Card Loc] 使用AI缓存:', mod_id, set_key, card_key)
+            end
+            -- AI缓存的数据需要应用到 G.localization
+            if TEO_apply_ai_override then
+                TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached)
+            end
+            return ai_cached
+        end
+    end
+
+    -- 3. 检查是否启用AI翻译
+    local ai_enabled = TEO_mod.config and TEO_mod.config.enable_ai_translation
+    if not ai_enabled then return nil end
+
+    -- 4. 触发AI请求（异步，不阻塞）
+    -- 获取原始文本用于翻译
+    if TEO_get_original_localization and TEO_request_ai_translation then
+        local original_data = TEO_get_original_localization(mod_id, set_key, card_key)
+        if original_data then
+            local parts = {}
+
+            -- 收集文本用于翻译
+            local function collect(t)
+                if type(t) == 'string' then
+                    table.insert(parts, t)
+                elseif type(t) == 'table' then
+                    if #t > 0 then
+                        for i = 1, #t do
+                            collect(t[i])
+                        end
+                    else
+                        for _, v in pairs(t) do
+                            collect(v)
+                        end
+                    end
+                elseif type(t) == 'number' then
+                    table.insert(parts, tostring(t))
+                end
+            end
+
+            if original_data.name then collect(original_data.name) end
+            if original_data.text then collect(original_data.text) end
+
+            local source_text = table.concat(parts, "\n")
+            if source_text and source_text ~= "" then
+                -- 触发异步翻译请求
+                TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
+                if TEO_dbg_print then
+                    TEO_dbg_print('[TEOcean Card Loc] 触发AI翻译请求:', mod_id, set_key, card_key)
+                end
+            end
+        end
+    end
+
+    -- 请求已发起，但本次返回nil（下次悬停时会走缓存）
+    return nil
+end
+
 print('[TEOcean] 运行时本地化合并系统已加载')

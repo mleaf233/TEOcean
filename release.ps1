@@ -40,15 +40,15 @@ try {
 
     # 获取所有文件和文件夹（排除任何路径下的名为 Libs、smods 的目录及其内容，以及任何路径下的名为 release.ps1 的文件）
     $Items = Get-ChildItem -Path $Source.FullName -Recurse -Force |
-        Where-Object {
-            # 跳过路径中包含 "\Libs\" 或以 "\Libs" 结尾的项
-            # 跳过路径中包含 "\smods\" 或以 "\smods" 结尾的项
-            # 跳过路径中包含 "\Balatro\" 或以 "\Balatro" 结尾的项
-            # 跳过路径中包含 "\llm\" 或以 "\llm" 结尾的项（在 src 目录下）
-            # 跳过路径中包含 "\.venv\" 或以 "\.venv" 结尾的项
-            # 合并后的正则表达式
-            ($_.FullName -inotmatch "[\\/]((Libs|smods|game|llm|\.venv)[\\/]?|release\.ps1$)")
-        }
+    Where-Object {
+        # 跳过路径中包含 "\Libs\" 或以 "\Libs" 结尾的项
+        # 跳过路径中包含 "\smods\" 或以 "\smods" 结尾的项
+        # 跳过路径中包含 "\Balatro\" 或以 "\Balatro" 结尾的项
+        # 跳过路径中包含 "\llm\" 或以 "\llm" 结尾的项（在 src 目录下）
+        # 跳过路径中包含 "\.venv\" 或以 "\.venv" 结尾的项
+        # 合并后的正则表达式
+        ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv)[\\/]?|release\.ps1$)")
+    }
 
     foreach ($Item in $Items) {
         $TargetPath = $Item.FullName.Replace($Source.FullName, $Destination)
@@ -57,7 +57,8 @@ try {
             if (-not (Test-Path $TargetPath)) {
                 New-Item -ItemType Directory -Path $TargetPath | Out-Null
             }
-        } else {
+        }
+        else {
             # 确保目标目录存在
             $TargetDir = Split-Path $TargetPath -Parent
             if (-not (Test-Path $TargetDir)) {
