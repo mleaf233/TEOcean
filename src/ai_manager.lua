@@ -1,10 +1,16 @@
 -- AI Manager: 负责处理 DeepSeek API 请求、缓存和直接Override
 
-local API_KEY = ""
 local API_URL = "https://api.deepseek.com/chat/completions"
 
 local TEO = SMODS.current_mod
-local AI_CACHE = {}              -- 内存缓存：{ [text_hash] = "Translated Text" }
+local AI_CACHE = {} -- 内存缓存：{ [text_hash] = "Translated Text" }
+
+local function TEO_get_api_key()
+    if TEO and TEO.config and TEO.config.api_key then
+        return TEO.config.api_key
+    end
+    return "sk-default-placeholder"
+end
 local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = content } } }
 local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
 local PENDING_CARD_REQUESTS = {} -- 卡牌级请求跟踪：{ [mod_id.set_key.card_key] = true }
@@ -37,13 +43,47 @@ local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中�
 6. 遇到“倍乘”“倍增”时，不需要翻译出来，只需要写数字表示（例如X3、+10)
 8. 如果需要逗号，请改成另起一行文本，也就是不要出现逗号，句号同理
 9. 可供参考的替换词汇表（每个词汇以|或换行分隔）：
-Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jimbo Arcana Packs -> 巨型秘术包 | Clips -> 别针
-手持的 -> 留在手中的 | 小丑 -> 小丑牌 | 提供 -> 给予 | 几率 -> 概率 | 有{C:green}#1#/#2#{}概率 -> 有{C:green}#1#/#2#{}几率 | 首次 -> 第一次 | 首张 -> 第一张
-自毁 -> {S:1.1,C:red,E:2}自毁{} | 若 -> 如果 | 出售 -> 售出 | 赋予 -> 添加 | E.G.O. Gift -> E.G.O. 饰品
-消耗槽位 -> 消耗牌槽位 | 吃完 ->  {S:1.1,C:red,E:2}自毁 | 增强包 -> 补充包 | 牌背 -> 牌套
-标贴 -> 贴纸  | Ascension power -> 升阶强度 | Ascended hands -> 已升阶牌型 | Mythos Pack -> 神话包 | Mythos -> 神话
-loteria_pack -> 乐透包 | zodiac -> 星座 | unique hand -> 不重复的牌型
-最后一手牌 -> 最后一次出牌 | silly -> 滑稽]]
+Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jumbo Arcana Pack -> 巨型秘术包 | Mega Arcana Pack -> 超级秘术包 | Arcana Pack -> 秘术包
+held in hand -> 留在手牌中 | Joker -> 小丑牌 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
+first hand -> 第一次出牌 | first played card -> 第一张计分牌 | self destructs -> 自毁 | if -> 如果 | sell -> 售出 | add -> 添加
+E.G.O. Gift -> E.G.O. 饰品 | consumable slot -> 消耗牌槽位 | eat -> 吃完了 | Booster Pack -> 补充包 | card back -> 牌套
+Ascension power -> 升阶强度 | Ascended hands -> 已升阶牌型 | Mythos Pack -> 神话包 | Mythos -> 神话
+loteria_pack -> 乐透包 | zodiac -> 星座 | unique hand -> 不重复的牌型 | final hand of round -> 最后一次出牌 | silly -> 滑稽
+Deck -> 牌组 | Blind -> 盲注 | Joker -> 小丑牌 | Ante -> 底注 | Chips -> 筹码 | Mult -> 倍率 | Face Cards -> 人头牌 | Playing Cards -> 游戏牌
+Consumable -> 消耗牌 | Spectral -> 幻灵 | Tarot -> 塔罗牌 | Planet -> 星球牌 | Voucher -> 优惠券 | Booster Pack -> 补充包
+Edition -> 版本 | Foil -> 闪箔 | Holographic -> 镭射 | Polychrome -> 多彩 | Negative -> 负片 | Eternal -> 永恒卡 | Perishable -> 易腐
+Rental -> 租用 | Seal -> 蜡封 | Sticker -> 标贴 | Boss Blind -> Boss盲注 | Small Blind -> 小盲注 | Big Blind -> 大盲注
+Hand -> 出牌 | Discard -> 弃牌 | Hand Size -> 手牌上限 | Poker Hand -> 牌型 | Flush -> 同花 | Straight -> 顺子
+Full House -> 葫芦 | Royal Flush -> 皇家同花顺 | Five of a Kind -> 五条 | Flush Five -> 同花五条 | Flush House -> 同花葫芦
+Four of a Kind -> 四条 | Three of a Kind -> 三条 | Two Pair -> 两对 | Pair -> 对子 | High Card -> 高牌
+Straight Flush -> 同花顺 | interest -> 利息 | reroll -> 重掷 | shop -> 商店 | round -> 回合 | run -> 赛局/局
+debuffed -> 被削弱 | destroy -> 摧毁 | create -> 生成 | copy -> 复制 | random -> 随机 | selected -> 选定
+upgrade -> 升级 | level -> 等级 | score -> 计分/得分 | trigger -> 触发 | retrigger -> 重新触发 | ability -> 能力
+enhance -> 增强 | enhancement -> 增强效果 | suit -> 花色 | rank -> 点数 | common -> 普通 | uncommon -> 罕见
+rare -> 稀有 | legendary -> 传奇 | tag -> 标签 | stake -> 赌注 | challenge -> 挑战 | collection -> 收藏
+profile -> 配置 | seed -> 种子 | victory -> 胜利 | defeat -> 失败 | skip -> 跳过 | cash -> 资金/现金
+reward -> 奖励 | voucher -> 优惠券 | celestial pack -> 天体包 | standard pack -> 标准包 | spectral pack -> 幻灵包
+buffoon pack -> 小丑包 | playing card -> 游戏牌 | stone card -> 石头牌 | glass card -> 玻璃牌 | gold card -> 黄金牌
+steel card -> 钢铁牌 | lucky card -> 幸运牌 | wild card -> 万能牌 | bonus card -> 奖励牌 | mult card -> 倍率牌
+enhanced card -> 增强卡牌 | debuffed card -> 被削弱的牌 | face down -> 背面朝上 | face up -> 正面朝上
+select -> 选择 | choose -> 选择 | use -> 使用 | play -> 打出/出牌 | discard -> 弃掉 | hold -> 持有/留在
+gain -> 获得 | lose -> 失去 | earn -> 赚取 | permanent -> 永久 | consecutive -> 连续 | remaining -> 剩余
+total -> 总计 | per -> 每 | each -> 每个 | every -> 每一 | when -> 当...时 | if -> 如果 | at end of -> 在...结束时
+at start of -> 在...开始时 | in shop -> 在商店中 | in hand -> 在手牌中 | in deck -> 在牌组中 | in run -> 在本赛局中
+most played -> 最常用的 | final -> 最后的 | additional -> 额外的 | base -> 基础 | extra -> 额外 | free -> 免费
+cost -> 花费 | price -> 价格 | sell value -> 售价 | money -> 资金 | dollar -> 美元 | cash -> 现金
+chips -> 筹码 | mult -> 倍率 | X mult -> X倍率 | plus -> 加 | minus -> 减 | times -> 乘以 | chance -> 几率
+probability -> 概率 | luck -> 幸运 | hex -> 妖法 | soul -> 灵魂 | aura -> 光环 | ankh -> 生命十字章
+cryptid -> 神秘生物 | deja vu -> 既视感 | ectoplasm -> 灵质 | familiar -> 使魔 | grim -> 严峻 | immolate -> 火祭
+incantation -> 咒语 | medium -> 灵媒 | ouija -> 占卜 | sigil -> 符印 | talisman -> 护身符 | trance -> 入迷
+wraith -> 幽灵 | black hole -> 黑洞 | ceres -> 谷神星 | earth -> 地球 | eris -> 阋神星 | jupiter -> 木星
+mars -> 火星 | mercury -> 水星 | neptune -> 海王星 | planet x -> X行星 | pluto -> 冥王星 | saturn -> 土星
+uranus -> 天王星 | venus -> 金星 | dwarf planet -> 矮行星 | the chariot -> 战车 | death -> 死神 | the devil -> 恶魔
+the emperor -> 皇帝 | the empress -> 皇后 | the fool -> 愚者 | the hanged man -> 倒吊人 | the hierophant -> 教皇
+the hermit -> 隐者 | the high priestess -> 女祭司 | judgement -> 审判 | justice -> 正义 | the lovers -> 恋人
+the magician -> 魔术师 | the moon -> 月亮 | the star -> 星星 | strength -> 力量 | the sun -> 太阳 | temperance -> 节制
+the tower -> 塔 | the wheel of fortune -> 命运之轮 | the world -> 世界
+特殊规则：Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统一应用：Sticker -> 贴纸]]
 
 --- 计算简单哈希
 local function get_text_hash(text)
@@ -363,9 +403,16 @@ function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
         stream = false
     }
 
+    local current_api_key = TEO_get_api_key()
+
+    if not current_api_key or current_api_key == "sk-default-placeholder" or current_api_key == "" then
+        print("[TEOcean AI] 未配置 API Key，无法进行 AI 翻译")
+        return
+    end
+
     local headers = {
         ["Content-Type"] = "application/json",
-        ["Authorization"] = "Bearer " .. API_KEY
+        ["Authorization"] = "Bearer " .. current_api_key
     }
 
     https.asyncRequest(

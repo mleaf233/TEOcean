@@ -596,3 +596,183 @@ G.FUNCS.TEOcean_adapted_mods_button = function()
         definition = TEO_create_UIBox_mods_button()
     })
 end
+
+G.FUNCS.TEOcean_ask_api_key = function()
+    local mod = TEO_get_mod()
+    if not mod.config.api_key then
+        mod.config.api_key = ""
+    end
+
+    -- Create a temporary display config for the UI and store in TEO so save function can access it
+    TEO._api_key_display_config = {
+        -- Show masked version by default (only if there's content)
+        display_key = mod.config.api_key ~= "" and string.rep("*", #mod.config.api_key) or ""
+    }
+
+    G.FUNCS.overlay_menu({
+        definition = {
+            n = G.UIT.ROOT,
+            config = { align = "cm", padding = 0.05, colour = G.C.BLACK, r = 0.1 },
+            nodes = {
+                {
+                    n = G.UIT.C,
+                    config = { align = "cm", padding = 0.05 },
+                    nodes = {
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_api_key_popup_title'), scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                create_text_input({
+                                    ref_table = TEO._api_key_display_config,
+                                    ref_value = "display_key",
+                                    max_length = 120,
+                                    prompt_text = "sk-...",
+                                    extended_corpus = true,
+                                    w = 8,
+                                    h = 0.8,
+                                    callback = function()
+                                        -- When user finishes editing (presses Enter), save to real config
+                                        mod.config.api_key = TEO._api_key_display_config.display_key
+                                    end
+                                })
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                -- Clear button row
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.1 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_clear_api_key",
+                                            label = { localize('teo_b_clear') or "Empty" },
+                                            minw = 2,
+                                            scale = 0.4,
+                                            colour = G.C.RED
+                                        })
+                                    }
+                                },
+                                -- Get API Key URL row
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.1 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_get_api_key_url",
+                                            label = { localize('teo_b_get_key') or "Get API Key" },
+                                            minw = 2,
+                                            scale = 0.4,
+                                            colour = G.C.ORANGE
+                                        })
+                                    }
+                                },
+                                -- Confirm/Cancel buttons row
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.1 },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm" },
+                                            nodes = {
+                                                UIBox_button({
+                                                    button = "TEOcean_save_api_key_display",
+                                                    label = { localize('teo_b_set') or "Confirm" },
+                                                    minw = 2,
+                                                    scale = 0.4
+                                                })
+                                            }
+                                        },
+                                        { n = G.UIT.C, config = { align = "cm", padding = 0.1 }, nodes = { { n = G.UIT.B, config = { w = 0.2, h = 0.1 } } } }, -- Spacer
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm" },
+                                            nodes = {
+                                                UIBox_button({
+                                                    button = "TEOcean_cancel_api_key",
+                                                    label = { localize('teo_b_cancel') or "Cancel" },
+                                                    minw = 2,
+                                                    scale = 0.4
+                                                })
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+end
+
+G.FUNCS.TEOcean_save_api_key_display = function(e)
+    -- Get the display config from TEO global
+    if TEO._api_key_display_config and TEO._api_key_display_config.display_key then
+        local mod = TEO_get_mod()
+        local new_value = TEO._api_key_display_config.display_key
+
+        -- Check if the value is just masked characters (user didn't edit)
+        -- If it's all asterisks and has the same length as original, user didn't change it
+        local is_unchanged_mask = (new_value:match("^%*+$") ~= nil)
+
+        if not is_unchanged_mask then
+            -- User actually typed something, save it
+            mod.config.api_key = new_value
+            TEO_save_configs()
+            print("[TEOcean] API Key Saved: " .. (new_value ~= "" and "***hidden***" or "empty"))
+        else
+            -- User didn't modify the masked input, keep original key
+            print("[TEOcean] API Key unchanged (masked input not modified)")
+        end
+    end
+    if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
+        G.FUNCS["openModUI_" .. TEO.id]()
+    else
+        G.FUNCS.exit_overlay_menu()
+    end
+end
+
+G.FUNCS.TEOcean_save_api_key = function()
+    -- Legacy function, redirect to new one
+    G.FUNCS.TEOcean_save_api_key_display()
+end
+
+G.FUNCS.TEOcean_cancel_api_key = function()
+    if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
+        G.FUNCS["openModUI_" .. TEO.id]()
+    else
+        G.FUNCS.exit_overlay_menu()
+    end
+end
+
+G.FUNCS.TEOcean_clear_api_key = function()
+    local mod = TEO_get_mod()
+    if mod and mod.config then
+        mod.config.api_key = ""
+        TEO_save_configs()
+        -- Refresh the popup to show empty text
+        G.FUNCS.TEOcean_ask_api_key()
+    end
+end
+
+G.FUNCS.TEOcean_blur_input = function()
+    G.CONTROLLER.text_input_hook = nil
+end
+
+G.FUNCS.TEOcean_get_api_key_url = function()
+    if love and love.system then
+        love.system.openURL("https://platform.deepseek.com/api_keys")
+    end
+end

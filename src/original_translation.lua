@@ -174,6 +174,16 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
         end
     end
 
+    -- 3) 从 SMODS.Centers 读取内联的 loc_txt (第三层回退)
+    -- 适用于像 Bloonlatro 这样直接在代码中定义 loc_txt 的 mod
+    if not original_text and loc_key and SMODS.Centers and SMODS.Centers[loc_key] then
+        local center = SMODS.Centers[loc_key]
+        if center.loc_txt then
+            TEO_dbg_print('[TEOcean] 从 SMODS.Centers 读取内联 loc_txt:', loc_key)
+            original_text = center.loc_txt
+        end
+    end
+
     -- 数据规范化：确保返回的数据格式安全
     if original_text and type(original_text) == 'table' then
         local normalized = {}

@@ -67,4 +67,4 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     return result
 end
 
-print('[TEOcean AI] AI 翻译模块已加载 (需同时开启 "运行时动态覆盖"配置)')
+print('[TEOcean AI] AI 翻译模块已加载')

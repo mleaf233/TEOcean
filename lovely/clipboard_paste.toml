@@ -1,0 +1,77 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 100
+
+# Inject Ctrl+V clipboard paste support into the text_input_key function
+# This serves as a fallback when Cryptid mod is NOT loaded.
+# (If Cryptid IS loaded, it overwrites this function)
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''G.FUNCS.text_input_key = function(args)
+  args = args or {}'''
+position = 'after'
+payload = '''
+  -- TEOcean: Ctrl+V clipboard paste support (Lovely Patch)
+  -- Recursion guard must be at the very top: if we ARE pasting (true), execute normal logic (allow recursion to flow through to standard char processing)
+  args = args or {}
+  local pasting = G.CONTROLLER.pasting_clipboard or false
+  if not pasting then
+    local is_ctrl = false
+    if G.CONTROLLER and G.CONTROLLER.held_keys then
+        is_ctrl = G.CONTROLLER.held_keys['lctrl'] or G.CONTROLLER.held_keys['rctrl'] or
+            G.CONTROLLER.held_keys['lgui'] or G.CONTROLLER.held_keys['rgui']
+    end
+    if not is_ctrl and love.keyboard then
+        is_ctrl = love.keyboard.isDown('lctrl', 'rctrl', 'lgui', 'rgui')
+    end
+    if args and (args.key == 'v' or args.key == 'V') and is_ctrl then
+        local clipboard = (G.F_LOCAL_CLIPBOARD and G.CLIPBOARD or (love.system and love.system.getClipboardText())) or ''
+        if type(clipboard) == 'string' and clipboard ~= "" and G.CONTROLLER.text_input_hook then
+            -- Set flag to prevent infinite recursion if hooks call each other
+            G.CONTROLLER.pasting_clipboard = true
+            for i = 1, #clipboard do
+                local c = clipboard:sub(i, i)
+                G.FUNCS.text_input_key({ key = c })
+            end
+            G.CONTROLLER.pasting_clipboard = false
+            return
+        end
+    end
+  end
+  -- End TEOcean Ctrl+V support'''
+match_indent = true
+
+# TEOcean: Fix base game text_input_key crashing or failing on '-' input due to Lua pattern matching
+# The original code uses string.find(lower_ext, args.key) without plain=true, so '-' is treated as a pattern special char.
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''    if string.find(lower_ext, args.key) and args.caps then 
+      args.key = string.sub(string.sub(upper_ext,string.find(lower_ext, args.key)), 0, 1)
+    end'''
+position = 'at'
+payload = '''    if string.find(lower_ext, args.key, 1, true) and args.caps then 
+      args.key = string.sub(string.sub(upper_ext,string.find(lower_ext, args.key, 1, true)), 0, 1)
+    end'''
+match_indent = true
+
+# TEOcean: Click-to-Blur support
+# Modifies engine/controller.lua to blur text inputs when clicking outside of them
+[[patches]]
+[patches.pattern]
+target = 'engine/controller.lua'
+pattern = '''    if self.cursor_down.target == nil then 
+        self.cursor_down.target = G.ROOM
+    end'''
+position = 'after'
+payload = '''    
+    -- TEOcean: Blur text input if clicking outside
+    if self.text_input_hook and self.cursor_down.target ~= self.text_input_hook then
+        local on_keyboard = self.screen_keyboard and self.cursor_down.target.UIBox == self.screen_keyboard
+        if not on_keyboard then
+            self.text_input_hook = nil
+        end
+    end'''
+match_indent = true

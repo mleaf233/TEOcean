@@ -107,7 +107,15 @@ if mod then
                                             n = G.UIT.C,
                                             config = { align = "cm", padding = 0.05 },
                                             nodes = {
-                                                UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 3.0, minh = 0.8, scale = 0.4 })
+                                                UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 3.0, minh = 0.8, scale = 0.4 }),
+                                                UIBox_button({
+                                                    button = 'TEOcean_ask_api_key',
+                                                    label = { localize('teo_set_api_key') or '设置 API Key' },
+                                                    minw = 3.0,
+                                                    minh = 0.8,
+                                                    scale = 0.4,
+                                                    colour = HEX('0096C7') -- Ocean Blue
+                                                })
                                             }
                                         },
                                         {
@@ -187,7 +195,7 @@ if mod then
                                             config = { align = "cl", padding = 0.05 },
                                             nodes = {
                                                 create_toggle({
-                                                    label = localize('teo_runtime_override'),
+                                                    label = localize('teo_runtime_override') or "Runtime Override",
                                                     ref_table = mod.config,
                                                     ref_value = 'use_runtime_override',
                                                     callback = function(_set_toggle)
@@ -204,18 +212,28 @@ if mod then
                                                     end
                                                 }),
                                                 create_toggle({
-                                                    label = "启用 AI 翻译", -- 临时硬编码，建议稍后添加 localize
+                                                    label = localize('teo_enable_ai') or "Enable AI Translation",
                                                     ref_table = mod.config,
                                                     ref_value = 'enable_ai_translation',
+                                                    active_colour = (mod.config.api_key ~= nil and mod.config.api_key ~= "") and
+                                                        G.C.RED or G.C.UI.BACKGROUND_INACTIVE,
                                                     callback = function(_set_toggle)
-                                                        TEO_save_configs()
-                                                        if mod.config.enable_ai_translation then
-                                                            print('[TEOcean] AI 翻译功能已启用')
+                                                        if mod.config.api_key and mod.config.api_key ~= "" then
+                                                            TEO_save_configs()
+                                                            if mod.config.enable_ai_translation then
+                                                                print('[TEOcean] AI 翻译功能已启用')
+                                                            else
+                                                                print('[TEOcean] AI 翻译功能已禁用')
+                                                            end
                                                         else
-                                                            print('[TEOcean] AI 翻译功能已禁用')
+                                                            -- Redirect to API Key setting
+                                                            mod.config.enable_ai_translation = false
+                                                            TEO_save_configs()
+                                                            print('[TEOcean] 未设置 API Key，跳转至设置页面')
+                                                            G.FUNCS.TEOcean_ask_api_key()
                                                         end
                                                     end
-                                                })
+                                                }),
                                             }
                                         }
                                     }
@@ -227,6 +245,5 @@ if mod then
             }
         }
     end
-    print('[TEOcean] TEOcean 本地化框架mod加载完成')
     print('[TEOcean Language Packs] TEOcean 适配的汉化语言包预处理完成 尽情享受游戏吧！')
 end
