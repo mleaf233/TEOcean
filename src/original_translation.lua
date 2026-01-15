@@ -326,12 +326,12 @@ if not generate_card_ui_ref then
     TEO_dbg_print('[TEOcean] 警告: generate_card_ui 尚未定义，可能导致 Hook 失败或游戏崩溃')
 end
 
-function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     local TEO_mod = TEO_get_mod()
     TEO_dbg_print('[TEOcean] generate_card_ui Hook 触发 - Key:', tostring(_c and _c.key), 'Set:', tostring(_c and _c.set))
 
     local result = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
-        main_end)
+        main_end, card)
 
     -- 只有在启用原文翻译功能时才执行以下逻辑
     local lang = TEO_get_cur_language() or 'en-us'

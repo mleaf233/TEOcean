@@ -17,7 +17,7 @@ payload = '''
   -- Recursion guard must be at the very top: if we ARE pasting (true), execute normal logic (allow recursion to flow through to standard char processing)
   args = args or {}
   local pasting = G.CONTROLLER.pasting_clipboard or false
-  if not pasting then
+  if pasting == false then
     local is_ctrl = false
     if G.CONTROLLER and G.CONTROLLER.held_keys then
         is_ctrl = G.CONTROLLER.held_keys['lctrl'] or G.CONTROLLER.held_keys['rctrl'] or
@@ -41,6 +41,19 @@ payload = '''
     end
   end
   -- End TEOcean Ctrl+V support'''
+match_indent = true
+
+# Fix number 0 in clipboard paste
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua' 
+pattern = '''  if args.key == '[' or args.key == ']' then return end
+  if args.key == '0' then args.key = 'o' end
+'''
+position = 'at'
+payload = '''  if args.key == '[' or args.key == ']' then return end
+  if args.key == '0' and not G.CONTROLLER.pasting_clipboard then args.key = 'o' end
+'''
 match_indent = true
 
 # TEOcean: Fix base game text_input_key crashing or failing on '-' input due to Lua pattern matching

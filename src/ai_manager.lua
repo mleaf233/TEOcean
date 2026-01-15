@@ -83,7 +83,10 @@ the emperor -> 皇帝 | the empress -> 皇后 | the fool -> 愚者 | the hanged 
 the hermit -> 隐者 | the high priestess -> 女祭司 | judgement -> 审判 | justice -> 正义 | the lovers -> 恋人
 the magician -> 魔术师 | the moon -> 月亮 | the star -> 星星 | strength -> 力量 | the sun -> 太阳 | temperance -> 节制
 the tower -> 塔 | the wheel of fortune -> 命运之轮 | the world -> 世界
-特殊规则：Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统一应用：Sticker -> 贴纸]]
+特殊规则：
+Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统一应用：Sticker -> 贴纸
+"有 1/2 几率" 保留几率否则一律翻译为概率
+]]
 
 --- 计算简单哈希
 local function get_text_hash(text)

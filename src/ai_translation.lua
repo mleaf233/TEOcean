@@ -10,10 +10,10 @@ local TEO = SMODS.current_mod
 -- Hook generate_card_ui
 -- 只做一件事：检查当前卡牌是否已翻译/已请求，如果未请求则发起请求
 local generate_card_ui_ai_ref = generate_card_ui
-function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     -- 1. 执行原逻辑
     local result = generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
-        main_end)
+        main_end, card)
 
     local TEO_mod = TEO_get_mod()
     if not TEO_mod or not TEO_mod.config or not TEO_mod.config.enable_ai_translation then
