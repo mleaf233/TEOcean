@@ -15,7 +15,7 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
         return original_loc_cache[cache_key]
     end
 
-    TEO_dbg_print('[TEOcean] 开始查找原版翻译. Mod:', tostring(mod_id), 'Type:', tostring(loc_type), 'Key:', tostring(loc_key))
+    TEO_dbg_print('[TEOcean] 开始查找原版翻译 Mod:', tostring(mod_id), 'Type:', tostring(loc_type), 'Key:', tostring(loc_key))
 
     TEO_dbg_print('[TEOcean] 查找原版翻译 Key:', cache_key)
 
@@ -49,17 +49,15 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
 
         local top_keys = {}
         for k, _ in pairs(loc_table) do table.insert(top_keys, tostring(k)) end
-        TEO_dbg_print('[TEOcean]   - 表顶层 Key:', table.concat(top_keys, ', '))
 
         local search_bases = {}
         if loc_table.descriptions then
-            TEO_dbg_print('[TEOcean]   - 找到 descriptions 层级')
             table.insert(search_bases, loc_table.descriptions)
         end
         table.insert(search_bases, loc_table)
 
         for i, base in ipairs(search_bases) do
-            TEO_dbg_print('[TEOcean]   - 尝试在第', i, '层基础表中查找:', c_type)
+            -- TEO_dbg_print('[TEOcean]   - 尝试在第', i, '层基础表中查找:', c_type)
             if type(base) == 'table' then
                 -- 尝试匹配分类 (例如 Joker) 及其复数和大小写形式
                 local cat_names = { c_type, c_type .. 's', c_type:lower(), c_type:lower() .. 's' }
@@ -76,7 +74,6 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
                     end
 
                     if type(category) == 'table' then
-                        TEO_dbg_print('[TEOcean]   - 进入分类:', cat_name)
                         -- 针对 Balatro 的多种 Key 命名习惯进行模糊匹配
                         local keys_to_try = { c_key }
                         if c_key:match('^j_') then table.insert(keys_to_try, c_key:sub(3)) end

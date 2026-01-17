@@ -608,7 +608,7 @@ function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
             impl_data.descriptions[set_key] and
             impl_data.descriptions[set_key][card_key] then
             if TEO_dbg_print then
-                TEO_dbg_print('[TEOcean Card Loc] 使用手动翻译:', mod_id, set_key, card_key)
+                TEO_dbg_print('[TEOcean AI Loc] 使用适配的人工翻译:', mod_id, set_key, card_key)
             end
             return impl_data.descriptions[set_key][card_key]
         end
@@ -619,7 +619,7 @@ function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
         local ai_cached = TEO_get_ai_card_translation(mod_id, set_key, card_key)
         if ai_cached then
             if TEO_dbg_print then
-                TEO_dbg_print('[TEO Card Loc] 使用AI缓存:', mod_id, set_key, card_key)
+                TEO_dbg_print('[TEOcean AI Loc] 使用AI缓存:', mod_id, set_key, card_key)
             end
             -- AI缓存的数据需要应用到 G.localization
             if TEO_apply_ai_override then
@@ -667,14 +667,12 @@ function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
                 -- 触发异步翻译请求
                 TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
                 if TEO_dbg_print then
-                    TEO_dbg_print('[TEOcean Card Loc] 触发AI翻译请求:', mod_id, set_key, card_key)
+                    TEO_dbg_print('[TEOcean AI Loc] 触发AI翻译请求:', mod_id, set_key, card_key)
                 end
             end
         end
     end
-
-    -- 请求已发起，但本次返回nil（下次悬停时会走缓存）
     return nil
 end
 
-print('[TEOcean] 运行时本地化合并系统已加载')
+print('[TEOcean] 本地化模块 加载完成')

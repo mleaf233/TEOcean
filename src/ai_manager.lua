@@ -1,4 +1,4 @@
--- AI Manager: 负责处理 DeepSeek API 请求、缓存和直接Override
+-- AI Manager: 负责处理 AI的 API 请求、缓存和直接Override
 
 local API_URL = "https://api.deepseek.com/chat/completions"
 
@@ -14,6 +14,36 @@ end
 local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = content } } }
 local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
 local PENDING_CARD_REQUESTS = {} -- 卡牌级请求跟踪：{ [mod_id.set_key.card_key] = true }
+
+local LOC_REFRESH_PENDING = false
+local LOC_REFRESH_DELAY = 5
+
+--- 请求延迟刷新本地化（批量处理）
+local function TEO_request_localization_refresh()
+    if LOC_REFRESH_PENDING then return end
+    LOC_REFRESH_PENDING = true
+
+    if G and G.E_MANAGER then
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = LOC_REFRESH_DELAY,
+            blockable = false,
+            func = function()
+                if init_localization then
+                    TEO_dbg_print("[TEOcean AI] 执行批量本地化刷新...")
+                    pcall(init_localization)
+                end
+                LOC_REFRESH_PENDING = false
+                return true
+            end
+        }))
+    else
+        -- 降级方案
+        TEO_dbg_print("[TEOcean AI] 执行批量本地化刷新（立即刷新无延迟）...")
+        if init_localization then pcall(init_localization) end
+        LOC_REFRESH_PENDING = false
+    end
+end
 
 local json = JSON or require("json")
 
@@ -35,6 +65,12 @@ end
 
 -- 系统提示词 (保持不变)
 local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中文，要求如下：
+### 输出格式 (必须)
+你必须仅返回一个合法的 JSON 对象，不要包含任何额外的 Markdown 代码块标签、前序或后续说明。格式如下：
+{
+  "name": "翻译后的卡牌名称",
+  "text": ["描述行1", "描述行2", ...]
+}
 1. 遵循原版翻译的lua格式
 2. 翻译中的游戏术语尽量还原
 3. 遇到数字时，统一用阿拉伯数字
@@ -42,6 +78,7 @@ local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中�
 5. 如果可以，可以将部分中文替换成中国传统文化词汇，或者信达雅
 6. 遇到“倍乘”“倍增”时，不需要翻译出来，只需要写数字表示（例如X3、+10)
 8. 如果需要逗号，请改成另起一行文本，也就是不要出现逗号，句号同理
+
 9. 可供参考的替换词汇表（每个词汇以|或换行分隔）：
 Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jumbo Arcana Pack -> 巨型秘术包 | Mega Arcana Pack -> 超级秘术包 | Arcana Pack -> 秘术包
 held in hand -> 留在手牌中 | Joker -> 小丑牌 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
@@ -100,73 +137,123 @@ local function get_text_hash(text)
 end
 
 --- 持久化缓存管理（卡牌级别）
+--- 结构: impl/ai/<mod_id>/<lang>.lua
+--- 文件格式: return { descriptions = { [set_key] = { [card_key] = { name = ..., text = {...} } } } }
 local function load_ai_card_cache(mod_id)
     if not TEO or not TEO.path or not mod_id then return end
     if AI_CARD_CACHE[mod_id] then return end -- 已加载
 
     AI_CARD_CACHE[mod_id] = {}
-    local cache_base = TEO.path .. 'impl/ai/' .. mod_id .. '/'
+    local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
+    local cache_file = TEO.path .. 'impl/ai/' .. mod_id .. '/' .. lang .. '.lua'
 
-    if not NFS.getInfo(cache_base) then return end
+    -- 如果新格式文件不存在，尝试从旧格式迁移
+    if not NFS.getInfo(cache_file) then
+        local old_cache_base = TEO.path .. 'impl/ai/' .. mod_id .. '/'
+        if NFS.getInfo(old_cache_base) then
+            -- 尝试迁移旧的JSON格式
+            local migrated_data = { descriptions = {} }
+            local sets = NFS.getDirectoryItems(old_cache_base) or {}
 
-    -- 遍历 set 目录
-    local sets = NFS.getDirectoryItems(cache_base) or {}
-    for _, set_name in ipairs(sets) do
-        local set_dir = cache_base .. set_name .. '/'
-        if NFS.getInfo(set_dir) and NFS.getInfo(set_dir).type == 'directory' then
-            AI_CARD_CACHE[mod_id][set_name] = {}
+            for _, set_name in ipairs(sets) do
+                local set_dir = old_cache_base .. set_name .. '/'
+                if NFS.getInfo(set_dir) and NFS.getInfo(set_dir).type == 'directory' then
+                    migrated_data.descriptions[set_name] = {}
+                    local cards = NFS.getDirectoryItems(set_dir) or {}
 
-            -- 遍历 card 文件
-            local cards = NFS.getDirectoryItems(set_dir) or {}
-            for _, file_name in ipairs(cards) do
-                if file_name:match('%.json$') then
-                    local card_key = file_name:gsub('%.json$', '')
-                    local file_path = set_dir .. file_name
-                    local content = NFS.read(file_path)
-                    if content then
-                        local success, data = pcall(json.decode, content)
-                        if success and data then
-                            AI_CARD_CACHE[mod_id][set_name][card_key] = data
+                    for _, file_name in ipairs(cards) do
+                        if file_name:match('%.json$') then
+                            local card_key = file_name:gsub('%.json$', '')
+                            local file_path = set_dir .. file_name
+                            local content = NFS.read(file_path)
+                            if content then
+                                local success, data = pcall(json.decode, content)
+                                if success and data then
+                                    migrated_data.descriptions[set_name][card_key] = data
+                                end
+                            end
                         end
                     end
+                end
+            end
+
+            -- 如果成功迁移了数据，保存为新格式
+            if next(migrated_data.descriptions) then
+                -- 创建目录
+                local cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/'
+                if not NFS.getInfo(cache_dir) then
+                    pcall(NFS.createDirectory, cache_dir)
+                end
+
+                -- 保存为lua格式
+                local lua_content = 'return ' ..
+                    (TEO_table_to_lua and TEO_table_to_lua(migrated_data, '') or json.encode(migrated_data)) .. '\n'
+                local ok = pcall(NFS.write, cache_file, lua_content)
+
+                if ok and TEO_dbg_print then
+                    TEO_dbg_print("[TEO AI Cache] 已迁移旧缓存:", mod_id, "to", cache_file)
+                end
+            end
+        end
+
+        -- 重新检查文件是否存在
+        if not NFS.getInfo(cache_file) then return end
+    end
+
+    -- 读取lua格式的缓存文件
+    local data = TEO_read_loc_file and TEO_read_loc_file(cache_file)
+    if data and type(data) == 'table' and data.descriptions then
+        for set_key, set_data in pairs(data.descriptions) do
+            if type(set_data) == 'table' then
+                AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
+                for card_key, card_data in pairs(set_data) do
+                    AI_CARD_CACHE[mod_id][set_key][card_key] = card_data
                 end
             end
         end
     end
 
-    if TEO_dbg_print then TEO_dbg_print("[TEO AI Cache] 已加载卡牌级缓存:", mod_id) end
+    if TEO_dbg_print then TEO_dbg_print("[TEO AI Cache] 已加载缓存，modid=" .. mod_id .. " from " .. cache_file) end
 end
 
 local function save_ai_card_cache(mod_id, set_key, card_key, content)
     if not TEO or not TEO.path or not mod_id or not set_key or not card_key then return end
 
-    local cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/' .. set_key .. '/'
+    local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
+    local cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/'
+    local cache_file = cache_dir .. lang .. '.lua'
 
     -- 创建目录结构
     if not NFS.getInfo(TEO.path .. 'impl/ai/') then
         pcall(NFS.createDirectory, TEO.path .. 'impl/ai/')
     end
-    if not NFS.getInfo(TEO.path .. 'impl/ai/' .. mod_id .. '/') then
-        pcall(NFS.createDirectory, TEO.path .. 'impl/ai/' .. mod_id .. '/')
-    end
     if not NFS.getInfo(cache_dir) then
         pcall(NFS.createDirectory, cache_dir)
     end
 
-    -- 保存到文件
-    local file_path = cache_dir .. card_key .. '.json'
-    local encoded = json.encode(content)
-    local ok, err = pcall(NFS.write, file_path, encoded)
+    -- 更新内存缓存
+    AI_CARD_CACHE[mod_id] = AI_CARD_CACHE[mod_id] or {}
+    AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
+    AI_CARD_CACHE[mod_id][set_key][card_key] = content
+
+    -- 构建完整的缓存数据结构
+    local cache_data = { descriptions = {} }
+    for s_key, s_data in pairs(AI_CARD_CACHE[mod_id]) do
+        cache_data.descriptions[s_key] = cache_data.descriptions[s_key] or {}
+        for c_key, c_data in pairs(s_data) do
+            cache_data.descriptions[s_key][c_key] = c_data
+        end
+    end
+
+    -- 序列化并保存为lua格式
+    local lua_content = 'return ' ..
+        (TEO_table_to_lua and TEO_table_to_lua(cache_data, '') or json.encode(cache_data)) .. '\n'
+    local ok, err = pcall(NFS.write, cache_file, lua_content)
 
     if ok then
         if TEO_dbg_print then
-            TEO_dbg_print("[TEOcean AI Cache] 已保存缓存:", mod_id, set_key, card_key)
+            TEO_dbg_print("[TEOcean AI Cache] 已保存缓存:", mod_id, set_key, card_key, "to", cache_file)
         end
-
-        -- 同时更新内存缓存
-        AI_CARD_CACHE[mod_id] = AI_CARD_CACHE[mod_id] or {}
-        AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
-        AI_CARD_CACHE[mod_id][set_key][card_key] = content
     else
         print("[TEOcean AI Cache] 保存缓存失败:", err)
     end
@@ -190,21 +277,44 @@ function TEO_get_ai_card_translation(mod_id, set_key, card_key)
     return nil
 end
 
--- 检查是否存在手动翻译 (impl/mods/...)
-local function has_manual_translation(mod_id, lang)
-    if not TEO or not TEO.path then return false end
-    lang = lang or 'zh_CN' -- 默认检查中文
-    local impl_path = TEO.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
-    return NFS.getInfo(impl_path)
-end
-
-
 --- 解析 AI 返回内容
+-- 优先尝试 JSON 解析，失败则回退到行解析
 local function parse_ai_response(content)
+    if not content or content == "" then return nil end
+
+    -- 1. 尝试 JSON 解析
+    -- 移除可能存在的 Markdown 代码块标签和首尾空白
+    local clean_json = content:gsub("^%s*```json", ""):gsub("^%s*```", ""):gsub("```%s*$", ""):gsub("^%s*(.-)%s*$", "%1")
+    local success, data = pcall(json.decode, clean_json)
+
+    if success and type(data) == 'table' then
+        -- 规范化输出格式
+        local res = {
+            name = data.name and tostring(data.name) or nil,
+            text = {}
+        }
+
+        if type(data.text) == 'table' then
+            for i = 1, #data.text do
+                table.insert(res.text, tostring(data.text[i]))
+            end
+        elseif type(data.text) == 'string' then
+            table.insert(res.text, data.text)
+        end
+
+        -- 如果既没名字也没描述，说明解析虽然成功但数据没用
+        if res.name or #res.text > 0 then
+            return res
+        end
+    end
+
+    -- 2. 回退到旧的行解析逻辑 (为了兼容性和容错)
     local lines = {}
     for line in content:gmatch("[^\r\n]+") do
         table.insert(lines, line)
     end
+
+    if #lines == 0 then return nil end
     if #lines == 1 then return lines[1] end
     return lines
 end
@@ -306,29 +416,40 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
     end
 
     if type(translated_content) == 'string' then
+        -- 纯字符串：更新描述，保留原名
         new_loc_data.text = { translated_content }
-        -- 确保name是字符串
         if new_loc_data.name then
             new_loc_data.name = ensure_string(new_loc_data.name)
         end
     elseif type(translated_content) == 'table' then
-        local lines = translated_content
-        -- 尝试分离 Name
-        if #lines > 1 then
-            -- 第一行作为 Name，必须确保是 String
-            new_loc_data.name = ensure_string(lines[1])
-
-            local new_text = {}
-            for i = 2, #lines do
-                table.insert(new_text, ensure_string(lines[i]))
+        if translated_content.name or translated_content.text then
+            -- 结构化对象 (JSON 解析结果)
+            if translated_content.name and translated_content.name ~= "" then
+                new_loc_data.name = ensure_string(translated_content.name)
             end
-            new_loc_data.text = new_text
+            if translated_content.text and type(translated_content.text) == 'table' and #translated_content.text > 0 then
+                new_loc_data.text = ensure_text_table(translated_content.text)
+            end
         else
-            -- 只有一行，赋给 text
-            new_loc_data.text = ensure_text_table(lines)
-            -- 保留原有name并确保是字符串
-            if new_loc_data.name then
-                new_loc_data.name = ensure_string(new_loc_data.name)
+            -- 纯文本行数组 (旧逻辑迁移)
+            local lines = translated_content
+            -- 尝试分离 Name
+            if #lines > 1 then
+                -- 第一行作为 Name，必须确保是 String
+                new_loc_data.name = ensure_string(lines[1])
+
+                local new_text = {}
+                for i = 2, #lines do
+                    table.insert(new_text, ensure_string(lines[i]))
+                end
+                new_loc_data.text = new_text
+            else
+                -- 只有一行，赋给 text
+                new_loc_data.text = ensure_text_table(lines)
+                -- 保留原有name并确保是字符串
+                if new_loc_data.name then
+                    new_loc_data.name = ensure_string(new_loc_data.name)
+                end
             end
         end
     end
@@ -362,8 +483,8 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
     print(("[TEOcean AI] Applied Translation for key: %s \nName: %s"):format(tostring(card_key),
         tostring(new_loc_data.name)))
 
-    -- 刷新
-    if init_localization then pcall(init_localization) end
+    -- 刷新（批量延迟）
+    TEO_request_localization_refresh()
 end
 
 --- 请求 AI 翻译（卡牌级别）

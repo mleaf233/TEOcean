@@ -2,13 +2,8 @@
 -- 功能：Hook 游戏 UI 函数，仅用于检测并触发后台翻译请求
 -- 不再直接注入 UI，而是等待 ai_manager 更新 G.localization
 
-local TEO = SMODS.current_mod
-
--- 仍然保留 TEO_build_ai_translation_ui 用于占位或调试（可选）
--- 但主要逻辑是触发
-
 -- Hook generate_card_ui
--- 只做一件事：检查当前卡牌是否已翻译/已请求，如果未请求则发起请求
+-- 检查当前卡牌是否已翻译/已请求，如果未请求则发起请求
 local generate_card_ui_ai_ref = generate_card_ui
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     -- 1. 执行原逻辑

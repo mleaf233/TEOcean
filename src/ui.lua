@@ -1,5 +1,4 @@
 -- 现在UI界面大部分都是改自smod
-
 TEO = TEO_get_mod()
 if TEO then
     TEO.GUI = TEO.GUI or {}
