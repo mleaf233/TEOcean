@@ -6,6 +6,11 @@
 -- 检查当前卡牌是否已翻译/已请求，如果未请求则发起请求
 local generate_card_ui_ai_ref = generate_card_ui
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
+    -- 跳过非卡牌对象 - 在调用原函数之前检查
+    if not _c or type(_c) ~= 'table' or not _c.key or not _c.set then
+        return generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
+    end
+
     -- 1. 执行原逻辑
     local result = generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
         main_end, card)
@@ -14,8 +19,6 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     if not TEO_mod or not TEO_mod.config or not TEO_mod.config.enable_ai_translation then
         return result
     end
-
-    if not _c or not _c.key or not _c.set then return result end
 
     -- 探测 Mod ID
     local mod_id = nil

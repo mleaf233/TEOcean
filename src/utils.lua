@@ -1,5 +1,5 @@
 -- DEBUG 模式开关：开启后会打印更多调试信息
-local DEBUG = false
+local DEBUG = true
 TEO_DEBUG = DEBUG
 function TEO_get_mod()
     return SMODS.current_mod or TEO
@@ -305,7 +305,7 @@ function TEO_save_configs()
     -- 保存当前mod的配置
     if mod then
         SMODS.save_mod_config(mod)
-        print('[TEOcean] 配置已保存到SMODS配置系统')
+        TEO_dbg_print('[TEOcean] 配置已保存到SMODS配置系统')
     end
 end
 
@@ -313,13 +313,11 @@ end
 function TEO_get_translators(target_mod, lang)
     local TEO_mod = TEO_get_mod()
     if not TEO_mod or not TEO_mod.path then return {} end
-    local teo_path = TEO_ensure_slash(TEO_mod.path)
-    local mod_id = target_mod.id
 
     if lang == nil or type(lang) ~= "string" then
         lang = G.SETTINGS.language or 'en-us'
     end
-    loc_path = TEO_mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
+    local loc_path = TEO_mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
     if NFS.getInfo(loc_path) then
         local loc_table = TEO_read_loc_file(loc_path)
         if loc_table and type(loc_table) == 'table' then
@@ -352,4 +350,59 @@ function TEO_get_cur_language()
     end
     -- TEO_dbg_print('[TEOcean] 当前语言检测:', tostring(cur_lang))
     return cur_lang
+end
+
+function TEO_create_hover_tooltip(args)
+    args = args or {}
+
+    -- 按照 SMODS 的标准方式：直接传递 set 和 key
+    -- 游戏会自动从 G.localization.descriptions 中查找
+    local tooltip_key = args.tooltip_key or "teo_show_original"
+
+    TEO_dbg_print('[TEOcean Tooltip] 使用 key:', tooltip_key)
+
+    -- 直接返回 set/key 对象，让游戏自动处理
+    local tooltip_content = {
+        set = "Other",
+        key = tooltip_key
+    }
+
+    TEO_dbg_print('[TEOcean Tooltip] tooltip_content:', tooltip_content)
+
+    return {
+        n = args.top_level_node or G.UIT.C,
+        config = {
+            align = "cm"
+        },
+        nodes = {
+            {
+                n = G.UIT.R,
+                config = {
+                    align = "cm",
+                    hover = true,
+                    can_collide = true,
+                    r = args.round or 0.1,
+                    maxh = args.h or 0.5,
+                    maxw = args.w or 0.5,
+                    minh = args.h or 0.5,
+                    minw = args.w or 0.5,
+                    focus_args = { snap_to = true },
+                    detailed_tooltip = tooltip_content,
+                    func = args.func,
+                    colour = args.colour or HEX('0096C7'),
+                    padding = args.padding or 0.1,
+                },
+                nodes = {
+                    {
+                        n = G.UIT.T,
+                        config = {
+                            text = args.text or "i",
+                            colour = args.text_colour or G.C.WHITE,
+                            scale = args.scale or 0.3,
+                        }
+                    }
+                }
+            }
+        }
+    }
 end

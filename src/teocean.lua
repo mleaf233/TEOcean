@@ -156,6 +156,7 @@ if mod then
                             nodes = {
                                 {
                                     n = G.UIT.R,
+                                    config = { align = "cm" },
                                     nodes = {
                                         {
                                             n = G.UIT.C,
@@ -168,9 +169,16 @@ if mod then
                                                     callback = function(_set_toggle)
                                                         TEO_save_configs()
                                                     end
-                                                }),
-                                            },
+                                                })
+                                            }
                                         },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_show_original" }
+                                    }
+                                },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm" },
+                                    nodes = {
                                         {
                                             n = G.UIT.C,
                                             config = { align = "cl", padding = 0.05 },
@@ -184,11 +192,13 @@ if mod then
                                                     end
                                                 })
                                             }
-                                        }
+                                        },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_show_original_blind" }
                                     }
                                 },
                                 {
                                     n = G.UIT.R,
+                                    config = { align = "cm" },
                                     nodes = {
                                         {
                                             n = G.UIT.C,
@@ -210,7 +220,20 @@ if mod then
                                                             TEO_dbg_print('[TEOcean] 已切换到磁盘模式（写入文件）')
                                                         end
                                                     end
-                                                }),
+                                                })
+                                            }
+                                        },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_runtime_override" }
+                                    }
+                                },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm" },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
                                                 create_toggle({
                                                     label = localize('teo_enable_ai') or "Enable AI Translation",
                                                     ref_table = mod.config,
@@ -233,9 +256,10 @@ if mod then
                                                             G.FUNCS.TEOcean_ask_api_key()
                                                         end
                                                     end
-                                                }),
+                                                })
                                             }
-                                        }
+                                        },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_enable_ai" }
                                     }
                                 },
                             }

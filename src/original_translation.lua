@@ -325,7 +325,13 @@ end
 
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     local TEO_mod = TEO_get_mod()
-    TEO_dbg_print('[TEOcean] generate_card_ui Hook 触发 - Key:', tostring(_c and _c.key), 'Set:', tostring(_c and _c.set))
+
+    -- 跳过非卡牌对象 - 在调用原函数之前检查
+    if not _c or type(_c) ~= 'table' or not _c.key or not _c.set then
+        return generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
+    end
+
+    TEO_dbg_print('[TEOcean] generate_card_ui Hook 触发 - Key:', tostring(_c.key), 'Set:', tostring(_c.set))
 
     local result = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
         main_end, card)
@@ -334,7 +340,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     local lang = TEO_get_cur_language() or 'en-us'
     local should_show_original = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_translation
 
-    if should_show_original and lang ~= 'en-us' and lang ~= 'default' and _c and _c.key and _c.set then
+    if should_show_original and lang ~= 'en-us' and lang ~= 'default' then
         -- 探测 Mod ID
         local mod_id = nil
         local detection_method = "none"

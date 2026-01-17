@@ -1,4 +1,42 @@
 return {
+    descriptions = {
+        Other = {
+            teo_show_original = {
+                name = "Show Original Translation",
+                text = {
+                    "Show the mod's original",
+                    "localization in card description",
+                    "For translation quality comparison"
+                }
+            },
+            teo_show_original_blind = {
+                name = "Show Original Blind Translation",
+                text = {
+                    "Show the mod's original",
+                    "Chinese localization in blinds",
+                    "For translation quality comparison"
+                }
+            },
+            teo_runtime_override = {
+                name = "Runtime Override (In-Memory)",
+                text = {
+                    "Apply translations dynamically in memory",
+                    "No need to restart game or return to menu",
+                    "Does not modify files on disk",
+                    "When OFF: Write to files (Disk Mode)"
+                }
+            },
+            teo_enable_ai = {
+                name = "Enable AI Translation",
+                text = {
+                    "Use DeepSeek API to auto-translate",
+                    "Automatically called when untranslated",
+                    "content is encountered",
+                    "Requires API Key configuration first"
+                }
+            }
+        }
+    },
     misc = {
         dictionary = {
             teo_reload = "Manual Reload",
