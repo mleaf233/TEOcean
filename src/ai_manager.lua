@@ -480,7 +480,7 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
     G.localization.descriptions[set_key][card_key] = new_loc_data
 
     -- 打印日志到后台 (Console)
-    print(("[TEOcean AI] Applied Translation for key: %s \nName: %s"):format(tostring(card_key),
+    TEO_dbg_print(("[TEOcean AI] Applied Translation for key: %s \nName: %s"):format(tostring(card_key),
         tostring(new_loc_data.name)))
 
     -- 刷新（批量延迟）

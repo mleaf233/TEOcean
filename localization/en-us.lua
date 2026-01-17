@@ -34,6 +34,13 @@ return {
                     "content is encountered",
                     "Requires API Key configuration first"
                 }
+            },
+            teo_enable_debug = {
+                name = "Enable DEBUG Mode",
+                text = {
+                    "Enabling DEBUG mode will show",
+                    "more logs in the console"
+                }
             }
         }
     },
@@ -56,7 +63,9 @@ return {
             teo_b_set = "Confirm",
             teo_b_cancel = "Cancel",
             teo_b_clear = "Empty",
-            teo_b_get_key = "Get API Key"
+            teo_b_paste = "Paste",
+            teo_b_get_key = "Get API Key",
+            teo_enable_debug = "Enable DEBUG Mode"
         },
     }
 }

@@ -1,6 +1,13 @@
 -- DEBUG 模式开关：开启后会打印更多调试信息
-local DEBUG = true
+-- 初始值为 false，稍后会从配置中读取
+local DEBUG = false
 TEO_DEBUG = DEBUG
+
+-- 更新 DEBUG 模式（供配置回调使用）
+function TEO_set_debug_mode(enabled)
+    DEBUG = enabled
+    TEO_DEBUG = enabled
+end
 function TEO_get_mod()
     return SMODS.current_mod or TEO
 end
@@ -273,6 +280,10 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.runtime_override == nil then
         mod.config.runtime_override = true
     end
+    -- 初始化"启用DEBUG模式"配置项
+    if mod and mod.config and mod.config.enable_debug == nil then
+        mod.config.enable_debug = false
+    end
 
     for _, modInfo in ipairs(SMODS.mod_list or {}) do
         if mod and mod.config and mod.config.clicked_list and mod.config.clicked_list[modInfo.id] ~= nil then
@@ -288,6 +299,11 @@ end
 -- 初始化配置，从当前mod的配置中加载
 function TEO_init_configs()
     TEO_init_UI_configs()
+    -- 从配置中读取 DEBUG 模式设置
+    local mod = TEO_get_mod()
+    if mod and mod.config and mod.config.enable_debug then
+        TEO_set_debug_mode(true)
+    end
 end
 
 -- 保存配置到当前mod的配置中

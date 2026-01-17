@@ -147,10 +147,9 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
         if lang == nil or type(lang) ~= "string" then
             lang = G.SETTINGS.language or 'en-us'
         end
-        local loc_path_in_teo_impl = TEO_mod.path .. 'impl/mods/' .. target_mod.id .. '/localization/' .. lang .. '.lua'
 
+        -- 只读取原mod的本地化目录，不读取impl/mods/（人工翻译）
         local src_paths = {
-            loc_path_in_teo_impl, -- 优先检查 TEOcean 内部的 mod 原始本地化
             target_path .. 'localization/' .. lang .. '.lua',
             target_path .. 'localization/en-us.lua',
             target_path .. 'localization/default.lua',

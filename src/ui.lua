@@ -661,6 +661,20 @@ G.FUNCS.TEOcean_ask_api_key = function()
                                         })
                                     }
                                 },
+                                -- Paste button row
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.1 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_paste_api_key",
+                                            label = { localize('teo_b_paste') or "Paste" },
+                                            minw = 2,
+                                            scale = 0.4,
+                                            colour = G.C.GREEN
+                                        })
+                                    }
+                                },
                                 -- Get API Key URL row
                                 {
                                     n = G.UIT.R,
@@ -773,5 +787,25 @@ end
 G.FUNCS.TEOcean_get_api_key_url = function()
     if love and love.system then
         love.system.openURL("https://platform.deepseek.com/api_keys")
+    end
+end
+
+G.FUNCS.TEOcean_paste_api_key = function()
+    local mod = TEO_get_mod()
+    if love and love.system and TEO._api_key_display_config then
+        local clipboard_text = love.system.getClipboardText()
+        if clipboard_text and clipboard_text ~= "" then
+            -- Remove any leading/trailing whitespace
+            clipboard_text = clipboard_text:match("^%s*(.-)%s*$")
+            TEO._api_key_display_config.display_key = clipboard_text
+            -- Also save immediately to real config
+            mod.config.api_key = clipboard_text
+            TEO_save_configs()
+            print("[TEOcean] API Key pasted from clipboard")
+            -- Refresh the popup to show the pasted content
+            G.FUNCS.TEOcean_ask_api_key()
+        else
+            print("[TEOcean] Clipboard is empty")
+        end
     end
 end

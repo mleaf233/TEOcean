@@ -33,6 +33,13 @@ return {
                     "遇到未翻译内容时自动调用",
                     "需要先配置 API Key"
                 }
+            },
+            teo_enable_debug = {
+                name = "启用DEBUG模式",
+                text = {
+                    "启动DEBUG模式会在控制台",
+                    "看到更多日志"
+                }
             }
         }
     },
@@ -55,7 +62,9 @@ return {
             teo_b_set = "确认",
             teo_b_cancel = "取消",
             teo_b_clear = "清空内容",
+            teo_b_paste = "粘贴",
             teo_b_get_key = "获取 API Key",
+            teo_enable_debug = "启用DEBUG模式",
         },
     },
 }
