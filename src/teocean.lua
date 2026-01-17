@@ -262,6 +262,33 @@ if mod then
                                         TEO_create_hover_tooltip{ tooltip_key = "teo_enable_ai" }
                                     }
                                 },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm" },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
+                                                create_toggle({
+                                                    label = localize('teo_enable_debug') or "启用DEBUG模式",
+                                                    ref_table = mod.config,
+                                                    ref_value = 'enable_debug',
+                                                    callback = function(_set_toggle)
+                                                        TEO_save_configs()
+                                                        TEO_set_debug_mode(mod.config.enable_debug)
+                                                        if mod.config.enable_debug then
+                                                            print('[TEOcean] DEBUG 模式已启用')
+                                                        else
+                                                            print('[TEOcean] DEBUG 模式已禁用')
+                                                        end
+                                                    end
+                                                })
+                                            }
+                                        },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_enable_debug" }
+                                    }
+                                },
                             }
                         },
                     }
