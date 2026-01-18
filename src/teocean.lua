@@ -1,5 +1,15 @@
 local mod = SMODS.current_mod
 
+-- 注册 Modicon 图标
+if SMODS.Atlas then
+    SMODS.Atlas({
+        key = "modicon",
+        path = "logo.png",
+        px = 370,
+        py = 387
+    })
+end
+
 -- 加载工具函数
 assert(SMODS.load_file('src/utils.lua'), "Failed to load utils file. ")()
 TEO_init_configs()
