@@ -11,14 +11,8 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         return generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     end
 
-    -- 1. 执行原逻辑
-    local result = generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
-        main_end, card)
-
     local TEO_mod = TEO_get_mod()
-    if not TEO_mod or not TEO_mod.config or not TEO_mod.config.enable_ai_translation then
-        return result
-    end
+    local ai_enabled = TEO_mod and TEO_mod.config and TEO_mod.config.enable_ai_translation
 
     -- 探测 Mod ID
     local mod_id = nil
@@ -30,14 +24,31 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         mod_id = SMODS.Centers[_c.key].mod.id
     elseif _c.config and _c.config.mod and _c.config.mod.id then
         mod_id = _c.config.mod.id
+    elseif _c.set == 'Other' and SMODS.Stickers and SMODS.Stickers[_c.key] and SMODS.Stickers[_c.key].mod then
+        mod_id = SMODS.Stickers[_c.key].mod.id
+    elseif _c.set == 'Other' and string.sub(_c.key or '', -5) == '_seal' then
+        -- 对于 Seal 类型（key 以 _seal 结尾），尝试从 G.P_SEALS 或 SMODS.Seals 获取 Mod ID
+        local seal_key_base = string.sub(_c.key, 1, -6)  -- 去掉 '_seal'
+        if G and G.P_SEALS and G.P_SEALS[seal_key_base] and G.P_SEALS[seal_key_base].mod then
+            mod_id = G.P_SEALS[seal_key_base].mod.id
+        elseif SMODS and SMODS.Seals and SMODS.Seals[seal_key_base] and SMODS.Seals[seal_key_base].mod then
+            mod_id = SMODS.Seals[seal_key_base].mod.id
+        end
+    elseif _c.set == 'Back' and G and G.P_CENTERS and G.P_CENTERS[_c.key] and G.P_CENTERS[_c.key].mod then
+        -- 对于 Back 类型（卡背牌组），从 G.P_CENTERS 获取 Mod ID
+        mod_id = G.P_CENTERS[_c.key].mod.id
     end
 
-    if not mod_id or mod_id == 'base' then return result end
-
-    -- 使用统一的卡牌本地化解析函数（包含3级优先级）
-    if TEO_resolve_card_localization then
-        TEO_resolve_card_localization(mod_id, _c.set, _c.key)
+    -- 在原函数调用之前触发 AI 翻译，确保 G.localization 已更新
+    if ai_enabled and mod_id and mod_id ~= 'base' then
+        if TEO_resolve_card_localization then
+            TEO_resolve_card_localization(mod_id, _c.set, _c.key)
+        end
     end
+
+    -- 1. 执行原逻辑（此时 G.localization 已更新）
+    local result = generate_card_ui_ai_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
+        main_end, card)
 
     -- Debug: 输出当前显示的翻译文本
     if TEO_DEBUG == true and G.localization and G.localization.descriptions then
@@ -58,7 +69,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
                 end
             end
             TEO_dbg_print(string.format("[TEOcean AI Debug] Card hover: %s.%s.%s\n%s",
-                mod_id, _c.set, _c.key, table.concat(debug_text, "\n")))
+                mod_id or 'unknown', _c.set, _c.key, table.concat(debug_text, "\n")))
         end
     end
 
@@ -114,6 +125,63 @@ function create_UIBox_blind_popup(blind, discovered, vars)
     end
 
     return result
+end
+
+-- Hook G.FUNCS.change_viewed_back for Back AI translation
+-- 当用户在收藏界面切换卡背时触发
+local change_viewed_back_ref = nil
+local function hook_change_viewed_back()
+    if not change_viewed_back_ref and G.FUNCS and G.FUNCS.change_viewed_back then
+        change_viewed_back_ref = G.FUNCS.change_viewed_back
+        G.FUNCS.change_viewed_back = function(args)
+            local TEO_mod = TEO_get_mod()
+            local ai_enabled = TEO_mod and TEO_mod.config and TEO_mod.config.enable_ai_translation
+
+            -- 在原函数调用之前触发AI翻译
+            if ai_enabled and args and args.to_key then
+                -- 获取目标 Back 对象
+                local deck_pool = SMODS.collection_pool(G.P_CENTER_POOLS.Back)
+                local target_back = deck_pool[args.to_key]
+                if target_back and target_back.mod and target_back.mod.id and target_back.mod.id ~= 'base' then
+                    local mod_id = target_back.mod.id
+                    local back_key = target_back.key
+                    if TEO_resolve_card_localization then
+                        TEO_dbg_print('[TEOcean AI] Back 切换，触发 AI 翻译:', mod_id, back_key)
+                        TEO_resolve_card_localization(mod_id, 'Back', back_key)
+                    end
+                end
+            end
+
+            -- 执行原逻辑
+            local result = change_viewed_back_ref(args)
+
+            -- 执行后再次触发，确保 UI 更新后翻译已应用
+            if ai_enabled and G and G.GAME and G.GAME.viewed_back and G.GAME.viewed_back.effect and G.GAME.viewed_back.effect.center then
+                local viewed_back = G.GAME.viewed_back.effect.center
+                if viewed_back.mod and viewed_back.mod.id and viewed_back.mod.id ~= 'base' then
+                    -- 翻译已经在上面的 resolve_card_localization 中完成并缓存
+                    -- 这里只需要触发 UI 重新生成
+                end
+            end
+
+            return result
+        end
+        TEO_dbg_print('[TEOcean AI] G.FUNCS.change_viewed_back Hook 已安装')
+    end
+end
+
+-- 延迟安装 Hook，因为 G.FUNCS 可能在之后才初始化
+hook_change_viewed_back()
+if not change_viewed_back_ref then
+    local init_ref = G.FUNCS and G.FUNCS.openModUI
+    if init_ref then
+        local openModUI_original = init_ref
+        G.FUNCS.openModUI = function(mod_id)
+            local result = openModUI_original(mod_id)
+            hook_change_viewed_back()
+            return result
+        end
+    end
 end
 
 print('[TEOcean AI] AI 翻译模块已加载')

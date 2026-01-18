@@ -180,6 +180,129 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
         end
     end
 
+    -- 4) 对于 Blind 类型，额外尝试从 G.P_BLINDS 读取
+    if not original_text and loc_type == 'Blind' and G and G.P_BLINDS and G.P_BLINDS[loc_key] then
+        local blind_obj = G.P_BLINDS[loc_key]
+        if blind_obj.loc_txt then
+            TEO_dbg_print('[TEOcean] 从 G.P_BLINDS 读取内联 loc_txt:', loc_key)
+            original_text = blind_obj.loc_txt
+        elseif blind_obj.name and type(blind_obj.name) == 'table' then
+            -- 有些 blind 直接在 name 字段存储本地化数据
+            TEO_dbg_print('[TEOcean] 从 G.P_BLINDS.name 读取内联本地化:', loc_key)
+            original_text = { name = blind_obj.name, text = blind_obj.text }
+        end
+    end
+
+    -- 5) 对于 Tag 类型，额外尝试从 G.P_TAGS 或 SMODS.Tags 读取
+    if not original_text and loc_type == 'Tag' then
+        -- 首先尝试 G.P_TAGS（游戏运行时标签表）
+        if G and G.P_TAGS and G.P_TAGS[loc_key] then
+            local tag_obj = G.P_TAGS[loc_key]
+            if tag_obj.loc_txt then
+                TEO_dbg_print('[TEOcean] 从 G.P_TAGS 读取内联 loc_txt:', loc_key)
+                original_text = tag_obj.loc_txt
+            end
+        end
+        -- 如果 G.P_TAGS 未找到，尝试 SMODS.Tags
+        if not original_text and SMODS and SMODS.Tags and SMODS.Tags[loc_key] then
+            local tag_obj = SMODS.Tags[loc_key]
+            if tag_obj.loc_txt then
+                TEO_dbg_print('[TEOcean] 从 SMODS.Tags 读取内联 loc_txt:', loc_key)
+                original_text = tag_obj.loc_txt
+            end
+        end
+    end
+
+    -- 6) 对于 Sticker 类型（显示为 Other set），额外尝试从 SMODS.Stickers 读取
+    if not original_text and loc_type == 'Other' and SMODS and SMODS.Stickers and SMODS.Stickers[loc_key] then
+        local sticker_obj = SMODS.Stickers[loc_key]
+        if sticker_obj.loc_txt then
+            TEO_dbg_print('[TEOcean] 从 SMODS.Stickers 读取内联 loc_txt:', loc_key)
+            original_text = sticker_obj.loc_txt
+        elseif sticker_obj.name then
+            -- 有些 sticker 使用 name 字段存储英文名称（字符串）
+            -- 构造标准的本地化数据格式
+            TEO_dbg_print('[TEOcean] 从 SMODS.Stickers.name 读取内联本地化:', loc_key, sticker_obj.name)
+            original_text = { name = sticker_obj.name, text = sticker_obj.text or {} }
+        end
+    end
+
+    -- 7) 对于 Seal 类型（显示为 Other set，key 以 _seal 结尾），尝试从 G.P_SEALS 或 SMODS.Seals 读取
+    if not original_text and loc_type == 'Other' and string.sub(loc_key, -5) == '_seal' then
+        -- 尝试 G.P_SEALS（游戏运行时表）
+        if G and G.P_SEALS then
+            -- Seal 的 key 存储时不带 _seal 后缀，需要去掉
+            local seal_key_base = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
+            local seal_obj = G.P_SEALS[seal_key_base]
+            if seal_obj then
+                if seal_obj.loc_txt then
+                    TEO_dbg_print('[TEOcean] 从 G.P_SEALS 读取内联 loc_txt:', loc_key)
+                    original_text = seal_obj.loc_txt
+                elseif seal_obj.key and SMODS.Seals and SMODS.Seals[seal_obj.key] then
+                    -- 如果 G.P_SEALS 没有 loc_txt，尝试从 SMODS.Seals 读取
+                    local s_mod_seal = SMODS.Seals[seal_obj.key]
+                    if s_mod_seal and s_mod_seal.loc_txt then
+                        TEO_dbg_print('[TEOcean] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
+                        original_text = s_mod_seal.loc_txt
+                    end
+                end
+            end
+        end
+        -- 如果 G.P_SEALS 未找到，尝试直接从 SMODS.Seals 读取
+        if not original_text and SMODS and SMODS.Seals then
+            for seal_key, seal_obj in pairs(SMODS.Seals) do
+                -- 检查 key 是否匹配（seal_key + '_seal' == loc_key）
+                if seal_key and seal_key:lower() .. '_seal' == loc_key then
+                    if seal_obj.loc_txt then
+                        TEO_dbg_print('[TEOcean] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
+                        original_text = seal_obj.loc_txt
+                        break
+                    end
+                end
+            end
+        end
+        -- 如果仍然没有找到，使用 key 生成默认英文名称
+        if not original_text and loc_key then
+            local seal_name = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
+            seal_name = seal_name:gsub("^%l", string.upper)  -- 首字母大写
+            TEO_dbg_print('[TEOcean] Seal 无 loc_txt，使用默认名称:', loc_key, seal_name)
+            original_text = { name = seal_name .. " Seal", text = {} }
+        end
+    end
+
+    -- 8) 对于 Back 类型（卡背牌组），尝试从 G.P_CENTERS 读取
+    if not original_text and loc_type == 'Back' then
+        -- Back 对象存储在 G.P_CENTERS 中
+        if G and G.P_CENTERS and G.P_CENTERS[loc_key] then
+            local back_obj = G.P_CENTERS[loc_key]
+            if back_obj.loc_txt then
+                TEO_dbg_print('[TEOcean] 从 G.P_CENTERS 读取 Back loc_txt:', loc_key)
+                original_text = back_obj.loc_txt
+            elseif back_obj.name and type(back_obj.name) == 'string' then
+                -- 如果没有 loc_txt，尝试直接使用 name 和 text 字段
+                TEO_dbg_print('[TEOcean] 从 G.P_CENTERS.name 读取 Back 本地化:', loc_key, back_obj.name)
+                original_text = { name = back_obj.name, text = back_obj.text or {} }
+            end
+        end
+        -- 如果 G.P_CENTERS 未找到，尝试从 SMODS.Centers 读取（再次检查，因为 Back 是 Center 的子类）
+        if not original_text and SMODS and SMODS.Centers and SMODS.Centers[loc_key] then
+            local center = SMODS.Centers[loc_key]
+            if center.loc_txt then
+                TEO_dbg_print('[TEOcean] 从 SMODS.Centers 读取 Back loc_txt:', loc_key)
+                original_text = center.loc_txt
+            elseif center.name and type(center.name) == 'string' then
+                TEO_dbg_print('[TEOcean] 从 SMODS.Centers.name 读取 Back 本地化:', loc_key, center.name)
+                original_text = { name = center.name, text = center.text or {} }
+            end
+        end
+        -- 如果仍然没有找到，使用 key 生成默认英文名称
+        if not original_text and loc_key then
+            local back_name = loc_key:gsub("^%l", string.upper)  -- 首字母大写
+            TEO_dbg_print('[TEOcean] Back 无 loc_txt，使用默认名称:', loc_key, back_name)
+            original_text = { name = back_name .. " Deck", text = {} }
+        end
+    end
+
     -- 数据规范化：确保返回的数据格式安全
     if original_text and type(original_text) == 'table' then
         local normalized = {}

@@ -338,29 +338,40 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
 
     if not G.localization or not G.localization.descriptions then return end
 
-    local target_set = G.localization.descriptions[set_key]
+    -- 某些类型的 set 名称与实际存储位置不同，需要映射
+    -- Booster 的本地化存储在 Other 中，而不是 Booster
+    local localization_set_map = {
+        ['Booster'] = 'Other',
+    }
+    local actual_set_key = localization_set_map[set_key] or set_key
+
+    local target_set = G.localization.descriptions[actual_set_key]
     if not target_set then
-        if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Check] 目标 Set 不存在于 localization:", set_key) end
-        return
+        -- 如果 Set 不存在，创建它
+        G.localization.descriptions[actual_set_key] = {}
+        target_set = G.localization.descriptions[actual_set_key]
+        if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Check] 创建新 Set:", actual_set_key) end
     end
 
     local target_card_loc = target_set[card_key]
 
     if not target_card_loc then
-        if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Check] 目标 Card Key 不存在:", card_key) end
-        return
+        if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Check] 目标 Card Key 不存在，创建新条目:", card_key) end
+        -- 创建新的本地化条目（用于没有本地化文件的 mod）
+        target_card_loc = {}
+        target_set[card_key] = target_card_loc
     end
 
-    -- 备份
+    -- 备份（使用实际的 set key）
     TEO_localization_backup = TEO_localization_backup or {}
     TEO_localization_backup[mod_id] = TEO_localization_backup[mod_id] or { descriptions = {} }
 
-    if not TEO_localization_backup[mod_id].descriptions[set_key] then
-        TEO_localization_backup[mod_id].descriptions[set_key] = {}
+    if not TEO_localization_backup[mod_id].descriptions[actual_set_key] then
+        TEO_localization_backup[mod_id].descriptions[actual_set_key] = {}
     end
 
-    if not TEO_localization_backup[mod_id].descriptions[set_key][card_key] then
-        TEO_localization_backup[mod_id].descriptions[set_key][card_key] = deep_copy(target_card_loc)
+    if not TEO_localization_backup[mod_id].descriptions[actual_set_key][card_key] then
+        TEO_localization_backup[mod_id].descriptions[actual_set_key][card_key] = deep_copy(target_card_loc)
     end
 
     -- 应用翻译
@@ -476,8 +487,8 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
         end
     end
 
-    -- 内存修改
-    G.localization.descriptions[set_key][card_key] = new_loc_data
+    -- 内存修改（使用实际的 set key）
+    G.localization.descriptions[actual_set_key][card_key] = new_loc_data
 
     -- 打印日志到后台 (Console)
     TEO_dbg_print(("[TEOcean AI] Applied Translation for key: %s \nName: %s"):format(tostring(card_key),
