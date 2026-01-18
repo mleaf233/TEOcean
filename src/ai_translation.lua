@@ -34,9 +34,9 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
     if not mod_id or mod_id == 'base' then return result end
 
-    -- 使用统一的卡牌本地化获取函数（包含4层优先级）
-    if TEO_get_card_localization_with_ai then
-        TEO_get_card_localization_with_ai(mod_id, _c.set, _c.key)
+    -- 使用统一的卡牌本地化解析函数（包含3级优先级）
+    if TEO_resolve_card_localization then
+        TEO_resolve_card_localization(mod_id, _c.set, _c.key)
     end
 
     -- Debug: 输出当前显示的翻译文本

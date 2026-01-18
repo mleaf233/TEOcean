@@ -591,7 +591,7 @@ end
 -- @param set_key string set类型 (如 'Joker', 'Tarot' 等)
 -- @param card_key string 卡片key
 -- @return table|nil 本地化数据，如果未找到返回nil
-function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
+function TEO_resolve_card_localization(mod_id, set_key, card_key)
     if not mod_id or not set_key or not card_key then return nil end
 
     local TEO_mod = TEO_get_mod()
@@ -603,28 +603,30 @@ function TEO_get_card_localization_with_ai(mod_id, set_key, card_key)
     local impl_file = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
     if NFS.getInfo(impl_file) then
         local impl_data = TEO_read_loc_file(impl_file)
-        if impl_data and
+        local impl_loc = impl_data and
             impl_data.descriptions and
             impl_data.descriptions[set_key] and
-            impl_data.descriptions[set_key][card_key] then
+            impl_data.descriptions[set_key][card_key] or nil
+        -- 验证手动翻译数据包含实际内容（非空 name 或 text）
+        if impl_loc and (impl_loc.name or impl_loc.text) then
             if TEO_dbg_print then
                 TEO_dbg_print('[TEOcean AI Loc] 使用适配的人工翻译:', mod_id, set_key, card_key)
+                TEO_apply_ai_override(mod_id, set_key, card_key, impl_loc)
             end
-            return impl_data.descriptions[set_key][card_key]
+            return impl_loc
         end
     end
 
     -- 2. 检查 impl/ai AI缓存
     if TEO_get_ai_card_translation then
         local ai_cached = TEO_get_ai_card_translation(mod_id, set_key, card_key)
-        if ai_cached then
+        -- 验证缓存数据包含实际翻译内容（非空 name 或 text）
+        if ai_cached and (ai_cached.name or ai_cached.text) then
             if TEO_dbg_print then
                 TEO_dbg_print('[TEOcean AI Loc] 使用AI缓存:', mod_id, set_key, card_key)
             end
             -- AI缓存的数据需要应用到 G.localization
-            if TEO_apply_ai_override then
-                TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached)
-            end
+            TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached)
             return ai_cached
         end
     end
