@@ -41,6 +41,13 @@ return {
                     "Enabling DEBUG mode will show",
                     "more logs in the console"
                 }
+            },
+            teo_ai_cache_manager = {
+                name = "AI Cache Manager",
+                text = {
+                    "View and manage AI translation cache",
+                    "Can clear individual or all mod AI cache"
+                }
             }
         }
     },
@@ -65,7 +72,11 @@ return {
             teo_b_clear = "Empty",
             teo_b_paste = "Paste",
             teo_b_get_key = "Get API Key",
-            teo_enable_debug = "Enable DEBUG Mode"
+            teo_enable_debug = "Enable DEBUG Mode",
+            teo_ai_cache_manager = "AI Cache Manager",
+            teo_no_ai_cache = "No AI Cache",
+            teo_clear_cache = "Clear",
+            teo_clear_all_cache = "Clear All AI Cache",
         },
     }
 }

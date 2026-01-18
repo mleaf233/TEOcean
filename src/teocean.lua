@@ -83,50 +83,77 @@ if mod then
 
         return {
             n = G.UIT.ROOT,
-            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = G.C.BLACK },
+            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = G.C.BLACK, minw = 10 },
             nodes = {
                 {
                     n = G.UIT.R,
-                    config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('3E4C59') },
+                    config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('3E4C59'), minh = 3.2},
                     nodes = {
                         {
                             n = G.UIT.R,
-                            config = { align = 'cm', minh = 1, padding = 0.1 },
+                            config = { align = 'cm', minh = 0.1, padding = 0.05 },
                             nodes = {
                                 { n = G.UIT.T, config = { text = localize('teo_actions') or "Actions", colour = G.C.WHITE, scale = 0.5 } }
                             }
                         },
                         {
                             n = G.UIT.R,
-                            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 6 },
+                            config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 6.2, maxw = 6.2 },
                             nodes = {
                                 {
                                     n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.05 },
                                     nodes = {
                                         {
                                             n = G.UIT.C,
-                                            config = { align = "cm", padding = 0.05 },
+                                            config = { align = "cm", minw = 3, maxw = 3, padding = 0.05 },
                                             nodes = {
-                                                UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 3.0, minh = 0.8, scale = 0.4 }),
+                                                UIBox_button({ button = 'TEOcean_manual_reload', label = { localize('teo_reload') or '手动重载' }, minw = 2.8, minh = 0.8, scale = 0.4 })
+                                            }
+                                        },
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm", minw = 3, maxw = 3, padding = 0.05 },
+                                            nodes = {
                                                 UIBox_button({
                                                     button = 'TEOcean_ask_api_key',
                                                     label = { localize('teo_set_api_key') or '设置 API Key' },
-                                                    minw = 3.0,
+                                                    minw = 2.8,
                                                     minh = 0.8,
                                                     scale = 0.4,
                                                     colour = HEX('0096C7') -- Ocean Blue
                                                 })
                                             }
-                                        },
-                                        {
-                                            n = G.UIT.C,
-                                            config = { align = "cm", padding = 0.05 },
-                                            nodes = {
-                                                adapted_mods_Button,
-                                            }
                                         }
                                     }
                                 },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.05 },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm", minw = 3, maxw = 3, padding = 0.05 },
+                                            nodes = {
+                                                UIBox_button({
+                                                    button = 'TEOcean_ai_cache_manager',
+                                                    label = { localize('teo_ai_cache_manager') or 'AI缓存管理' },
+                                                    minw = 2.8,
+                                                    minh = 0.8,
+                                                    scale = 0.4,
+                                                    colour = HEX('2A9D8F') -- Teal Ocean
+                                                })
+                                            }
+                                        },
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cm", minw = 3, maxw = 3, padding = 0.05 },
+                                            nodes = {
+                                                adapted_mods_Button
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         },
                     }

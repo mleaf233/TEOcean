@@ -570,3 +570,131 @@ end
 function TEO_get_cached_ai_translation(source_text)
     return AI_CACHE[get_text_hash(source_text)]
 end
+
+--- 获取所有有AI缓存的mod列表
+function TEO_get_ai_cached_mods()
+    if not TEO or not TEO.path then return {} end
+
+    local cached_mods = {}
+    local ai_dir = TEO.path .. 'impl/ai/'
+
+    -- 检查AI缓存目录是否存在
+    if not NFS.getInfo(ai_dir) then
+        return cached_mods
+    end
+
+    -- 遍历impl/ai/下的所有子目录
+    local mod_dirs = NFS.getDirectoryItems(ai_dir) or {}
+    for _, mod_id in ipairs(mod_dirs) do
+        local mod_path = ai_dir .. mod_id
+        if NFS.getInfo(mod_path) and NFS.getInfo(mod_path).type == 'directory' then
+            -- 检查是否有缓存文件
+            local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
+            local cache_file = mod_path .. '/' .. lang .. '.lua'
+
+            if NFS.getInfo(cache_file) then
+                -- 读取缓存文件以获取更多信息
+                local data = TEO_read_loc_file and TEO_read_loc_file(cache_file)
+                local card_count = 0
+                if data and data.descriptions then
+                    for set_key, set_data in pairs(data.descriptions) do
+                        if type(set_data) == 'table' then
+                            for _ in pairs(set_data) do
+                                card_count = card_count + 1
+                            end
+                        end
+                    end
+                end
+
+                -- 获取mod的名称
+                local mod_name = mod_id
+                for _, modInfo in ipairs(SMODS.mod_list or {}) do
+                    if modInfo.id == mod_id then
+                        mod_name = modInfo.name or mod_id
+                        break
+                    end
+                end
+
+                table.insert(cached_mods, {
+                    id = mod_id,
+                    name = mod_name,
+                    card_count = card_count,
+                    cache_file = cache_file
+                })
+            end
+        end
+    end
+
+    -- 按mod名称排序
+    table.sort(cached_mods, function(a, b)
+        return a.name < b.name
+    end)
+
+    return cached_mods
+end
+
+--- 清除单个mod的AI缓存
+function TEO_clear_ai_cache_for_mod(mod_id)
+    if not TEO or not TEO.path or not mod_id then return false end
+
+    local mod_cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/'
+    local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
+    local cache_file = mod_cache_dir .. lang .. '.lua'
+
+    -- 删除内存缓存
+    AI_CARD_CACHE[mod_id] = nil
+
+    -- 删除磁盘缓存文件
+    if NFS.getInfo(cache_file) then
+        local ok, err = pcall(NFS.remove, cache_file)
+        if ok then
+            print('[TEOcean AI Cache] 已清除Mod缓存:', mod_id)
+            return true
+        else
+            print('[TEOcean AI Cache] 删除Mod缓存失败:', mod_id, err)
+            return false
+        end
+    end
+
+    return false
+end
+
+--- 清除所有AI缓存
+function TEO_clear_all_ai_cache()
+    if not TEO or not TEO.path then return false end
+
+    local ai_dir = TEO.path .. 'impl/ai/'
+    local cleared_count = 0
+
+    -- 检查AI缓存目录是否存在
+    if not NFS.getInfo(ai_dir) then
+        print('[TEOcean AI Cache] AI缓存目录不存在')
+        return false
+    end
+
+    -- 遍历所有mod的缓存目录
+    local mod_dirs = NFS.getDirectoryItems(ai_dir) or {}
+    for _, mod_id in ipairs(mod_dirs) do
+        local mod_path = ai_dir .. mod_id
+        if NFS.getInfo(mod_path) and NFS.getInfo(mod_path).type == 'directory' then
+            -- 清除内存缓存
+            AI_CARD_CACHE[mod_id] = nil
+
+            -- 删除缓存文件
+            local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
+            local cache_file = mod_path .. '/' .. lang .. '.lua'
+
+            if NFS.getInfo(cache_file) then
+                local ok, err = pcall(NFS.remove, cache_file)
+                if ok then
+                    cleared_count = cleared_count + 1
+                else
+                    print('[TEOcean AI Cache] 删除失败:', cache_file, err)
+                end
+            end
+        end
+    end
+
+    print('[TEOcean AI Cache] 已清除', cleared_count, '个Mod的AI缓存')
+    return cleared_count > 0
+end

@@ -809,3 +809,152 @@ G.FUNCS.TEOcean_paste_api_key = function()
         end
     end
 end
+
+-- AI缓存管理弹窗
+G.FUNCS.TEOcean_ai_cache_manager = function()
+    local scale = 0.4
+    local cached_mods = TEO_get_ai_cached_mods and TEO_get_ai_cached_mods() or {}
+
+    -- 创建Mod列表节点
+    local mod_list_nodes = {}
+    if #cached_mods == 0 then
+        table.insert(mod_list_nodes, {
+            n = G.UIT.R,
+            config = { align = "cm", padding = 0.3 },
+            nodes = {
+                { n = G.UIT.T, config = { text = localize('teo_no_ai_cache') or '暂无AI缓存', scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+            }
+        })
+    else
+        for _, mod_info in ipairs(cached_mods) do
+            -- 为每个按钮创建动态回调函数
+            local button_func_name = "TEOcean_clear_ai_cache_" .. mod_info.id
+            G.FUNCS[button_func_name] = function()
+                if TEO_clear_ai_cache_for_mod then
+                    local success = TEO_clear_ai_cache_for_mod(mod_info.id)
+                    if success then
+                        print('[TEOcean] 已清除Mod AI缓存:', mod_info.id)
+                        -- 刷新弹窗
+                        G.FUNCS.TEOcean_ai_cache_manager()
+                    else
+                        print('[TEOcean] 清除Mod AI缓存失败:', mod_info.id)
+                    end
+                end
+            end
+
+            table.insert(mod_list_nodes, {
+                n = G.UIT.R,
+                config = { align = "cm", padding = 0.05, minh = 0.6, r = 0.1, colour = G.C.BLACK, emboss = 0.05 },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.1, minw = 8 },
+                        nodes = {
+                            { n = G.UIT.T, config = { text = mod_info.name, scale = 0.4, colour = G.C.WHITE, shadow = true } },
+                            { n = G.UIT.T, config = { text = ' (' .. mod_info.card_count .. ')', scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                        }
+                    },
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cr", padding = 0.1 },
+                        nodes = {
+                            UIBox_button({
+                                button = button_func_name,
+                                label = { localize('teo_clear_cache') or '清除' },
+                                minw = 1.2,
+                                minh = 0.5,
+                                scale = 0.35,
+                                colour = HEX('E76F51') -- Burnt Orange
+                            })
+                        }
+                    }
+                }
+            })
+        end
+    end
+
+    G.FUNCS.overlay_menu({
+        definition = {
+            n = G.UIT.ROOT,
+            config = {
+                align = "cm",
+                minw = G.ROOM.T.w*5,
+                minh = G.ROOM.T.h*5,
+                padding = 0.1,
+                r = 0.1,
+                colour = G.C.BLACK
+            },
+            nodes = {
+                {
+                    n = G.UIT.C,
+                    config = { align = "cm", padding = 0.1, minh = 6, minw = 10 },
+                    nodes = {
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.2 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_ai_cache_manager') or 'AI缓存管理', scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = mod_list_nodes
+                        },
+                        #cached_mods > 0 and {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.2 },
+                            nodes = {
+                                UIBox_button({
+                                    button = "TEOcean_clear_all_ai_cache",
+                                    label = { localize('teo_clear_all_cache') or '清除全部AI缓存' },
+                                    minw = 2.5,
+                                    minh = 0.8,
+                                    scale = 0.4,
+                                    colour = HEX('E76F51') -- Burnt Orange
+                                })
+                            }
+                        } or nil,
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.2 },
+                            nodes = {
+                                UIBox_button({
+                                    button = "TEOcean_ai_cache_manager_exit",
+                                    label = { localize('b_back') or '返回' },
+                                    minw = 2.5,
+                                    minh = 0.8,
+                                    scale = 0.4,
+                                    colour = HEX('2A9D8F') -- Teal Ocean
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+end
+
+-- 退出AI缓存管理
+G.FUNCS.TEOcean_ai_cache_manager_exit = function()
+    if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
+        G.FUNCS["openModUI_" .. TEO.id]()
+    else
+        G.FUNCS.exit_overlay_menu()
+    end
+end
+
+-- 清除全部AI缓存
+G.FUNCS.TEOcean_clear_all_ai_cache = function()
+    if TEO_clear_all_ai_cache then
+        local success = TEO_clear_all_ai_cache()
+        if success then
+            print('[TEOcean] 已清除全部AI缓存')
+            -- 刷新弹窗
+            G.FUNCS.TEOcean_ai_cache_manager()
+        else
+            print('[TEOcean] 清除全部AI缓存失败')
+        end
+    end
+end

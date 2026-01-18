@@ -40,6 +40,13 @@ return {
                     "启动DEBUG模式会在控制台",
                     "看到更多日志"
                 }
+            },
+            teo_ai_cache_manager = {
+                name = "AI缓存管理",
+                text = {
+                    "查看和管理AI翻译缓存",
+                    "可以清除单个或全部Mod的AI缓存"
+                }
             }
         }
     },
@@ -56,7 +63,7 @@ return {
             teo_actions = "操作",
             teo_optional_config = "可选配置",
             teo_runtime_override = "在内存中动态翻译",
-            teo_enable_ai = "启动AI翻译",
+            teo_enable_ai = "启用AI翻译",
             teo_set_api_key = "设置API Key",
             teo_api_key_popup_title = "请输入翻译的 API Key",
             teo_b_set = "确认",
@@ -65,6 +72,10 @@ return {
             teo_b_paste = "粘贴",
             teo_b_get_key = "获取 API Key",
             teo_enable_debug = "启用DEBUG模式",
+            teo_ai_cache_manager = "AI缓存管理",
+            teo_no_ai_cache = "暂无AI缓存",
+            teo_clear_cache = "清除",
+            teo_clear_all_cache = "清除全部AI缓存",
         },
     },
 }
