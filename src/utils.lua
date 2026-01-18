@@ -68,9 +68,57 @@ function TEO_insert_unique_first(t, v)
     table.insert(t, 1, v)
 end
 
+-- 检测是否为安卓平台
+local TEO_is_android = love.system.getOS() == 'Android'
+local TEO_debug_log_path = nil
+
+-- 初始化 debug 日志路径
+local function init_debug_log_path()
+    if TEO_is_android then
+        local TEO_mod = TEO_get_mod()
+        if TEO_mod and TEO_mod.path then
+            local teo_path = TEO_ensure_slash(TEO_mod.path)
+            local debug_dir = teo_path .. 'impl/debug/'
+
+            -- 确保 debug 目录存在
+            if not NFS.getInfo(debug_dir) then
+                NFS.createDirectory(debug_dir)
+            end
+
+            -- 使用带时间戳的日志文件名
+            local timestamp = os.date('%Y%m%d_%H%M%S')
+            TEO_debug_log_path = debug_dir .. 'debug_' .. timestamp .. '.log'
+
+            -- 写入日志文件头
+            local header = string.format('[TEOcean Debug Log] Started at %s\n', os.date('%Y-%m-%d %H:%M:%S'))
+            NFS.write(TEO_debug_log_path, header)
+        end
+    end
+end
+
+-- 延迟初始化（确保 mod 已加载）
+local TEO_debug_initialized = false
+
 function TEO_dbg_print(...)
     if not DEBUG then return end
-    print('[TEOcean DEBUG]', ...)
+
+    if TEO_is_android then
+        -- 延迟初始化日志路径
+        if not TEO_debug_initialized then
+            init_debug_log_path()
+            TEO_debug_initialized = true
+        end
+
+        -- 写入文件
+        if TEO_debug_log_path then
+            local args = {...}
+            local log_line = '[TEOcean DEBUG] ' .. table.concat(args, '\t') .. '\n'
+            NFS.append(TEO_debug_log_path, log_line)
+        end
+    else
+        -- 非安卓平台使用 print
+        print('[TEOcean DEBUG]', ...)
+    end
 end
 
 function TEO_tbl_count(t)
