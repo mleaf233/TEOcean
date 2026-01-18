@@ -65,4 +65,55 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     return result
 end
 
+-- Hook create_UIBox_blind_popup for AI translation
+local create_UIBox_blind_popup_ai_ref = create_UIBox_blind_popup
+function create_UIBox_blind_popup(blind, discovered, vars)
+    local TEO_mod = TEO_get_mod()
+    local ai_enabled = TEO_mod and TEO_mod.config and TEO_mod.config.enable_ai_translation
+
+    -- 探测 Mod ID 和盲注key
+    local mod_id = nil
+    local blind_key = nil
+
+    if blind then
+        blind_key = blind.key
+        mod_id = blind.mod and blind.mod.id
+    end
+
+    -- 在原函数调用之前触发AI翻译（因为原函数会通过localize()读取G.localization）
+    if ai_enabled and mod_id and mod_id ~= 'base' and blind_key then
+        if TEO_resolve_card_localization then
+            TEO_resolve_card_localization(mod_id, 'Blind', blind_key)
+        end
+    end
+
+    -- 执行原逻辑（此时G.localization可能已被更新）
+    local result = create_UIBox_blind_popup_ai_ref(blind, discovered, vars)
+
+    -- Debug: 输出当前显示的盲注翻译文本
+    if TEO_DEBUG == true and G.localization and G.localization.descriptions then
+        local loc_data = G.localization.descriptions.Blind and
+            G.localization.descriptions.Blind[blind_key]
+        if loc_data then
+            local debug_text = {}
+            if loc_data.name then
+                table.insert(debug_text, "Name: " .. tostring(loc_data.name))
+            end
+            if loc_data.text then
+                if type(loc_data.text) == 'table' then
+                    for i, line in ipairs(loc_data.text) do
+                        table.insert(debug_text, "Text[" .. i .. "]: " .. tostring(line))
+                    end
+                else
+                    table.insert(debug_text, "Text: " .. tostring(loc_data.text))
+                end
+            end
+            TEO_dbg_print(string.format("[TEOcean AI Debug] Blind hover: %s.Blind.%s\n%s",
+                mod_id or 'unknown', blind_key or 'unknown', table.concat(debug_text, "\n")))
+        end
+    end
+
+    return result
+end
+
 print('[TEOcean AI] AI 翻译模块已加载')
