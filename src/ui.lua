@@ -689,6 +689,20 @@ G.FUNCS.TEOcean_ask_api_key = function()
                                         })
                                     }
                                 },
+                                -- Test Availability button row
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", padding = 0.1 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_test_api_key",
+                                            label = { localize('teo_b_test_api') or "Test Availability" },
+                                            minw = 2,
+                                            scale = 0.4,
+                                            colour = G.C.BLUE
+                                        })
+                                    }
+                                },
                                 -- Confirm/Cancel buttons row
                                 {
                                     n = G.UIT.R,
@@ -955,6 +969,282 @@ G.FUNCS.TEOcean_clear_all_ai_cache = function()
             G.FUNCS.TEOcean_ai_cache_manager()
         else
             print('[TEOcean] 清除全部AI缓存失败')
+        end
+    end
+end
+
+-- ====================
+-- API Key 测试相关函数
+-- ====================
+
+-- 打开翻译测试页面
+G.FUNCS.TEOcean_test_api_key = function()
+    local mod = TEO_get_mod()
+
+    -- 创建测试页面的临时配置
+    local placeholder = localize('teo_test_result_placeholder') or "等待翻译..."
+    if not TEO._test_translation_config then
+        TEO._test_translation_config = {
+            input_text = "Hello, World!",
+            result_text = placeholder,
+            result_color = G.C.UI.TEXT_LIGHT,
+            is_loading = false
+        }
+    end
+    -- 注意：不再重置 result_text，保留当前值（可能是翻译结果）
+
+    G.FUNCS.overlay_menu({
+        definition = {
+            n = G.UIT.ROOT,
+            config = { align = "cm", padding = 0.05, colour = G.C.BLACK, r = 0.1 },
+            nodes = {
+                {
+                    n = G.UIT.C,
+                    config = { align = "cm", padding = 0.05, minw = 10, minh = 6 },
+                    nodes = {
+                        -- 标题
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.15 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_test_translation_title') or "翻译测试", scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+                            }
+                        },
+                        -- 输入区域标题
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_test_input_label') or "输入要翻译的文本:", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                            }
+                        },
+                        -- 输入框
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                create_text_input({
+                                    ref_table = TEO._test_translation_config,
+                                    ref_value = "input_text",
+                                    max_length = 200,
+                                    prompt_text = localize('teo_test_input_placeholder') or "输入英文文本...",
+                                    extended_corpus = true,
+                                    w = 10,
+                                    h = 0.8,
+                                })
+                            }
+                        },
+                        -- 清空和粘贴按钮行
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
+                            nodes = {
+                                {
+                                    n = G.UIT.C,
+                                    config = { align = "cm", padding = 0.05 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_test_clear_input",
+                                            label = { localize('teo_b_clear') or "清空" },
+                                            minw = 1.5,
+                                            scale = 0.35,
+                                            colour = G.C.RED
+                                        })
+                                    }
+                                },
+                                {
+                                    n = G.UIT.C,
+                                    config = { align = "cm", padding = 0.05 },
+                                    nodes = {
+                                        UIBox_button({
+                                            button = "TEOcean_test_paste_input",
+                                            label = { localize('teo_b_paste') or "粘贴" },
+                                            minw = 1.5,
+                                            scale = 0.35,
+                                            colour = G.C.GREEN
+                                        })
+                                    }
+                                }
+                            }
+                        },
+                        -- 翻译按钮
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                UIBox_button({
+                                    button = "TEOcean_do_test_translation",
+                                    label = { localize('teo_b_translate') or "翻译" },
+                                    minw = 2.5,
+                                    scale = 0.4,
+                                    colour = G.C.BOOSTER
+                                })
+                            }
+                        },
+                        -- 结果区域标题
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_test_result_label') or "翻译结果:", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                            }
+                        },
+                        -- 结果显示区域 - 使用带 ref 的简单文本
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.1 },
+                            nodes = {
+                                {
+                                    n = G.UIT.C,
+                                    config = { align = "cm", minw = 9.5, minh = 1.5, r = 0.1, colour = G.C.BLACK, emboss = 0.05 },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.T,
+                                            config = {
+                                                text = TEO._test_translation_config.result_text,
+                                                scale = 0.35,
+                                                colour = TEO._test_translation_config.result_color,
+                                                ref_table = TEO._test_translation_config,
+                                                ref_value = "result_text",
+                                                colour_ref_table = TEO._test_translation_config,
+                                                colour_ref_value = "result_color",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        -- 返回按钮
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.15 },
+                            nodes = {
+                                UIBox_button({
+                                    button = "TEOcean_test_api_key_back",
+                                    label = { localize('b_back') or "返回" },
+                                    minw = 2.5,
+                                    scale = 0.4,
+                                    colour = G.C.BLUE
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+end
+
+-- 更新结果显示 - 重新打开页面
+local function update_result_display()
+    local config = TEO._test_translation_config
+    if not config then
+        print("[TEOcean] update_result_display: config 为 nil")
+        return
+    end
+
+    -- 重新打开页面以刷新显示
+    G.FUNCS.TEOcean_test_api_key()
+    print("[TEOcean] 已更新显示: " .. tostring(config.result_text))
+end
+
+-- 执行翻译测试
+G.FUNCS.TEOcean_do_test_translation = function()
+    local mod = TEO_get_mod()
+    local config = TEO._test_translation_config
+
+    if not config then return end
+
+    local input_text = config.input_text
+
+    if not input_text or input_text == "" then
+        config.result_text = localize('teo_test_error_empty') or "请输入要翻译的文本"
+        config.result_color = G.C.RED
+        update_result_display()
+        return
+    end
+
+    if not mod.config.api_key or mod.config.api_key == "" then
+        config.result_text = localize('teo_test_error_no_key') or "请先配置 API Key"
+        config.result_color = G.C.RED
+        update_result_display()
+        return
+    end
+
+    -- 更新全局 API Key
+    TEO_DEEPSEEK_API_KEY = mod.config.api_key
+
+    -- 显示加载状态
+    config.result_text = localize('teo_test_translating') or "正在翻译..."
+    config.result_color = G.C.UI.TEXT_DARK
+    update_result_display()
+
+    -- 调用翻译函数
+    TEO_test_deepseek_translation(input_text, function(success, result, error_message)
+        if success then
+            config.result_text = result
+            config.result_color = G.C.GREEN
+            print("[TEOcean] 翻译测试成功: " .. result)
+        else
+            config.result_text = (localize('teo_test_error_prefix') or "错误: ") .. (error_message or "未知错误")
+            config.result_color = G.C.RED
+            print("[TEOcean] 翻译测试失败: " .. tostring(error_message))
+        end
+        update_result_display()
+    end)
+end
+
+-- 返回 API Key 设置页面
+G.FUNCS.TEOcean_test_api_key_back = function()
+    -- 清理临时配置
+    TEO._test_translation_config = nil
+    -- 返回 API Key 设置页面
+    G.FUNCS.TEOcean_ask_api_key()
+end
+
+-- 清空输入框
+G.FUNCS.TEOcean_test_clear_input = function()
+    local config = TEO._test_translation_config
+    if config then
+        config.input_text = ""
+        config.result_text = localize('teo_test_result_placeholder') or "等待翻译..."
+        config.result_color = G.C.UI.TEXT_LIGHT
+        update_result_display()
+        -- 重新打开页面以刷新输入框显示
+        G.FUNCS.TEOcean_test_api_key()
+        print("[TEOcean] 已清空输入框")
+    end
+end
+
+-- 粘贴到输入框
+G.FUNCS.TEOcean_test_paste_input = function()
+    local config = TEO._test_translation_config
+    if config and love and love.system then
+        local clipboard_text = love.system.getClipboardText()
+        if clipboard_text and clipboard_text ~= "" then
+            -- 去除首尾空白
+            clipboard_text = clipboard_text:match("^%s*(.-)%s*$")
+            -- 限制长度
+            if #clipboard_text > 200 then
+                clipboard_text = clipboard_text:sub(1, 200)
+            end
+            config.input_text = clipboard_text
+            print("[TEOcean] 已粘贴文本到输入框: " .. clipboard_text)
+            -- 重新打开页面以刷新输入框显示
+            G.FUNCS.TEOcean_test_api_key()
+        else
+            print("[TEOcean] 剪贴板为空")
+        end
+    end
+end
+
+-- 复制翻译结果
+G.FUNCS.TEOcean_test_copy_result = function()
+    local config = TEO._test_translation_config
+    if config and config.result_text and config.result_text ~= "" then
+        if love and love.system then
+            love.system.setClipboardText(config.result_text)
+            print("[TEOcean] 已复制翻译结果到剪贴板")
         end
     end
 end

@@ -124,6 +124,7 @@ the tower -> 塔 | the wheel of fortune -> 命运之轮 | the world -> 世界
 Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统一应用：Sticker -> 贴纸
 "有 1/2 几率" 保留几率否则一律翻译为概率
 ]]
+TEO_ai_sys_prompt = sys_prompt
 
 --- 计算简单哈希
 local function get_text_hash(text)

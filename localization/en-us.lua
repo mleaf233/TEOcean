@@ -77,6 +77,17 @@ return {
             teo_no_ai_cache = "No AI Cache",
             teo_clear_cache = "Clear",
             teo_clear_all_cache = "Clear All AI Cache",
+            teo_b_test_api = "Test Availability",
+            teo_test_translation_title = "Translation Test",
+            teo_test_input_label = "Enter text to translate:",
+            teo_test_input_placeholder = "Enter English text...",
+            teo_b_translate = "Translate",
+            teo_test_result_label = "Translation Result:",
+            teo_test_result_placeholder = "Waiting for translation...",
+            teo_test_translating = "Translating...",
+            teo_test_error_empty = "Please enter text to translate",
+            teo_test_error_no_key = "Please configure API Key first",
+            teo_test_error_prefix = "Error: ",
         },
     }
 }
