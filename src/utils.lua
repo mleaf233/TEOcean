@@ -185,26 +185,66 @@ function TEO_merge_table(dest, src)
     return dest
 end
 
+TEO_last_loc_read_error = TEO_last_loc_read_error or nil
+
+local function TEO_set_loc_read_error(path, stage, err)
+    local msg = tostring(err or 'unknown error')
+    TEO_last_loc_read_error = {
+        path = path,
+        stage = stage,
+        message = msg,
+    }
+    print(('[TEOcean Language Packs] 读取本地化失败[%s]: %s (%s)'):format(tostring(stage), tostring(path), msg))
+end
+
+function TEO_get_last_loc_read_error()
+    return TEO_last_loc_read_error
+end
+
 -- helper: 读取 .lua 或 .json 文件并返回 table
 function TEO_read_loc_file(path)
+    TEO_last_loc_read_error = nil
     local info = NFS.getInfo(path)
-    if not info then return nil end
+    if not info then
+        TEO_last_loc_read_error = {
+            path = path,
+            stage = 'stat',
+            message = 'file not found',
+        }
+        return nil
+    end
     local ok_read, content = pcall(NFS.read, path)
-    if not ok_read then return nil end
+    if not ok_read then
+        TEO_set_loc_read_error(path, 'read', content)
+        return nil
+    end
     if path:lower():match('%.json$') then
         local ok_json, parsed = pcall(JSON.decode, content)
-        if ok_json then return parsed end
+        if ok_json then
+            if type(parsed) ~= 'table' then
+                TEO_set_loc_read_error(path, 'json-structure', 'decoded value is not a table')
+                return nil
+            end
+            return parsed
+        end
+        TEO_set_loc_read_error(path, 'json-decode', parsed)
         return nil
     else
         local chunk, errc = load(tostring(content), ('=[TEOcean loc "%s"]'):format(path))
         if not chunk then
-            TEO_dbg_print('[TEOcean] load 失败:', path, errc)
+            TEO_set_loc_read_error(path, 'lua-load', errc)
             return nil
         end
         local ok_exec, res = pcall(chunk)
-        if ok_exec then return res end
-        TEO_dbg_print('[TEOcean] 执行失败:', path, res)
-        return nil
+        if not ok_exec then
+            TEO_set_loc_read_error(path, 'lua-runtime', res)
+            return nil
+        end
+        if type(res) ~= 'table' then
+            TEO_set_loc_read_error(path, 'lua-return-type', 'chunk returned ' .. tostring(type(res)))
+            return nil
+        end
+        return res
     end
 end
 

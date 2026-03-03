@@ -34,6 +34,23 @@ local function diff_table(base, other)
     return res
 end
 
+local function TEO_format_last_loc_error()
+    if not TEO_get_last_loc_read_error then return nil end
+    local err = TEO_get_last_loc_read_error()
+    if not err then return nil end
+    return ('stage=%s, detail=%s'):format(tostring(err.stage), tostring(err.message))
+end
+
+local function TEO_safe_create_dir(path, scene)
+    if NFS.getInfo(path) then return true end
+    local ok, err = pcall(NFS.createDirectory, path)
+    if not ok then
+        print(('[TEOcean Language Packs] 创建目录失败[%s]: %s (%s)'):format(tostring(scene), tostring(path), tostring(err)))
+        return false
+    end
+    return true
+end
+
 function merge_impl_mod_localizations(in_memory)
     if in_memory == nil or type(in_memory) ~= 'boolean' then
         in_memory = false
@@ -79,7 +96,10 @@ function merge_impl_mod_localizations(in_memory)
         --     end
         -- end
         if should_localize == true then
-            merge_single_mod_localization(target_mod, mod)
+            local ok_merge, err_merge = pcall(merge_single_mod_localization, target_mod, mod)
+            if not ok_merge then
+                print(('[TEOcean Language Packs] 本地化合并异常: %s (%s)'):format(target_mod.id, tostring(err_merge)))
+            end
         else
             print(('[TEOcean Language Packs] 跳过未勾选 mod: %s'):format(target_mod.id))
         end
@@ -124,10 +144,20 @@ function merge_single_mod_localization(target_mod, mod)
         local t = nil
         if NFS.getInfo(file_lua) then
             t = TEO_read_loc_file(file_lua)
+            if not t then
+                local detail = TEO_format_last_loc_error()
+                print(('[TEOcean Language Packs] 读取目标本地化失败: mod=%s lang=%s file=%s%s'):format(
+                    target_mod.id, tostring(lang), file_lua, detail and (' (' .. detail .. ')') or ''))
+            end
             TEO_dbg_print('read base file', file_lua, '->', type(t), 'keys=', TEO_tbl_count(t))
         end
         if not t and NFS.getInfo(file_json) then
             t = TEO_read_loc_file(file_json)
+            if not t then
+                local detail = TEO_format_last_loc_error()
+                print(('[TEOcean Language Packs] 读取目标本地化失败: mod=%s lang=%s file=%s%s'):format(
+                    target_mod.id, tostring(lang), file_json, detail and (' (' .. detail .. ')') or ''))
+            end
             TEO_dbg_print('read base file', file_json, '->', type(t), 'keys=', TEO_tbl_count(t))
         end
         if t and type(t) == 'table' then
@@ -149,10 +179,20 @@ function merge_single_mod_localization(target_mod, mod)
             local t = nil
             if NFS.getInfo(file_lua) then
                 t = TEO_read_loc_file(file_lua)
+                if not t then
+                    local detail = TEO_format_last_loc_error()
+                    print(('[TEOcean Language Packs] 读取impl本地化失败: mod=%s lang=%s file=%s%s'):format(
+                        target_mod.id, tostring(lang), file_lua, detail and (' (' .. detail .. ')') or ''))
+                end
                 TEO_dbg_print('read impl file', file_lua, '->', type(t), 'keys=', TEO_tbl_count(t))
             end
             if not t and NFS.getInfo(file_json) then
                 t = TEO_read_loc_file(file_json)
+                if not t then
+                    local detail = TEO_format_last_loc_error()
+                    print(('[TEOcean Language Packs] 读取impl本地化失败: mod=%s lang=%s file=%s%s'):format(
+                        target_mod.id, tostring(lang), file_json, detail and (' (' .. detail .. ')') or ''))
+                end
                 TEO_dbg_print('read impl file', file_json, '->', type(t), 'keys=', TEO_tbl_count(t))
             end
             if t and type(t) == 'table' then
@@ -172,25 +212,45 @@ function merge_single_mod_localization(target_mod, mod)
     local orig_en_json = loc_dir .. 'en-us.json'
     if NFS.getInfo(orig_default_lua) then
         orig_en = TEO_read_loc_file(orig_default_lua)
+        if not orig_en then
+            local detail = TEO_format_last_loc_error()
+            print(('[TEOcean Language Packs] 读取源语言失败: mod=%s file=%s%s'):format(
+                target_mod.id, orig_default_lua, detail and (' (' .. detail .. ')') or ''))
+        end
         TEO_dbg_print('read orig default lua', orig_default_lua, '->', type(orig_en), 'keys=', TEO_tbl_count(orig_en))
     end
     if not orig_en and NFS.getInfo(orig_en_lua) then
         orig_en = TEO_read_loc_file(orig_en_lua)
+        if not orig_en then
+            local detail = TEO_format_last_loc_error()
+            print(('[TEOcean Language Packs] 读取源语言失败: mod=%s file=%s%s'):format(
+                target_mod.id, orig_en_lua, detail and (' (' .. detail .. ')') or ''))
+        end
         TEO_dbg_print('read orig en lua', orig_en_lua, '->', type(orig_en), 'keys=', TEO_tbl_count(orig_en))
     end
     if not orig_en and NFS.getInfo(orig_default_json) then
         orig_en = TEO_read_loc_file(orig_default_json)
+        if not orig_en then
+            local detail = TEO_format_last_loc_error()
+            print(('[TEOcean Language Packs] 读取源语言失败: mod=%s file=%s%s'):format(
+                target_mod.id, orig_default_json, detail and (' (' .. detail .. ')') or ''))
+        end
         TEO_dbg_print('read orig default json', orig_default_json, '->', type(orig_en), 'keys=', TEO_tbl_count(orig_en))
     end
     if not orig_en and NFS.getInfo(orig_en_json) then
         orig_en = TEO_read_loc_file(orig_en_json)
+        if not orig_en then
+            local detail = TEO_format_last_loc_error()
+            print(('[TEOcean Language Packs] 读取源语言失败: mod=%s file=%s%s'):format(
+                target_mod.id, orig_en_json, detail and (' (' .. detail .. ')') or ''))
+        end
         TEO_dbg_print('read orig en json', orig_en_json, '->', type(orig_en), 'keys=', TEO_tbl_count(orig_en))
     end
     if orig_en and type(orig_en) == 'table' then
         local todo_root = mod.path .. 'impl/todo/'
-        if not NFS.getInfo(todo_root) then pcall(NFS.createDirectory, todo_root) end
+        if not TEO_safe_create_dir(todo_root, 'todo_root') then return end
         local todo_mod_dir = todo_root .. target_mod.id .. '/'
-        if not NFS.getInfo(todo_mod_dir) then pcall(NFS.createDirectory, todo_mod_dir) end
+        if not TEO_safe_create_dir(todo_mod_dir, 'todo_mod_dir') then return end
         for lang, merged_tbl in pairs(merged_by_lang) do
             -- 对每个目标语言，找出原 en 中存在但合并后缺失的键
             TEO_dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', TEO_tbl_count(orig_en),
@@ -216,13 +276,17 @@ function merge_single_mod_localization(target_mod, mod)
 
     -- 3) 将合并结果写回到目标 mod 的 localization 目录（创建目录如有必要），并先备份原始文件到 impl/backup/<modid>/localization/
     local out_dir = target_mod.path .. 'localization/'
-    if not NFS.getInfo(out_dir) then pcall(NFS.createDirectory, out_dir) end
+    if not TEO_safe_create_dir(out_dir, 'target_localization_dir') then return end
     local backup_root = mod.path .. 'impl/backup/'
-    if not NFS.getInfo(backup_root) then pcall(NFS.createDirectory, backup_root) end
+    if not TEO_safe_create_dir(backup_root, 'backup_root') then return end
     local backup_mod_dir = mod.path .. 'impl/backup/' .. target_mod.id .. '/'
-    if not NFS.getInfo(backup_mod_dir) then pcall(NFS.createDirectory, backup_mod_dir) end
+    if not TEO_safe_create_dir(backup_mod_dir, 'backup_mod_dir') then return end
     local backup_base = backup_root .. target_mod.id .. '/localization/'
-    if not NFS.getInfo(backup_base) then pcall(NFS.createDirectory, backup_base) end
+    if not TEO_safe_create_dir(backup_base, 'backup_localization_dir') then return end
+
+    if next(merged_by_lang) == nil then
+        print(('[TEOcean Language Packs] 未生成可写入的合并结果: %s'):format(target_mod.id))
+    end
 
 
 
@@ -248,13 +312,23 @@ function merge_single_mod_localization(target_mod, mod)
                         end
                     else
                         -- 原始文件不存在或读取失败，创建空备份
-                        pcall(NFS.write, backup_path, "return {}")
-                        print(('[TEOcean Language Packs] 原始文件不存在或为空，创建空备份: %s'):format(backup_path))
+                        local ok_empty, err_empty = pcall(NFS.write, backup_path, "return {}")
+                        if ok_empty then
+                            print(('[TEOcean Language Packs] 原始文件不存在或为空，创建空备份: %s'):format(backup_path))
+                        else
+                            print(('[TEOcean Language Packs] 创建空备份失败: %s (%s)'):format(backup_path,
+                                tostring(err_empty)))
+                        end
                     end
                 else
                     -- 原始文件不存在，创建空备份
-                    pcall(NFS.write, backup_path, "return {}")
-                    print(('[TEOcean Language Packs] 原始文件不存在，创建空备份: %s'):format(backup_path))
+                    local ok_empty, err_empty = pcall(NFS.write, backup_path, "return {}")
+                    if ok_empty then
+                        print(('[TEOcean Language Packs] 原始文件不存在，创建空备份: %s'):format(backup_path))
+                    else
+                        print(('[TEOcean Language Packs] 创建空备份失败: %s (%s)'):format(backup_path,
+                            tostring(err_empty)))
+                    end
                 end
             else
                 print(('[TEOcean Language Packs] 备份已存在，跳过: %s'):format(backup_path))
@@ -303,6 +377,9 @@ function restore_original_localization_for_mod(target_mod)
         print(('[TEOcean Language Packs] 无备份本地化文件: %s'):format(target_mod.id))
         return
     end
+    if not TEO_safe_create_dir(out_dir, 'restore_target_localization_dir') then
+        return
+    end
 
     for _, lang in ipairs(langs) do
         local backup_lua = backup_loc_dir .. lang .. '.lua'
@@ -330,13 +407,19 @@ function restore_original_localization_for_mod(target_mod)
             else
                 print(('[TEOcean Language Packs] 读取备份文件失败: %s'):format(backup_lua))
             end
+        else
+            print(('[TEOcean Language Packs] 跳过恢复，未找到备份文件: %s'):format(backup_lua))
         end
     end
 end
 
 -- 为单个mod执行本地化合并
 function merge_impl_mod_localizations_for_mod(target_mod)
-    merge_single_mod_localization(target_mod, TEO)
+    local ok, err = pcall(merge_single_mod_localization, target_mod, TEO)
+    if not ok then
+        local mod_id = target_mod and target_mod.id or 'unknown'
+        print(('[TEOcean Language Packs] 单模组合并异常: %s (%s)'):format(tostring(mod_id), tostring(err)))
+    end
 end
 
 -- ========================================================================================
@@ -480,7 +563,9 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
     -- 读取数据
     local override_data = TEO_read_loc_file(impl_file)
     if not override_data or type(override_data) ~= 'table' then
-        print(('[TEOcean Runtime] 读取 impl 文件失败: %s'):format(impl_file))
+        local detail = TEO_format_last_loc_error()
+        print(('[TEOcean Runtime] 读取 impl 文件失败: %s%s'):format(
+            impl_file, detail and (' (' .. detail .. ')') or ''))
         return false
     end
 
