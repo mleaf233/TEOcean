@@ -18,6 +18,7 @@
 | 13   | LuckyRabbit                   | 中      | https://github.com/Trif3ctal/Lucky-Rabbit                 |   ✅完全汉化   |
 | 14   | Cryptid-MoreMarioJokers       | 小      | https://github.com/smg9000/Cryptid-MoreMarioJokers        |   ✅完全汉化   |
 | 15   | Mayhem                        | 大      | https://codeberg.org/BalatroMayhem/Mayhem                 |   🚧正在施工   |
+| 16   | Monarchy                      | 中      | https://github.com/itsmythie/balatro-monarchy             |   ✅完全汉化   |
 
 如有其他mod汉化需求，请发起issue，或者加群反馈：1074056375
 
