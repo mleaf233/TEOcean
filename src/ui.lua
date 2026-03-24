@@ -97,6 +97,76 @@ function TEO.GUI.DynamicUIManager.updateDynamicAreas(uiDefinitions)
     end
 end
 
+local function TEO_patch_backspace_repeat()
+    if not TEO then return end
+    if TEO._backspace_repeat_patch_applied then return end
+    if not Controller or type(Controller) ~= "table" then return end
+
+    local original_key_hold_update = Controller.key_hold_update
+    local original_key_release_update = Controller.key_release_update
+
+    if type(original_key_hold_update) ~= "function" or type(original_key_release_update) ~= "function" then
+        return
+    end
+
+    local INITIAL_DELAY = 0.35
+    local REPEAT_INTERVAL = 0.045
+
+    local function reset_repeat_state(controller)
+        if controller then
+            controller._teo_backspace_repeat_state = nil
+        end
+    end
+
+    Controller.key_hold_update = function(self, key, dt)
+        original_key_hold_update(self, key, dt)
+
+        if key ~= "backspace" then return end
+        if not self or not self.text_input_hook then
+            reset_repeat_state(self)
+            return
+        end
+
+        if ((self.locked) and not G.SETTINGS.paused) or (self.locks.frame) or (self.frame_buttonpress) then return end
+
+        local state = self._teo_backspace_repeat_state
+        if not state then
+            state = { hold_time = 0, repeat_acc = 0 }
+            self._teo_backspace_repeat_state = state
+        end
+
+        local step = dt or 0
+        if step <= 0 then return end
+
+        state.hold_time = state.hold_time + step
+        if state.hold_time < INITIAL_DELAY then return end
+
+        state.repeat_acc = state.repeat_acc + step
+        while state.repeat_acc >= REPEAT_INTERVAL do
+            state.repeat_acc = state.repeat_acc - REPEAT_INTERVAL
+            if not self.text_input_hook then
+                reset_repeat_state(self)
+                return
+            end
+            G.FUNCS.text_input_key({
+                key = "backspace",
+                caps = self.held_keys and (self.held_keys["lshift"] or self.held_keys["rshift"])
+            })
+        end
+    end
+
+    Controller.key_release_update = function(self, key, dt)
+        if key == "backspace" then
+            reset_repeat_state(self)
+        end
+        return original_key_release_update(self, key, dt)
+    end
+
+    TEO._backspace_repeat_patch_applied = true
+end
+
+TEO_patch_backspace_repeat()
+
 
 function G.FUNCS.update_teo_mod_list(args)
     if not args or not args.cycle_config then return end
@@ -696,6 +766,7 @@ G.FUNCS.TEOcean_adapted_mods_button = function()
 end
 
 G.FUNCS.TEOcean_ask_api_key = function()
+    TEO_patch_backspace_repeat()
     local mod = TEO_get_mod()
     mod.config.api_url = mod.config.api_url or ""
     mod.config.api_model = mod.config.api_model or ""
@@ -1177,6 +1248,7 @@ end
 
 -- 打开翻译测试页面
 G.FUNCS.TEOcean_test_api_key = function()
+    TEO_patch_backspace_repeat()
     local mod = TEO_get_mod()
 
     -- 创建测试页面的临时配置
