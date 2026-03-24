@@ -1,15 +1,17 @@
 -- AI Manager: 负责处理 AI的 API 请求、缓存和直接Override
 
-local API_URL = "https://api.deepseek.com/chat/completions"
-
 local TEO = SMODS.current_mod
 local AI_CACHE = {} -- 内存缓存：{ [text_hash] = "Translated Text" }
 
-local function TEO_get_api_key()
-    if TEO and TEO.config and TEO.config.api_key then
-        return TEO.config.api_key
-    end
-    return "sk-default-placeholder"
+local function TEO_get_ai_request_config()
+    local cfg = (TEO and TEO.config) or {}
+    return {
+        api_url = cfg.api_url or "",
+        api_model = cfg.api_model or "",
+        api_key = cfg.api_key or "",
+        api_format = cfg.api_format or "auto",
+        temperature = cfg.ai_temperature
+    }
 end
 local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = content } } }
 local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
@@ -78,13 +80,13 @@ local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中�
 5. 如果可以，可以将部分中文替换成中国传统文化词汇，或者信达雅
 6. 遇到“倍乘”“倍增”时，不需要翻译出来，只需要写数字表示（例如X3、+10)
 8. 如果需要逗号，请改成另起一行文本，也就是不要出现逗号，句号同理
-
-9. 可供参考的替换词汇表（每个词汇以|或换行分隔）：
+10. 如果英语中遇到条件语句的倒装（相对于中文而言），需要以中文的语序改变语句顺序
+11. 可供参考的替换词汇表（每个词汇以|或换行分隔）：
 Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jumbo Arcana Pack -> 巨型秘术包 | Mega Arcana Pack -> 超级秘术包 | Arcana Pack -> 秘术包
-held in hand -> 留在手牌中 | Joker -> 小丑牌 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
+held in hand -> 留在手牌中 | Joker -> 小丑 (此条当且仅当小丑名称字段‘name’含有时) | Joker -> 小丑牌 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
 first hand -> 第一次出牌 | first played card -> 第一张计分牌 | self destructs -> 自毁 | if -> 如果 | sell -> 售出 | add -> 添加
 E.G.O. Gift -> E.G.O. 饰品 | consumable slot -> 消耗牌槽位 | eat -> 吃完了 | Booster Pack -> 补充包 | card back -> 牌套
-Ascension power -> 升阶强度 | Ascended hands -> 已升阶牌型 | Mythos Pack -> 神话包 | Mythos -> 神话
+Ascension power -> 晋升强度 | Ascended hands -> 已晋升牌型 | Mythos Pack -> 神话包 | Mythos -> 神话
 loteria_pack -> 乐透包 | zodiac -> 星座 | unique hand -> 不重复的牌型 | final hand of round -> 最后一次出牌 | silly -> 滑稽
 Deck -> 牌组 | Blind -> 盲注 | Joker -> 小丑牌 | Ante -> 底注 | Chips -> 筹码 | Mult -> 倍率 | Face Cards -> 人头牌 | Playing Cards -> 游戏牌
 Consumable -> 消耗牌 | Spectral -> 幻灵 | Tarot -> 塔罗牌 | Planet -> 星球牌 | Voucher -> 优惠券 | Booster Pack -> 补充包
@@ -122,7 +124,7 @@ the magician -> 魔术师 | the moon -> 月亮 | the star -> 星星 | strength -
 the tower -> 塔 | the wheel of fortune -> 命运之轮 | the world -> 世界
 特殊规则：
 Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统一应用：Sticker -> 贴纸
-"有 1/2 几率" 保留几率否则一律翻译为概率
+当且仅当"有 1/2 几率" "have #1#/#2# chance" 意思相近的字样出现时译作'几率'否则一律翻译为概率
 ]]
 TEO_ai_sys_prompt = sys_prompt
 
@@ -527,53 +529,48 @@ function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
         return
     end
 
-    PENDING_CARD_REQUESTS[card_id] = true
-    if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 发起 API 请求:", card_id) end
-
-    local request_body = {
-        model = "deepseek-chat",
-        messages = {
-            { role = "system", content = "You are a professional game localization expert. " .. sys_prompt },
-            { role = "user",   content = source_text }
-        },
-        stream = false
-    }
-
-    local current_api_key = TEO_get_api_key()
-
-    if not current_api_key or current_api_key == "sk-default-placeholder" or current_api_key == "" then
-        print("[TEOcean AI] 未配置 API Key，无法进行 AI 翻译")
+    local request_cfg = TEO_get_ai_request_config()
+    if not (TEO_has_required_ai_config and TEO_has_required_ai_config(request_cfg)) then
+        print("[TEOcean AI] AI 配置不完整：请填写 API URL、Model、API Key")
         return
     end
 
-    local headers = {
-        ["Content-Type"] = "application/json",
-        ["Authorization"] = "Bearer " .. current_api_key
-    }
+    local request_spec, build_err = TEO_build_ai_request(
+        request_cfg,
+        "You are a professional game localization expert. " .. sys_prompt,
+        source_text
+    )
+    if not request_spec then
+        print("[TEOcean AI] 构建请求失败:", tostring(build_err))
+        return
+    end
+
+    PENDING_CARD_REQUESTS[card_id] = true
+    if TEO_dbg_print then
+        TEO_dbg_print("[TEOcean AI Manager] 发起 API 请求:", card_id, request_spec.provider, request_spec.url)
+    end
 
     https.asyncRequest(
-        API_URL,
-        { method = "POST", headers = headers, data = json.encode(request_body) },
+        request_spec.url,
+        { method = "POST", headers = request_spec.headers, data = json.encode(request_spec.body) },
         function(code, body, resp_headers)
             PENDING_CARD_REQUESTS[card_id] = nil
 
-            if code == 200 then
-                local success, data = pcall(json.decode, body)
-                if success and data and data.choices and data.choices[1] then
-                    local content = data.choices[1].message.content
-                    local parsed_content = parse_ai_response(content)
-
-                    if TEO_dbg_print then TEO_dbg_print("[TEO AI Manager] 翻译成功:", card_id, parsed_content) end
-
-                    -- 持久化到卡牌级缓存
-                    save_ai_card_cache(mod_id, set_key, card_key, parsed_content)
-
-                    TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content)
-                else
-                    print("[TEOcean AI] 解析失败:", body)
+            local ok, content, parse_err, parsed_data = TEO_parse_ai_response(request_spec.provider, code, body)
+            if ok then
+                local parsed_content = parse_ai_response(content) or content
+                if TEO_dbg_print then
+                    TEO_dbg_print("[TEO AI Manager] 翻译成功:", card_id, request_spec.provider, parsed_content)
                 end
+
+                -- 持久化到卡牌级缓存
+                save_ai_card_cache(mod_id, set_key, card_key, parsed_content)
+                TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content)
             else
-                print("[TEOcean AI] 请求失败 Code:", code, "Card:", card_id)
+                print("[TEOcean AI] 请求或解析失败:", tostring(parse_err), "Code:", tostring(code), "Card:", card_id)
+                if TEO_dbg_print and parsed_data then
+                    TEO_dbg_print("[TEOcean AI] 原始错误响应:", parsed_data)
+                end
             end
         end
     )

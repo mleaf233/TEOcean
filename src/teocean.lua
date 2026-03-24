@@ -17,6 +17,7 @@ TEO_init_configs()
 -- 加载本地化函数
 assert(SMODS.load_file('src/localization.lua'), "Failed to load localization file. ")()
 
+assert(SMODS.load_file('src/ai_provider_adapter.lua'), "Failed to load AI provider adapter. ")()
 assert(SMODS.load_file('src/ui.lua'), "Failed to load UI file. ")()
 assert(SMODS.load_file('src/original_translation.lua'), "Failed to load original translation file. ")()
 assert(SMODS.load_file('src/ai_manager.lua'), "Failed to load AI Manager. ")()
@@ -127,7 +128,7 @@ if mod then
                                             nodes = {
                                                 UIBox_button({
                                                     button = 'TEOcean_ask_api_key',
-                                                    label = { localize('teo_set_api_key') or '设置 API Key' },
+                                                    label = { localize('teo_set_api_key') or '设置 AI 接口' },
                                                     minw = 2.8,
                                                     minh = 0.8,
                                                     scale = 0.4,
@@ -275,10 +276,10 @@ if mod then
                                                     label = localize('teo_enable_ai') or "Enable AI Translation",
                                                     ref_table = mod.config,
                                                     ref_value = 'enable_ai_translation',
-                                                    active_colour = (mod.config.api_key ~= nil and mod.config.api_key ~= "") and
+                                                    active_colour = (TEO_has_required_ai_config and TEO_has_required_ai_config(mod.config)) and
                                                         G.C.RED or G.C.UI.BACKGROUND_INACTIVE,
                                                     callback = function(_set_toggle)
-                                                        if mod.config.api_key and mod.config.api_key ~= "" then
+                                                        if TEO_has_required_ai_config and TEO_has_required_ai_config(mod.config) then
                                                             TEO_save_configs()
                                                             if mod.config.enable_ai_translation then
                                                                 print('[TEOcean] AI 翻译功能已启用')
@@ -289,7 +290,7 @@ if mod then
                                                             -- Redirect to API Key setting
                                                             mod.config.enable_ai_translation = false
                                                             TEO_save_configs()
-                                                            print('[TEOcean] 未设置 API Key，跳转至设置页面')
+                                                            print('[TEOcean] AI 配置不完整（需要 URL/Model/API Key），跳转至设置页面')
                                                             G.FUNCS.TEOcean_ask_api_key()
                                                         end
                                                     end

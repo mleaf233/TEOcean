@@ -20,6 +20,18 @@ function TEO_ensure_slash(path)
     return path
 end
 
+function TEO_trim_string(s)
+    if type(s) ~= "string" then return "" end
+    return s:match("^%s*(.-)%s*$") or ""
+end
+
+function TEO_has_required_ai_config(cfg)
+    if type(cfg) ~= "table" then return false end
+    return TEO_trim_string(cfg.api_url) ~= ""
+        and TEO_trim_string(cfg.api_model) ~= ""
+        and TEO_trim_string(cfg.api_key) ~= ""
+end
+
 function TEO_printTable(t, indent, visited)
     if type(t) ~= "table" then
         print("TEO_printTable: 传入的参数不是表格类型")
@@ -406,6 +418,20 @@ function TEO_init_UI_configs()
     -- 初始化"启用DEBUG模式"配置项
     if mod and mod.config and mod.config.enable_debug == nil then
         mod.config.enable_debug = false
+    end
+    -- 初始化 AI 接口配置（必填：URL / Model / API Key）
+    if mod and mod.config and mod.config.api_url == nil then
+        mod.config.api_url = "https://api.deepseek.com/v1/chat/completions"
+    end
+    if mod and mod.config and mod.config.api_model == nil then
+        mod.config.api_model = "deepseek-chat"
+    end
+    if mod and mod.config and mod.config.api_key == nil then
+        mod.config.api_key = ""
+    end
+    -- 可选：手动指定协议（auto/openai/claude/gemini），默认自动识别
+    if mod and mod.config and mod.config.api_format == nil then
+        mod.config.api_format = "auto"
     end
 
     for _, modInfo in ipairs(SMODS.mod_list or {}) do

@@ -29,10 +29,10 @@ return {
             teo_enable_ai = {
                 name = "Enable AI Translation",
                 text = {
-                    "Use DeepSeek API to auto-translate",
+                    "Use configured AI API to auto-translate",
                     "Automatically called when untranslated",
                     "content is encountered",
-                    "Requires API Key configuration first"
+                    "Requires API URL, model and API key"
                 }
             },
             teo_enable_debug = {
@@ -65,13 +65,20 @@ return {
             teo_optional_config = "Optional Config",
             teo_runtime_override = "Runtime Override (In-Memory)",
             teo_enable_ai = "Enable AI Translation",
-            teo_set_api_key = "Set API Key",
-            teo_api_key_popup_title = "Enter API Key",
+            teo_set_api_key = "Set AI API",
+            teo_api_key_popup_title = "Enter AI API Settings",
+            teo_api_settings_popup_title = "AI API Settings",
+            teo_api_url_label = "API URL",
+            teo_api_url_placeholder = "https://api.example.com/v1/chat/completions",
+            teo_api_model_label = "Model Name",
+            teo_api_model_placeholder = "gpt-5.3-codex / claude-4-5-sonnet / gemini-3.1-flash",
+            teo_api_key_label = "API Key",
+            teo_api_key_placeholder = "sk-...",
             teo_b_set = "Confirm",
             teo_b_cancel = "Cancel",
             teo_b_clear = "Empty",
             teo_b_paste = "Paste",
-            teo_b_get_key = "Get API Key",
+            teo_b_get_key = "Get API Docs",
             teo_enable_debug = "Enable DEBUG Mode",
             teo_ai_cache_manager = "AI Cache Manager",
             teo_no_ai_cache = "No AI Cache",
@@ -87,6 +94,7 @@ return {
             teo_test_translating = "Translating...",
             teo_test_error_empty = "Please enter text to translate",
             teo_test_error_no_key = "Please configure API Key first",
+            teo_test_error_missing_config = "Please configure API URL, model and API key first",
             teo_test_error_prefix = "Error: ",
         },
     }

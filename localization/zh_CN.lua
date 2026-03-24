@@ -29,9 +29,9 @@ return {
             teo_enable_ai = {
                 name = "启动 AI 翻译",
                 text = {
-                    "使用 DeepSeek API 自动翻译",
+                    "使用你配置的 AI 接口自动翻译",
                     "遇到未翻译内容时自动调用",
-                    "需要先配置 API Key"
+                    "需要先配置 API URL、模型和 API Key"
                 }
             },
             teo_enable_debug = {
@@ -64,13 +64,20 @@ return {
             teo_optional_config = "可选配置",
             teo_runtime_override = "在内存中动态翻译",
             teo_enable_ai = "启用AI翻译",
-            teo_set_api_key = "设置API Key",
-            teo_api_key_popup_title = "请输入翻译的 API Key",
+            teo_set_api_key = "设置AI翻译接口",
+            teo_api_key_popup_title = "请输入 AI 接口配置",
+            teo_api_settings_popup_title = "AI 接口配置",
+            teo_api_url_label = "API URL",
+            teo_api_url_placeholder = "https://api.example.com/v1/chat/completions",
+            teo_api_model_label = "模型名称",
+            teo_api_model_placeholder = "gpt-5.3-codex / claude-4-5-sonnet / gemini-3.1-flash",
+            teo_api_key_label = "API Key",
+            teo_api_key_placeholder = "sk-...",
             teo_b_set = "确认",
             teo_b_cancel = "取消",
             teo_b_clear = "清空内容",
             teo_b_paste = "粘贴",
-            teo_b_get_key = "获取 API Key",
+            teo_b_get_key = "获取API文档",
             teo_enable_debug = "启用DEBUG模式",
             teo_ai_cache_manager = "AI缓存管理",
             teo_no_ai_cache = "暂无AI缓存",
@@ -86,6 +93,7 @@ return {
             teo_test_translating = "正在翻译...",
             teo_test_error_empty = "请输入要翻译的文本",
             teo_test_error_no_key = "请先配置 API Key",
+            teo_test_error_missing_config = "请先配置 API URL、模型名称和 API Key",
             teo_test_error_prefix = "错误: ",
         },
     },

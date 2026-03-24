@@ -598,14 +598,15 @@ end
 
 G.FUNCS.TEOcean_ask_api_key = function()
     local mod = TEO_get_mod()
-    if not mod.config.api_key then
-        mod.config.api_key = ""
-    end
+    mod.config.api_url = mod.config.api_url or ""
+    mod.config.api_model = mod.config.api_model or ""
+    mod.config.api_key = mod.config.api_key or ""
 
-    -- Create a temporary display config for the UI and store in TEO so save function can access it
     TEO._api_key_display_config = {
-        -- Show masked version by default (only if there's content)
-        display_key = mod.config.api_key ~= "" and string.rep("*", #mod.config.api_key) or ""
+        api_url = mod.config.api_url,
+        api_model = mod.config.api_model,
+        api_key = mod.config.api_key ~= "" and string.rep("*", #mod.config.api_key) or "",
+        _original_api_key = mod.config.api_key
     }
 
     G.FUNCS.overlay_menu({
@@ -621,25 +622,75 @@ G.FUNCS.TEOcean_ask_api_key = function()
                             n = G.UIT.R,
                             config = { align = "cm", padding = 0.1 },
                             nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_api_key_popup_title'), scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+                                { n = G.UIT.T, config = { text = localize('teo_api_settings_popup_title') or localize('teo_api_key_popup_title') or "AI API Settings", scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
                             }
                         },
                         {
                             n = G.UIT.R,
-                            config = { align = "cm", padding = 0.1 },
+                            config = { align = "cm", padding = 0.03 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_api_url_label') or "API URL", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
                             nodes = {
                                 create_text_input({
+                                    id = "teo_cfg_url_input",
                                     ref_table = TEO._api_key_display_config,
-                                    ref_value = "display_key",
-                                    max_length = 120,
-                                    prompt_text = "sk-...",
+                                    ref_value = "api_url",
+                                    max_length = 220,
+                                    prompt_text = localize('teo_api_url_placeholder') or "https://api.example.com/v1/chat/completions",
                                     extended_corpus = true,
-                                    w = 8,
+                                    w = 10,
                                     h = 0.8,
-                                    callback = function()
-                                        -- When user finishes editing (presses Enter), save to real config
-                                        mod.config.api_key = TEO._api_key_display_config.display_key
-                                    end
+                                })
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.03 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_api_model_label') or "Model", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
+                            nodes = {
+                                create_text_input({
+                                    id = "teo_cfg_model_input",
+                                    ref_table = TEO._api_key_display_config,
+                                    ref_value = "api_model",
+                                    max_length = 120,
+                                    prompt_text = localize('teo_api_model_placeholder') or "gpt-4.1-mini / claude-3-5-sonnet / gemini-2.0-flash",
+                                    extended_corpus = true,
+                                    w = 10,
+                                    h = 0.8,
+                                })
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.03 },
+                            nodes = {
+                                { n = G.UIT.T, config = { text = localize('teo_api_key_label') or "API Key", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                            }
+                        },
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.05 },
+                            nodes = {
+                                create_text_input({
+                                    id = "teo_cfg_key_input",
+                                    ref_table = TEO._api_key_display_config,
+                                    ref_value = "api_key",
+                                    max_length = 120,
+                                    prompt_text = localize('teo_api_key_placeholder') or "sk-...",
+                                    extended_corpus = true,
+                                    w = 10,
+                                    h = 0.8,
                                 })
                             }
                         },
@@ -654,7 +705,7 @@ G.FUNCS.TEOcean_ask_api_key = function()
                                     nodes = {
                                         UIBox_button({
                                             button = "TEOcean_clear_api_key",
-                                            label = { localize('teo_b_clear') or "Empty" },
+                                            label = { localize('teo_b_clear') or "Clear Key" },
                                             minw = 2,
                                             scale = 0.4,
                                             colour = G.C.RED
@@ -682,7 +733,7 @@ G.FUNCS.TEOcean_ask_api_key = function()
                                     nodes = {
                                         UIBox_button({
                                             button = "TEOcean_get_api_key_url",
-                                            label = { localize('teo_b_get_key') or "Get API Key" },
+                                            label = { localize('teo_b_get_key') or "Get API Docs" },
                                             minw = 2,
                                             scale = 0.4,
                                             colour = G.C.ORANGE
@@ -745,24 +796,24 @@ G.FUNCS.TEOcean_ask_api_key = function()
 end
 
 G.FUNCS.TEOcean_save_api_key_display = function(e)
-    -- Get the display config from TEO global
-    if TEO._api_key_display_config and TEO._api_key_display_config.display_key then
+    if TEO._api_key_display_config then
         local mod = TEO_get_mod()
-        local new_value = TEO._api_key_display_config.display_key
+        local cfg = TEO._api_key_display_config
+        local new_url = TEO_trim_string and TEO_trim_string(cfg.api_url) or (cfg.api_url or "")
+        local new_model = TEO_trim_string and TEO_trim_string(cfg.api_model) or (cfg.api_model or "")
+        local key_input = TEO_trim_string and TEO_trim_string(cfg.api_key) or (cfg.api_key or "")
+        local old_key = cfg._original_api_key or mod.config.api_key or ""
 
-        -- Check if the value is just masked characters (user didn't edit)
-        -- If it's all asterisks and has the same length as original, user didn't change it
-        local is_unchanged_mask = (new_value:match("^%*+$") ~= nil)
+        local is_unchanged_mask = (key_input:match("^%*+$") ~= nil) and #old_key > 0 and #key_input == #old_key
+        local final_key = is_unchanged_mask and old_key or key_input
 
-        if not is_unchanged_mask then
-            -- User actually typed something, save it
-            mod.config.api_key = new_value
-            TEO_save_configs()
-            print("[TEOcean] API Key Saved: " .. (new_value ~= "" and "***hidden***" or "empty"))
-        else
-            -- User didn't modify the masked input, keep original key
-            print("[TEOcean] API Key unchanged (masked input not modified)")
-        end
+        mod.config.api_url = new_url
+        mod.config.api_model = new_model
+        mod.config.api_key = final_key
+        mod.config.api_format = TEO_detect_ai_provider and TEO_detect_ai_provider(new_url, "auto") or "auto"
+        TEO_save_configs()
+
+        print("[TEOcean] AI API 配置已保存 (Key hidden)")
     end
     if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
         G.FUNCS["openModUI_" .. TEO.id]()
@@ -787,20 +838,67 @@ end
 G.FUNCS.TEOcean_clear_api_key = function()
     local mod = TEO_get_mod()
     if mod and mod.config then
-        mod.config.api_key = ""
+        local target_field = nil
+
+        -- 优先从当前激活输入框读取 ref_value（最稳妥）
+        if G and G.CONTROLLER and G.CONTROLLER.text_input_hook and
+            G.CONTROLLER.text_input_hook.config and
+            G.CONTROLLER.text_input_hook.config.ref_table and
+            G.CONTROLLER.text_input_hook.config.ref_table.ref_value then
+            target_field = G.CONTROLLER.text_input_hook.config.ref_table.ref_value
+        end
+
+        -- 兜底：按输入框 id 映射
+        if not target_field and G and G.CONTROLLER and G.CONTROLLER.text_input_id then
+            local id = G.CONTROLLER.text_input_id
+            if id == "teo_cfg_url_input" then
+                target_field = "api_url"
+            elseif id == "teo_cfg_model_input" then
+                target_field = "api_model"
+            elseif id == "teo_cfg_key_input" then
+                target_field = "api_key"
+            end
+        end
+
+        -- 最终兜底保持原行为：清空 key
+        if target_field ~= "api_url" and target_field ~= "api_model" and target_field ~= "api_key" then
+            target_field = "api_key"
+        end
+
+        mod.config[target_field] = ""
+
+        if TEO._api_key_display_config then
+            TEO._api_key_display_config[target_field] = ""
+            if target_field == "api_key" then
+                TEO._api_key_display_config._original_api_key = ""
+            end
+        end
+
         TEO_save_configs()
-        -- Refresh the popup to show empty text
+        print("[TEOcean] 已清空字段: " .. tostring(target_field))
+        -- 刷新弹窗显示
         G.FUNCS.TEOcean_ask_api_key()
     end
 end
 
 G.FUNCS.TEOcean_blur_input = function()
     G.CONTROLLER.text_input_hook = nil
+    G.CONTROLLER.text_input_id = nil
 end
 
 G.FUNCS.TEOcean_get_api_key_url = function()
     if love and love.system then
-        love.system.openURL("https://platform.deepseek.com/api_keys")
+        local mod = TEO_get_mod()
+        local cfg = (mod and mod.config) or {}
+        local provider = TEO_detect_ai_provider and TEO_detect_ai_provider(cfg.api_url or "", cfg.api_format or "auto") or
+            "openai"
+        if provider == "claude" then
+            love.system.openURL("https://console.anthropic.com/settings/keys")
+        elseif provider == "gemini" then
+            love.system.openURL("https://aistudio.google.com/app/apikey")
+        else
+            love.system.openURL("https://platform.deepseek.com/api_keys")
+        end
     end
 end
 
@@ -811,7 +909,8 @@ G.FUNCS.TEOcean_paste_api_key = function()
         if clipboard_text and clipboard_text ~= "" then
             -- Remove any leading/trailing whitespace
             clipboard_text = clipboard_text:match("^%s*(.-)%s*$")
-            TEO._api_key_display_config.display_key = clipboard_text
+            TEO._api_key_display_config.api_key = clipboard_text
+            TEO._api_key_display_config._original_api_key = clipboard_text
             -- Also save immediately to real config
             mod.config.api_key = clipboard_text
             TEO_save_configs()
@@ -1024,6 +1123,7 @@ G.FUNCS.TEOcean_test_api_key = function()
                             config = { align = "cm", padding = 0.1 },
                             nodes = {
                                 create_text_input({
+                                    id = "teo_test_text_input",
                                     ref_table = TEO._test_translation_config,
                                     ref_value = "input_text",
                                     max_length = 200,
@@ -1164,15 +1264,12 @@ G.FUNCS.TEOcean_do_test_translation = function()
         return
     end
 
-    if not mod.config.api_key or mod.config.api_key == "" then
-        config.result_text = localize('teo_test_error_no_key') or "请先配置 API Key"
+    if not (TEO_has_required_ai_config and TEO_has_required_ai_config(mod.config)) then
+        config.result_text = localize('teo_test_error_missing_config') or "请先配置 API URL、Model 和 API Key"
         config.result_color = G.C.RED
         update_result_display()
         return
     end
-
-    -- 更新全局 API Key
-    TEO_DEEPSEEK_API_KEY = mod.config.api_key
 
     -- 显示加载状态
     config.result_text = localize('teo_test_translating') or "正在翻译..."
@@ -1180,7 +1277,7 @@ G.FUNCS.TEOcean_do_test_translation = function()
     update_result_display()
 
     -- 调用翻译函数
-    TEO_test_deepseek_translation(input_text, function(success, result, error_message)
+    TEO_test_translation(input_text, function(success, result, error_message)
         if success then
             config.result_text = result
             config.result_color = G.C.GREEN
