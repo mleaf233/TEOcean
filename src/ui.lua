@@ -167,6 +167,115 @@ end
 
 TEO_patch_backspace_repeat()
 
+local function TEO_is_ai_config_input(hook_config)
+    local input_id = hook_config and hook_config.id
+    return input_id == "teo_cfg_url_input" or
+        input_id == "teo_cfg_model_input" or
+        input_id == "teo_cfg_key_input" or
+        input_id == "teo_test_text_input"
+end
+
+local function TEO_resolve_ai_input_char(args, hook_config)
+    if not args or type(args.key) ~= "string" or string.len(args.key) ~= 1 then return nil end
+    if not hook_config or not hook_config.extended_corpus then return nil end
+
+    local key = args.key
+    local use_caps = args.caps or (G and G.CONTROLLER and G.CONTROLLER.capslock) or hook_config.all_caps
+
+    if use_caps then
+        local lower_ext = [[1234567890-=;',./[]\`]]
+        local upper_ext = [[!@#$%^&*()_+:"<>?{}|~]]
+        local shifted_index = string.find(lower_ext, key, 1, true)
+        if shifted_index then
+            key = string.sub(upper_ext, shifted_index, shifted_index)
+        else
+            key = string.upper(key)
+        end
+    end
+
+    local corpus = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' .. [[ 0!@#$%^&*()_+-={}[]|\:;"'<>,.?/`~]]
+    if string.find(corpus, key, 1, true) then
+        return key
+    end
+    return nil
+end
+
+local function TEO_try_insert_ai_char(character, hook_config)
+    if type(character) ~= "string" or string.len(character) ~= 1 then return false end
+    if not hook_config or not hook_config.text or not hook_config.text.ref_table then return false end
+
+    local text = hook_config.text
+    local current_text = text.ref_table[text.ref_value] or ""
+    local max_length = hook_config.max_length or 0
+    if string.len(current_text) >= max_length then return false end
+
+    TRANSPOSE_TEXT_INPUT(0)
+    MODIFY_TEXT_INPUT({
+        letter = character,
+        text_table = text,
+        pos = text.current_position + 1
+    })
+    TRANSPOSE_TEXT_INPUT(1)
+    return true
+end
+
+local function TEO_paste_to_ai_input()
+    local clipboard = (G and G.F_LOCAL_CLIPBOARD and G.CLIPBOARD) or
+        (love and love.system and love.system.getClipboardText and love.system.getClipboardText()) or ""
+    if clipboard == "" then return end
+
+    for i = 1, string.len(clipboard) do
+        local ch = string.sub(clipboard, i, i)
+        if ch ~= "\r" and ch ~= "\n" then
+            local hook_now = G and G.CONTROLLER and G.CONTROLLER.text_input_hook
+            local cfg_now = hook_now and hook_now.config and hook_now.config.ref_table
+            if not (hook_now and cfg_now and TEO_is_ai_config_input(cfg_now)) then
+                return
+            end
+
+            local mapped = TEO_resolve_ai_input_char({ key = ch, caps = false }, cfg_now)
+            TEO_try_insert_ai_char(mapped, cfg_now)
+        end
+    end
+end
+
+local function TEO_patch_ai_input_special_chars()
+    if not TEO then return end
+    if TEO._ai_input_special_patch_applied then return end
+    if not G or not G.FUNCS or type(G.FUNCS.text_input_key) ~= "function" then return end
+
+    local original_text_input_key = G.FUNCS.text_input_key
+    G.FUNCS.text_input_key = function(args)
+        local hook = G and G.CONTROLLER and G.CONTROLLER.text_input_hook
+        local hook_config = hook and hook.config and hook.config.ref_table
+
+        if hook and hook_config and TEO_is_ai_config_input(hook_config) then
+            args = args or {}
+
+            local held_keys = G and G.CONTROLLER and G.CONTROLLER.held_keys
+            local ctrl_down = held_keys and (held_keys["lctrl"] or held_keys["rctrl"])
+            if ctrl_down and (args.key == "v" or args.key == "V") then
+                TEO_paste_to_ai_input()
+                return
+            end
+
+            local mapped = TEO_resolve_ai_input_char(args, hook_config)
+            if mapped then
+                TEO_try_insert_ai_char(mapped, hook_config)
+                return
+            end
+
+            return original_text_input_key(args)
+        end
+
+        return original_text_input_key(args)
+    end
+
+    TEO._ai_input_special_patch_applied = true
+end
+
+TEO_patch_ai_input_special_chars()
+
 
 function G.FUNCS.update_teo_mod_list(args)
     if not args or not args.cycle_config then return end
