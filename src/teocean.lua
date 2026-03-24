@@ -80,14 +80,15 @@ if mod then
     end
     -- 模组配置
     mod.config_tab = function()
+        local teo_mod = (TEO_get_mod and TEO_get_mod()) or mod
+        local teo_alert = teo_mod and teo_mod.mod_button_alert == true
         local adapted_mods_Button = UIBox_button({
             id = "TEOcean_adapted_mods_button",
             col = true,
             button = "TEOcean_adapted_mods_button",
-            colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or
-                G.C.BOOSTER,
-            text_colour = (SMODS.mod_button_alert and not G.SETTINGS.reduced_motion) and SMODS.Gradients.warning_text or
-                G.C.TEXT_LIGHT,
+            -- 使用 TEO 私有告警状态，避免复用 SMODS 全局告警导致按钮被其它模组“串红闪”
+            colour = teo_alert and G.C.RED or G.C.BOOSTER,
+            text_colour = G.C.TEXT_LIGHT,
             label = { localize('teo_adapted_mods') or '适配的模组' },
             scale = 0.4
         })

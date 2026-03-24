@@ -2,14 +2,107 @@
 TEO = TEO_get_mod()
 if TEO then
     TEO.GUI = TEO.GUI or {}
+    TEO.GUI.DynamicUIManager = TEO.GUI.DynamicUIManager or {}
     TEO.LAST_VIEWED_MODS_PAGE = TEO.LAST_VIEWED_MODS_PAGE or nil
+end
+
+local function TEO_get_dynamic_ui_manager()
+    if SMODS and SMODS.GUI and SMODS.GUI.DynamicUIManager then
+        return SMODS.GUI.DynamicUIManager
+    end
+    return TEO.GUI.DynamicUIManager
+end
+
+local function TEO_generate_base_node(staticPageDefinition)
+    return {
+        n = G.UIT.ROOT,
+        config = {
+            emboss = 0.05,
+            minh = 6,
+            r = 0.1,
+            minw = 8,
+            align = "cm",
+            colour = G.C.BLACK
+        },
+        nodes = {
+            staticPageDefinition
+        }
+    }
+end
+
+local function TEO_call_dynamic_init_tab(dynamic_manager, args)
+    if not dynamic_manager or type(dynamic_manager.initTab) ~= "function" then
+        return nil
+    end
+
+    local ok, result = pcall(dynamic_manager.initTab, args)
+    if ok and type(result) == "table" then
+        return result
+    end
+
+    ok, result = pcall(dynamic_manager.initTab, dynamic_manager, args)
+    if ok and type(result) == "table" then
+        return result
+    end
+
+    return nil
+end
+
+local function TEO_call_dynamic_update(dynamic_manager, ui_definitions)
+    if not dynamic_manager or type(dynamic_manager.updateDynamicAreas) ~= "function" then
+        TEO.GUI.DynamicUIManager.updateDynamicAreas(ui_definitions)
+        return
+    end
+
+    local ok = pcall(dynamic_manager.updateDynamicAreas, ui_definitions)
+    if ok then return end
+
+    pcall(dynamic_manager.updateDynamicAreas, dynamic_manager, ui_definitions)
+end
+
+-- TEO 独立动态 UI 管理器（避免复用 SMODS 的全局管理器状态）
+function TEO.GUI.DynamicUIManager.initTab(args)
+    local updateFunctions = args.updateFunctions or {}
+    local staticPageDefinition = args.staticPageDefinition
+
+    for _, updateFunction in pairs(updateFunctions) do
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                updateFunction({ cycle_config = {} })
+                return true
+            end
+        }))
+    end
+
+    -- SMODS 版本兼容：旧版是全局 generateBaseNode，新版可能不存在该全局
+    if type(generateBaseNode) == "function" then
+        return generateBaseNode(staticPageDefinition)
+    end
+    if SMODS and SMODS.GUI and type(SMODS.GUI.generateBaseNode) == "function" then
+        return SMODS.GUI.generateBaseNode(staticPageDefinition)
+    end
+    return TEO_generate_base_node(staticPageDefinition)
+end
+
+function TEO.GUI.DynamicUIManager.updateDynamicAreas(uiDefinitions)
+    for id, uiDefinition in pairs(uiDefinitions or {}) do
+        local dynamicArea = G.OVERLAY_MENU and G.OVERLAY_MENU:get_UIE_by_ID(id)
+        if dynamicArea and dynamicArea.config and dynamicArea.config.object then
+            dynamicArea.config.object:remove()
+            dynamicArea.config.object = UIBox({
+                definition = uiDefinition,
+                config = { offset = { x = 0, y = 0.5 }, align = 'cm', parent = dynamicArea }
+            })
+        end
+    end
 end
 
 
 function G.FUNCS.update_teo_mod_list(args)
     if not args or not args.cycle_config then return end
-    SMODS.GUI.DynamicUIManager.updateDynamicAreas({
-        ["modsList"] = TEO.GUI.dynamicModListContent(args.cycle_config.current_option)
+    local dynamic_manager = TEO_get_dynamic_ui_manager()
+    TEO_call_dynamic_update(dynamic_manager, {
+        ["teo_mods_list"] = TEO.GUI.dynamicModListContent(args.cycle_config.current_option)
     })
 end
 
@@ -74,12 +167,9 @@ local function createClickableModBox(modInfo, scale)
         return { 1 - c[1], 1 - c[2], 1 - c[3], c[4] }
     end
     TEO_init_UI_configs()
-    -- 修改默认值为false，即初始状态下所有mod都不勾选
-    if modInfo.should_teo_localize == nil then
-        modInfo.should_teo_localize = false
-    end
-    if SMODS.full_restart == nil then
-        SMODS.full_restart = 0
+    local mod_state = { should_teo_localize = false }
+    if TEO.config and TEO.config.clicked_list and TEO.config.clicked_list[modInfo.id] == true then
+        mod_state.should_teo_localize = true
     end
     if TEO.need_reload == nil then
         TEO.need_reload = false
@@ -188,6 +278,7 @@ local function createClickableModBox(modInfo, scale)
                         config = {
                             padding = 0.1,
                             align = "lc",
+                            page = "mod_desc",
                             button = "openModUI_" .. modInfo.id,
                             minw = 4.25,
                             minh = 1.4,
@@ -223,7 +314,7 @@ local function createClickableModBox(modInfo, scale)
                                 nodes = {
                                     create_toggle({
                                         label = '',
-                                        ref_table = modInfo,
+                                        ref_table = mod_state,
                                         ref_value = 'should_teo_localize',
                                         col = true,
                                         hide_label = true,
@@ -235,8 +326,9 @@ local function createClickableModBox(modInfo, scale)
                                                 -- 检查是否启用运行时覆盖模式
                                                 local use_runtime = TEO.config and TEO.config.use_runtime_override or
                                                     false
+                                                local should_localize = mod_state.should_teo_localize == true
 
-                                                if modInfo.should_teo_localize then
+                                                if should_localize then
                                                     -- 勾选：根据模式执行不同操作
                                                     if use_runtime then
                                                         -- 运行时模式：内存中覆盖
@@ -292,9 +384,9 @@ local function createClickableModBox(modInfo, scale)
                                                 end
 
                                                 -- 保存配置
-                                                if modInfo.should_teo_localize ~= nil then
-                                                    TEO.config.clicked_list[modInfo.id] = modInfo.should_teo_localize
-                                                end
+                                                TEO.config = TEO.config or {}
+                                                TEO.config.clicked_list = TEO.config.clicked_list or {}
+                                                TEO.config.clicked_list[modInfo.id] = should_localize
                                                 TEO_save_configs()
                                             end)
                                     })
@@ -464,7 +556,7 @@ function TEO.GUI.staticModListContent()
                                     minw = 5
                                 },
                                 nodes = {
-                                    { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
+                                    { n = G.UIT.O, config = { align = "cm", id = 'teo_mods_list', object = Moveable() } },
                                 }
                             },
 
@@ -496,8 +588,6 @@ function TEO.GUI.staticModListContent()
 end
 
 function TEO_create_UIBox_mods_button()
-    local scale = 0.75
-    SMODS.browse_search = SMODS.browse_search or ''
     return (create_UIBox_generic_options({
         back_func = 'exit_teo_mods',
         contents = {
@@ -516,12 +606,16 @@ function TEO_create_UIBox_mods_button()
                                 label = localize('teo_adapted_mods2') or '已适配的模组',
                                 chosen = true,
                                 tab_definition_function = function()
-                                    return SMODS.GUI.DynamicUIManager.initTab({
+                                    local tab_args = {
                                         updateFunctions = {
-                                            modsList = G.FUNCS.update_teo_mod_list,
+                                            teo_mods_list = G.FUNCS.update_teo_mod_list,
                                         },
                                         staticPageDefinition = TEO.GUI.staticModListContent()
-                                    })
+                                    }
+                                    local dynamic_manager = TEO_get_dynamic_ui_manager()
+                                    local tab_def = TEO_call_dynamic_init_tab(dynamic_manager, tab_args)
+                                    if tab_def then return tab_def end
+                                    return TEO.GUI.DynamicUIManager.initTab(tab_args)
                                 end
                             },
 
@@ -534,6 +628,8 @@ function TEO_create_UIBox_mods_button()
 end
 
 G.FUNCS.exit_teo_mods = function()
+    G.ACTIVE_MOD_UI = nil
+
     -- 检查是否使用运行时模式
     local use_runtime = TEO.config and TEO.config.use_runtime_override or false
 
@@ -587,7 +683,10 @@ end
 
 G.FUNCS.TEOcean_adapted_mods_button = function()
     G.SETTINGS.paused = true
-    SMODS.LAST_SELECTED_MOD_TAB = nil
+    if SMODS then
+        -- 兼容新版 SMODS：确保打开任意 mod UI 时至少有一个默认 tab 可选中
+        SMODS.LAST_SELECTED_MOD_TAB = "mod_desc"
+    end
     -- 保存初始配置状态以供退出时对比
     TEO.initial_config_state = copy_table(TEO.config.clicked_list or {})
 

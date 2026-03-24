@@ -434,14 +434,6 @@ function TEO_init_UI_configs()
         mod.config.api_format = "auto"
     end
 
-    for _, modInfo in ipairs(SMODS.mod_list or {}) do
-        if mod and mod.config and mod.config.clicked_list and mod.config.clicked_list[modInfo.id] ~= nil then
-            modInfo.should_teo_localize = mod.config.clicked_list[modInfo.id]
-        elseif modInfo.should_teo_localize == nil then
-            -- 默认值为false
-            modInfo.should_teo_localize = false
-        end
-    end
     initialized = true
 end
 
