@@ -11,8 +11,9 @@ Set-Location $CurrentDir
 $Source = Get-Item $CurrentDir
 $SourceName = $Source.Name
 
-# 目标目录路径 ../../Mods
-$DestinationRoot = Resolve-Path "$CurrentDir\..\..\Mods"
+# 目标目录路径 %AppData%\Balatro\Mods
+$AppDataPath = [Environment]::GetFolderPath("ApplicationData")
+$DestinationRoot = Join-Path $AppDataPath "Balatro\Mods"
 $Destination = Join-Path $DestinationRoot $SourceName
 
 # 日志文件路径
