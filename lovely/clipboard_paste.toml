@@ -85,6 +85,9 @@ payload = '''
         local on_keyboard = self.screen_keyboard and self.cursor_down.target.UIBox == self.screen_keyboard
         if not on_keyboard then
             self.text_input_hook = nil
+            if love and love.keyboard and type(love.keyboard.setTextInput) == "function" then
+                love.keyboard.setTextInput(false)
+            end
         end
     end'''
 match_indent = true

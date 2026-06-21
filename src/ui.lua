@@ -175,6 +175,49 @@ local function TEO_is_ai_config_input(hook_config)
         input_id == "teo_test_text_input"
 end
 
+local function TEO_get_active_api_input_field()
+    local target_field = nil
+
+    if G and G.CONTROLLER and G.CONTROLLER.text_input_hook and
+        G.CONTROLLER.text_input_hook.config and
+        G.CONTROLLER.text_input_hook.config.ref_table and
+        G.CONTROLLER.text_input_hook.config.ref_table.ref_value then
+        target_field = G.CONTROLLER.text_input_hook.config.ref_table.ref_value
+    end
+
+    if target_field ~= "api_url" and target_field ~= "api_model" and target_field ~= "api_key" then
+        target_field = nil
+    end
+
+    if not target_field and G and G.CONTROLLER and G.CONTROLLER.text_input_id then
+        local id = G.CONTROLLER.text_input_id
+        if id == "teo_cfg_url_input" then
+            target_field = "api_url"
+        elseif id == "teo_cfg_model_input" then
+            target_field = "api_model"
+        elseif id == "teo_cfg_key_input" then
+            target_field = "api_key"
+        end
+    end
+
+    if target_field == "api_url" or target_field == "api_model" or target_field == "api_key" then
+        return target_field
+    end
+
+    return "api_key"
+end
+
+local function TEO_set_mobile_text_input(enabled)
+    if not (love and love.keyboard and type(love.keyboard.setTextInput) == "function") then return end
+    enabled = not not enabled
+
+    if TEO._mobile_text_input_enabled == enabled then return end
+    if enabled and not (G and G.CONTROLLER and G.CONTROLLER.HID and G.CONTROLLER.HID.touch) then return end
+
+    TEO._mobile_text_input_enabled = enabled
+    pcall(love.keyboard.setTextInput, enabled)
+end
+
 local function TEO_resolve_ai_input_char(args, hook_config)
     if not args or type(args.key) ~= "string" or string.len(args.key) ~= 1 then return nil end
     if not hook_config or not hook_config.extended_corpus then return nil end
@@ -265,16 +308,62 @@ local function TEO_patch_ai_input_special_chars()
                 return
             end
 
-            return original_text_input_key(args)
+            local result = original_text_input_key(args)
+            if not (G and G.CONTROLLER and G.CONTROLLER.text_input_hook) then
+                TEO_set_mobile_text_input(false)
+            end
+            return result
         end
 
-        return original_text_input_key(args)
+        local result = original_text_input_key(args)
+        if not (G and G.CONTROLLER and G.CONTROLLER.text_input_hook) then
+            TEO_set_mobile_text_input(false)
+        end
+        return result
     end
 
     TEO._ai_input_special_patch_applied = true
 end
 
 TEO_patch_ai_input_special_chars()
+
+local function TEO_patch_mobile_text_input()
+    if TEO._mobile_text_input_patch_applied then return end
+    if not G or not G.FUNCS or type(G.FUNCS.select_text_input) ~= "function" then return end
+
+    local original_select_text_input = G.FUNCS.select_text_input
+    G.FUNCS.select_text_input = function(e)
+        original_select_text_input(e)
+        if G and G.CONTROLLER and G.CONTROLLER.HID and G.CONTROLLER.HID.touch then
+            TEO_set_mobile_text_input(true)
+        end
+    end
+
+    local original_textinput = love and love.textinput
+    love.textinput = function(text)
+        if G and G.CONTROLLER and G.CONTROLLER.HID and G.CONTROLLER.HID.touch and
+            G.CONTROLLER.text_input_hook and type(text) == "string" and text ~= "" then
+            if utf8 and type(utf8.codes) == "function" and type(utf8.char) == "function" then
+                for _, code in utf8.codes(text) do
+                    G.FUNCS.text_input_key({ key = utf8.char(code) })
+                end
+            else
+                for i = 1, #text do
+                    G.FUNCS.text_input_key({ key = text:sub(i, i) })
+                end
+            end
+            return
+        end
+
+        if original_textinput then
+            return original_textinput(text)
+        end
+    end
+
+    TEO._mobile_text_input_patch_applied = true
+end
+
+TEO_patch_mobile_text_input()
 
 
 function G.FUNCS.update_teo_mod_list(args)
@@ -876,6 +965,11 @@ end
 
 G.FUNCS.TEOcean_ask_api_key = function()
     TEO_patch_backspace_repeat()
+    if G.FUNCS and G.FUNCS.TEOcean_blur_input then
+        G.FUNCS.TEOcean_blur_input()
+    else
+        TEO_set_mobile_text_input(false)
+    end
     local mod = TEO_get_mod()
     mod.config.api_url = mod.config.api_url or ""
     mod.config.api_model = mod.config.api_model or ""
@@ -1094,6 +1188,7 @@ G.FUNCS.TEOcean_save_api_key_display = function(e)
 
         print("[TEOcean] AI API 配置已保存 (Key hidden)")
     end
+    TEO_set_mobile_text_input(false)
     if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
         G.FUNCS["openModUI_" .. TEO.id]()
     else
@@ -1107,6 +1202,7 @@ G.FUNCS.TEOcean_save_api_key = function()
 end
 
 G.FUNCS.TEOcean_cancel_api_key = function()
+    TEO_set_mobile_text_input(false)
     if TEO and TEO.id and G.FUNCS["openModUI_" .. TEO.id] then
         G.FUNCS["openModUI_" .. TEO.id]()
     else
@@ -1117,32 +1213,7 @@ end
 G.FUNCS.TEOcean_clear_api_key = function()
     local mod = TEO_get_mod()
     if mod and mod.config then
-        local target_field = nil
-
-        -- 优先从当前激活输入框读取 ref_value（最稳妥）
-        if G and G.CONTROLLER and G.CONTROLLER.text_input_hook and
-            G.CONTROLLER.text_input_hook.config and
-            G.CONTROLLER.text_input_hook.config.ref_table and
-            G.CONTROLLER.text_input_hook.config.ref_table.ref_value then
-            target_field = G.CONTROLLER.text_input_hook.config.ref_table.ref_value
-        end
-
-        -- 兜底：按输入框 id 映射
-        if not target_field and G and G.CONTROLLER and G.CONTROLLER.text_input_id then
-            local id = G.CONTROLLER.text_input_id
-            if id == "teo_cfg_url_input" then
-                target_field = "api_url"
-            elseif id == "teo_cfg_model_input" then
-                target_field = "api_model"
-            elseif id == "teo_cfg_key_input" then
-                target_field = "api_key"
-            end
-        end
-
-        -- 最终兜底保持原行为：清空 key
-        if target_field ~= "api_url" and target_field ~= "api_model" and target_field ~= "api_key" then
-            target_field = "api_key"
-        end
+        local target_field = TEO_get_active_api_input_field()
 
         mod.config[target_field] = ""
 
@@ -1155,6 +1226,7 @@ G.FUNCS.TEOcean_clear_api_key = function()
 
         TEO_save_configs()
         print("[TEOcean] 已清空字段: " .. tostring(target_field))
+        TEO_set_mobile_text_input(false)
         -- 刷新弹窗显示
         G.FUNCS.TEOcean_ask_api_key()
     end
@@ -1163,6 +1235,7 @@ end
 G.FUNCS.TEOcean_blur_input = function()
     G.CONTROLLER.text_input_hook = nil
     G.CONTROLLER.text_input_id = nil
+    TEO_set_mobile_text_input(false)
 end
 
 G.FUNCS.TEOcean_get_api_key_url = function()
@@ -1188,12 +1261,20 @@ G.FUNCS.TEOcean_paste_api_key = function()
         if clipboard_text and clipboard_text ~= "" then
             -- Remove any leading/trailing whitespace
             clipboard_text = clipboard_text:match("^%s*(.-)%s*$")
-            TEO._api_key_display_config.api_key = clipboard_text
-            TEO._api_key_display_config._original_api_key = clipboard_text
+            local target_field = TEO_get_active_api_input_field()
+            local display_value = clipboard_text
+
+            if target_field == "api_key" then
+                display_value = string.rep("*", #clipboard_text)
+                TEO._api_key_display_config._original_api_key = clipboard_text
+            end
+
+            TEO._api_key_display_config[target_field] = display_value
             -- Also save immediately to real config
-            mod.config.api_key = clipboard_text
+            mod.config[target_field] = clipboard_text
             TEO_save_configs()
-            print("[TEOcean] API Key pasted from clipboard")
+            TEO_set_mobile_text_input(false)
+            print("[TEOcean] 字段已从剪贴板粘贴: " .. tostring(target_field))
             -- Refresh the popup to show the pasted content
             G.FUNCS.TEOcean_ask_api_key()
         else
@@ -1358,6 +1439,11 @@ end
 -- 打开翻译测试页面
 G.FUNCS.TEOcean_test_api_key = function()
     TEO_patch_backspace_repeat()
+    if G.FUNCS and G.FUNCS.TEOcean_blur_input then
+        G.FUNCS.TEOcean_blur_input()
+    else
+        TEO_set_mobile_text_input(false)
+    end
     local mod = TEO_get_mod()
 
     -- 创建测试页面的临时配置
@@ -1575,6 +1661,7 @@ end
 G.FUNCS.TEOcean_test_api_key_back = function()
     -- 清理临时配置
     TEO._test_translation_config = nil
+    TEO_set_mobile_text_input(false)
     -- 返回 API Key 设置页面
     G.FUNCS.TEOcean_ask_api_key()
 end
