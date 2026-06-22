@@ -47,8 +47,10 @@ try {
         # 跳过路径中包含 "\Balatro\" 或以 "\Balatro" 结尾的项
         # 跳过路径中包含 "\llm\" 或以 "\llm" 结尾的项（在 src 目录下）
         # 跳过路径中包含 "\.venv\" 或以 "\.venv" 结尾的项
+        # 跳过路径中包含 "\.git\" 或以 "\.git" 结尾的项
+        # 跳过路径中包含 "\.idea\" 或以 "\.idea" 结尾的项
         # 合并后的正则表达式
-        ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv)[\\/]?|release\.ps1$)")
+        ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv|\.git|\.idea)[\\/]?|release\.ps1$)")
     }
 
     foreach ($Item in $Items) {
