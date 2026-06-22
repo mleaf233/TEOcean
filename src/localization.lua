@@ -683,6 +683,30 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
     if not TEO_mod or not TEO_mod.path then return nil end
 
     local lang = TEO_get_cur_language() or 'zh_CN'
+    local actual_set_key = (set_key == 'Booster') and 'Other' or set_key
+    local original_data = nil
+    local original_is_tree = nil
+
+    local function has_loc_content(loc_data, is_tree)
+        if type(loc_data) == 'string' then
+            return loc_data ~= ""
+        end
+        if type(loc_data) ~= 'table' then
+            return false
+        end
+        if loc_data.name ~= nil or loc_data.text ~= nil then
+            return true
+        end
+        if is_tree then
+            return true
+        end
+        return next(loc_data) ~= nil
+    end
+
+    if TEO_get_original_localization then
+        original_data = TEO_get_original_localization(mod_id, set_key, card_key, true)
+        original_is_tree = original_data and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(original_data)
+    end
 
     -- 1. 检查 impl/mods 手动翻译（最高优先级）
     local impl_file = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
@@ -693,26 +717,45 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
             impl_data.descriptions[set_key] and
             impl_data.descriptions[set_key][card_key] or nil
         -- 验证手动翻译数据包含实际内容（非空 name 或 text）
-        if impl_loc and (impl_loc.name or impl_loc.text) then
+        local impl_is_tree = impl_loc and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(impl_loc)
+        if impl_loc and has_loc_content(impl_loc, impl_is_tree) then
             if TEO_dbg_print then
                 TEO_dbg_print('[TEOcean AI Loc] 使用适配的人工翻译:', mod_id, set_key, card_key)
-                TEO_apply_ai_override(mod_id, set_key, card_key, impl_loc)
             end
+            TEO_apply_ai_override(mod_id, set_key, card_key, impl_loc, impl_is_tree, original_data or impl_loc)
             return impl_loc
         end
     end
 
     -- 2. 检查 impl/ai AI缓存
     if TEO_get_ai_card_translation then
-        local ai_cached = TEO_get_ai_card_translation(mod_id, set_key, card_key)
-        -- 验证缓存数据包含实际翻译内容（非空 name 或 text）
-        if ai_cached and (ai_cached.name or ai_cached.text) then
+        local ai_cached, ai_cached_is_tree = TEO_get_ai_card_translation(mod_id, set_key, card_key)
+        local ai_cached_type = type(ai_cached)
+        local ai_cached_has_content = false
+        if ai_cached_type == 'table' then
+            ai_cached_has_content = has_loc_content(ai_cached, ai_cached_is_tree)
+        elseif ai_cached_type == 'string' then
+            ai_cached_has_content = ai_cached ~= ""
+        end
+        local expected_is_tree = original_is_tree
+        if expected_is_tree == nil and G and G.localization and G.localization.descriptions then
+            local current_target_loc = G.localization.descriptions[actual_set_key] and
+                G.localization.descriptions[actual_set_key][card_key] or nil
+            expected_is_tree = current_target_loc and TEO_loc_translation_uses_tree and
+                TEO_loc_translation_uses_tree(current_target_loc) or nil
+        end
+        local cache_shape_matches = expected_is_tree == nil or ai_cached_is_tree == expected_is_tree
+
+        if ai_cached and ai_cached_has_content and cache_shape_matches then
             if TEO_dbg_print then
                 TEO_dbg_print('[TEOcean AI Loc] 使用AI缓存:', mod_id, set_key, card_key)
             end
             -- AI缓存的数据需要应用到 G.localization
-            TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached)
+            TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached, ai_cached_is_tree, original_data)
             return ai_cached
+        elseif ai_cached and ai_cached_has_content and TEO_dbg_print and expected_is_tree ~= nil and not cache_shape_matches then
+            TEO_dbg_print('[TEOcean AI Loc] 跳过结构不匹配的AI缓存:', mod_id, set_key, card_key,
+                ai_cached_is_tree and 'tree' or 'flat', 'expected', expected_is_tree and 'tree' or 'flat')
         end
     end
 
@@ -723,39 +766,18 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
     -- 4. 触发AI请求（异步，不阻塞）
     -- 获取原始文本用于翻译
     if TEO_get_original_localization and TEO_request_ai_translation then
-        local original_data = TEO_get_original_localization(mod_id, set_key, card_key)
         if original_data then
-            local parts = {}
-
-            -- 收集文本用于翻译
-            local function collect(t)
-                if type(t) == 'string' then
-                    table.insert(parts, t)
-                elseif type(t) == 'table' then
-                    if #t > 0 then
-                        for i = 1, #t do
-                            collect(t[i])
-                        end
-                    else
-                        for _, v in pairs(t) do
-                            collect(v)
-                        end
-                    end
-                elseif type(t) == 'number' then
-                    table.insert(parts, tostring(t))
-                end
+            local preserve_structure = original_is_tree
+            if preserve_structure == nil and G and G.localization and G.localization.descriptions then
+                local target_loc = G.localization.descriptions[actual_set_key] and
+                    G.localization.descriptions[actual_set_key][card_key] or nil
+                preserve_structure = target_loc and TEO_loc_translation_uses_tree and
+                    TEO_loc_translation_uses_tree(target_loc) or false
             end
-
-            if original_data.name then collect(original_data.name) end
-            if original_data.text then collect(original_data.text) end
-
-            local source_text = table.concat(parts, "\n")
-            if source_text and source_text ~= "" then
-                -- 触发异步翻译请求
-                TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
-                if TEO_dbg_print then
-                    TEO_dbg_print('[TEOcean AI Loc] 触发AI翻译请求:', mod_id, set_key, card_key)
-                end
+            -- 触发异步翻译请求
+            TEO_request_ai_translation(original_data, mod_id, set_key, card_key, preserve_structure, original_data)
+            if TEO_dbg_print then
+                TEO_dbg_print('[TEOcean AI Loc] 触发AI翻译请求:', mod_id, set_key, card_key)
             end
         end
     end

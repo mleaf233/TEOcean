@@ -13,7 +13,7 @@ local function TEO_get_ai_request_config()
         temperature = cfg.ai_temperature
     }
 end
-local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = content } } }
+local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = { __teo_shape, __teo_content } } } }
 local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
 local PENDING_CARD_REQUESTS = {} -- 卡牌级请求跟踪：{ [mod_id.set_key.card_key] = true }
 
@@ -68,22 +68,21 @@ end
 -- 系统提示词 (保持不变)
 local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中文，要求如下：
 ### 输出格式 (必须)
-你必须仅返回一个合法的 JSON 对象，不要包含任何额外的 Markdown 代码块标签、前序或后续说明。格式如下：
-{
-  "name": "翻译后的卡牌名称",
-  "text": ["描述行1", "描述行2", ...]
-}
-1. 遵循原版翻译的lua格式
+你必须仅返回一个合法的 JSON 对象，不要包含任何额外的 Markdown 代码块标签、前序或后续说明。严格遵循以下要求：
+1. 如果英语中遇到条件语句的倒装（相对于中文而言），需要以中文的语序改变语句顺序（即json输出中数组的顺序）
 2. 翻译中的游戏术语尽量还原
 3. 遇到数字时，统一用阿拉伯数字
-4. 遵循官方中文翻译风格
-5. 如果可以，可以将部分中文替换成中国传统文化词汇，或者信达雅
+4. 保持原有层级、数组顺序、字段数量不变
+5. 只翻译字符串值；数字、布尔值、空表、控制标签和键名都不要改
 6. 遇到“倍乘”“倍增”时，不需要翻译出来，只需要写数字表示（例如X3、+10)
 8. 如果需要逗号，请改成另起一行文本，也就是不要出现逗号，句号同理
-10. 如果英语中遇到条件语句的倒装（相对于中文而言），需要以中文的语序改变语句顺序
-11. 可供参考的替换词汇表（每个词汇以|或换行分隔）：
+10. 如果输入里存在 name/text 结构，保持它；如果存在更深层嵌套，也必须原样保留
+11. 不要把多层表拍平，不要合并不同 box
+12. 保留 {C:...}、#1#、^^ 等占位符
+13. 有 #1#/#2# 几率 的字样时，翻译为“有 #1#/#2# 几率”，不要翻译为“有 #1#/#2# 概率”，并且统一用 / 符号分割分子和分母
+14. 可供参考的替换词汇表，遇到词汇匹配可直接根据选择替换（每个词汇以|或换行分隔）：
 Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jumbo Arcana Pack -> 巨型秘术包 | Mega Arcana Pack -> 超级秘术包 | Arcana Pack -> 秘术包
-held in hand -> 留在手牌中 | Joker -> 小丑 (此条当且仅当小丑名称字段‘name’含有时) | Joker -> 小丑牌 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
+held in hand -> 留在手牌中 | Joker -> 小丑 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
 first hand -> 第一次出牌 | first played card -> 第一张计分牌 | self destructs -> 自毁 | if -> 如果 | sell -> 售出 | add -> 添加
 E.G.O. Gift -> E.G.O. 饰品 | consumable slot -> 消耗牌槽位 | eat -> 吃完了 | Booster Pack -> 补充包 | card back -> 牌套
 Ascension power -> 晋升强度 | Ascended hands -> 已晋升牌型 | Mythos Pack -> 神话包 | Mythos -> 神话
@@ -128,6 +127,138 @@ Sticker -> 标贴（仅在key包含stack关键字时应用此规则）否则统�
 ]]
 TEO_ai_sys_prompt = sys_prompt
 
+local tree_sys_prompt = sys_prompt
+
+local function sanitize_translation_tree(node, expected)
+    if expected ~= nil then
+        if type(expected) == 'table' then
+            if type(node) ~= 'table' then return nil end
+
+            local res = {}
+            if TEO_is_sequence_table and TEO_is_sequence_table(expected) then
+                if not (TEO_is_sequence_table(node) and #node == #expected) then return nil end
+                for i = 1, #expected do
+                    local child = sanitize_translation_tree(node[i], expected[i])
+                    if child == nil then
+                        child = TEO_deep_copy and TEO_deep_copy(expected[i]) or expected[i]
+                    end
+                    res[i] = child
+                end
+            else
+                for k, expected_child in pairs(expected) do
+                    local child = sanitize_translation_tree(node[k], expected_child)
+                    if child == nil then
+                        child = TEO_deep_copy and TEO_deep_copy(expected_child) or expected_child
+                    end
+                    res[k] = child
+                end
+            end
+            return res
+        end
+
+        if type(expected) == 'string' then
+            if type(node) == 'string' then return node end
+            if type(node) == 'number' or type(node) == 'boolean' then return tostring(node) end
+            return expected
+        end
+
+        if type(expected) == 'number' or type(expected) == 'boolean' then
+            if type(node) == type(expected) then return node end
+            return expected
+        end
+
+        return expected
+    end
+
+    if type(node) == 'string' then return node end
+    if type(node) == 'number' or type(node) == 'boolean' then return node end
+    if type(node) ~= 'table' then return nil end
+
+    local res = {}
+    if TEO_is_sequence_table and TEO_is_sequence_table(node) then
+        for i = 1, #node do
+            res[i] = sanitize_translation_tree(node[i])
+        end
+    else
+        for k, v in pairs(node) do
+            res[k] = sanitize_translation_tree(v)
+        end
+    end
+    return res
+end
+
+local function build_ai_system_prompt(preserve_structure)
+    if preserve_structure then
+        return "You are a professional game localization expert. " .. tree_sys_prompt
+    end
+    return "You are a professional game localization expert. " .. sys_prompt
+end
+
+local function encode_ai_source_payload(source_payload, preserve_structure)
+    if preserve_structure then
+        local ok, encoded = pcall(json.encode, source_payload)
+        if ok and type(encoded) == 'string' and encoded ~= "" then
+            return encoded
+        end
+        return nil, encoded
+    end
+
+    if type(source_payload) == 'string' then
+        return source_payload
+    end
+
+    if type(source_payload) == 'table' then
+        local parts = {}
+        if source_payload.name ~= nil then
+            TEO_collect_text_parts(source_payload.name, parts)
+        end
+        if source_payload.text ~= nil then
+            TEO_collect_text_parts(source_payload.text, parts)
+        end
+        if source_payload.unlock ~= nil then
+            TEO_collect_text_parts(source_payload.unlock, parts)
+        end
+        local source_text = table.concat(parts, "\n")
+        if source_text ~= "" then
+            return source_text
+        end
+    end
+
+    local text = tostring(source_payload or "")
+    if text ~= "" then
+        return text
+    end
+    return nil, "empty payload"
+end
+
+local function pack_ai_cache_entry(content, preserve_structure)
+    return {
+        __teo_shape = preserve_structure and 'tree' or 'flat',
+        __teo_content = content
+    }
+end
+
+local function normalize_ai_cache_entry(card_data)
+    if type(card_data) == 'table' and card_data.__teo_content ~= nil then
+        local preserve_structure = card_data.__teo_shape == 'tree'
+        return {
+            __teo_shape = preserve_structure and 'tree' or 'flat',
+            __teo_content = card_data.__teo_content
+        }
+    end
+
+    local preserve_structure = type(card_data) == 'table' and TEO_loc_translation_uses_tree and
+        TEO_loc_translation_uses_tree(card_data) or false
+    return pack_ai_cache_entry(card_data, preserve_structure)
+end
+
+local function resolve_actual_set_key(set_key)
+    local localization_set_map = {
+        ['Booster'] = 'Other',
+    }
+    return localization_set_map[set_key] or set_key
+end
+
 --- 计算简单哈希
 local function get_text_hash(text)
     if not text then return "nil" end
@@ -141,7 +272,7 @@ end
 
 --- 持久化缓存管理（卡牌级别）
 --- 结构: impl/ai/<mod_id>/<lang>.lua
---- 文件格式: return { descriptions = { [set_key] = { [card_key] = { name = ..., text = {...} } } } }
+--- 文件格式: return { descriptions = { [set_key] = { [card_key] = { __teo_shape = 'tree'|'flat', __teo_content = ... } } } }
 local function load_ai_card_cache(mod_id)
     if not TEO or not TEO.path or not mod_id then return end
     if AI_CARD_CACHE[mod_id] then return end -- 已加载
@@ -172,7 +303,7 @@ local function load_ai_card_cache(mod_id)
                             if content then
                                 local success, data = pcall(json.decode, content)
                                 if success and data then
-                                    migrated_data.descriptions[set_name][card_key] = data
+                                    migrated_data.descriptions[set_name][card_key] = normalize_ai_cache_entry(data)
                                 end
                             end
                         end
@@ -210,7 +341,7 @@ local function load_ai_card_cache(mod_id)
             if type(set_data) == 'table' then
                 AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
                 for card_key, card_data in pairs(set_data) do
-                    AI_CARD_CACHE[mod_id][set_key][card_key] = card_data
+                    AI_CARD_CACHE[mod_id][set_key][card_key] = normalize_ai_cache_entry(card_data)
                 end
             end
         end
@@ -219,7 +350,7 @@ local function load_ai_card_cache(mod_id)
     if TEO_dbg_print then TEO_dbg_print("[TEO AI Cache] 已加载缓存，modid=" .. mod_id .. " from " .. cache_file) end
 end
 
-local function save_ai_card_cache(mod_id, set_key, card_key, content)
+local function save_ai_card_cache(mod_id, set_key, card_key, content, preserve_structure)
     if not TEO or not TEO.path or not mod_id or not set_key or not card_key then return end
 
     local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
@@ -237,14 +368,14 @@ local function save_ai_card_cache(mod_id, set_key, card_key, content)
     -- 更新内存缓存
     AI_CARD_CACHE[mod_id] = AI_CARD_CACHE[mod_id] or {}
     AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
-    AI_CARD_CACHE[mod_id][set_key][card_key] = content
+    AI_CARD_CACHE[mod_id][set_key][card_key] = pack_ai_cache_entry(content, preserve_structure == true)
 
     -- 构建完整的缓存数据结构
     local cache_data = { descriptions = {} }
     for s_key, s_data in pairs(AI_CARD_CACHE[mod_id]) do
         cache_data.descriptions[s_key] = cache_data.descriptions[s_key] or {}
         for c_key, c_data in pairs(s_data) do
-            cache_data.descriptions[s_key][c_key] = c_data
+            cache_data.descriptions[s_key][c_key] = pack_ai_cache_entry(c_data.__teo_content, c_data.__teo_shape == 'tree')
         end
     end
 
@@ -274,7 +405,10 @@ function TEO_get_ai_card_translation(mod_id, set_key, card_key)
     if AI_CARD_CACHE[mod_id] and
         AI_CARD_CACHE[mod_id][set_key] and
         AI_CARD_CACHE[mod_id][set_key][card_key] then
-        return AI_CARD_CACHE[mod_id][set_key][card_key]
+        local entry = AI_CARD_CACHE[mod_id][set_key][card_key]
+        if type(entry) == 'table' and entry.__teo_content ~= nil then
+            return entry.__teo_content, entry.__teo_shape == 'tree'
+        end
     end
 
     return nil
@@ -282,7 +416,7 @@ end
 
 --- 解析 AI 返回内容
 -- 优先尝试 JSON 解析，失败则回退到行解析
-local function parse_ai_response(content)
+local function parse_ai_response(content, preserve_structure, expected_shape)
     if not content or content == "" then return nil end
 
     -- 1. 尝试 JSON 解析
@@ -291,24 +425,32 @@ local function parse_ai_response(content)
     local success, data = pcall(json.decode, clean_json)
 
     if success and type(data) == 'table' then
-        -- 规范化输出格式
-        local res = {
-            name = data.name and tostring(data.name) or nil,
-            text = {}
-        }
+        if preserve_structure then
+            return sanitize_translation_tree(data, expected_shape or data)
+        else
+            -- 规范化输出格式
+            local res = {
+                name = data.name and tostring(data.name) or nil,
+                text = {}
+            }
 
-        if type(data.text) == 'table' then
-            for i = 1, #data.text do
-                table.insert(res.text, tostring(data.text[i]))
+            if type(data.text) == 'table' then
+                for i = 1, #data.text do
+                    table.insert(res.text, tostring(data.text[i]))
+                end
+            elseif type(data.text) == 'string' then
+                table.insert(res.text, data.text)
             end
-        elseif type(data.text) == 'string' then
-            table.insert(res.text, data.text)
-        end
 
-        -- 如果既没名字也没描述，说明解析虽然成功但数据没用
-        if res.name or #res.text > 0 then
-            return res
+            -- 如果既没名字也没描述，说明解析虽然成功但数据没用
+            if res.name or #res.text > 0 then
+                return res
+            end
         end
+    end
+
+    if preserve_structure then
+        return nil
     end
 
     -- 2. 回退到旧的行解析逻辑 (为了兼容性和容错)
@@ -331,7 +473,7 @@ local function deep_copy(obj)
 end
 
 --- 将翻译结果应用到游戏内存 (Runtime Override)
-function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
+function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, preserve_structure, expected_shape)
     if not mod_id or not set_key or not card_key or not translated_content then return end
 
     if TEO_dbg_print then
@@ -341,12 +483,7 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
 
     if not G.localization or not G.localization.descriptions then return end
 
-    -- 某些类型的 set 名称与实际存储位置不同，需要映射
-    -- Booster 的本地化存储在 Other 中，而不是 Booster
-    local localization_set_map = {
-        ['Booster'] = 'Other',
-    }
-    local actual_set_key = localization_set_map[set_key] or set_key
+    local actual_set_key = resolve_actual_set_key(set_key)
 
     local target_set = G.localization.descriptions[actual_set_key]
     if not target_set then
@@ -375,6 +512,31 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
 
     if not TEO_localization_backup[mod_id].descriptions[actual_set_key][card_key] then
         TEO_localization_backup[mod_id].descriptions[actual_set_key][card_key] = deep_copy(target_card_loc)
+    end
+
+    if preserve_structure == nil then
+        preserve_structure = type(translated_content) == 'table' and TEO_loc_translation_uses_tree and
+            TEO_loc_translation_uses_tree(translated_content)
+    else
+        preserve_structure = preserve_structure == true
+    end
+
+    if preserve_structure then
+        local has_target_shape = type(target_card_loc) == 'table' and next(target_card_loc) ~= nil
+        local shape_source = expected_shape or (has_target_shape and target_card_loc or translated_content)
+        local tree_loc = sanitize_translation_tree(translated_content, shape_source)
+        if not tree_loc then
+            if TEO_dbg_print then
+                TEO_dbg_print("[TEOcean AI] 结构化翻译结构不匹配，跳过:", mod_id, set_key, card_key)
+            end
+            return false
+        end
+
+        G.localization.descriptions[actual_set_key][card_key] = tree_loc
+
+        TEO_dbg_print(("[TEOcean AI] Applied Tree Translation for key: %s"):format(tostring(card_key)))
+        TEO_request_localization_refresh()
+        return true
     end
 
     -- 应用翻译
@@ -499,13 +661,28 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content)
 
     -- 刷新（批量延迟）
     TEO_request_localization_refresh()
+    return true
 end
 
 --- 请求 AI 翻译（卡牌级别）
-function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
-    if not source_text or source_text == "" then return end
+function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, preserve_structure, expected_shape)
+    if source_payload == nil then return end
     if not https then return end
     if not mod_id or not set_key or not card_key then return end
+
+    if preserve_structure == nil and type(source_payload) == 'table' and TEO_loc_translation_uses_tree then
+        preserve_structure = TEO_loc_translation_uses_tree(source_payload)
+    else
+        preserve_structure = preserve_structure == true
+    end
+
+    local request_payload, payload_err = encode_ai_source_payload(source_payload, preserve_structure)
+    if not request_payload or request_payload == "" then
+        if TEO_dbg_print then
+            TEO_dbg_print("[TEOcean AI] 生成请求负载失败:", tostring(payload_err), mod_id, set_key, card_key)
+        end
+        return
+    end
 
     -- 生成卡片唯一标识
     local card_id = mod_id .. "." .. set_key .. "." .. card_key
@@ -516,10 +693,10 @@ function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
     end
 
     -- 1. 检查卡牌级缓存
-    local cached = TEO_get_ai_card_translation(mod_id, set_key, card_key)
-    if cached then
+    local cached, cached_is_tree = TEO_get_ai_card_translation(mod_id, set_key, card_key)
+    if cached and (preserve_structure == cached_is_tree) then
         if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 命中卡片缓存:", card_id) end
-        TEO_apply_ai_override(mod_id, set_key, card_key, cached)
+        TEO_apply_ai_override(mod_id, set_key, card_key, cached, cached_is_tree, source_payload)
         return
     end
 
@@ -537,8 +714,8 @@ function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
 
     local request_spec, build_err = TEO_build_ai_request(
         request_cfg,
-        "You are a professional game localization expert. " .. sys_prompt,
-        source_text
+        build_ai_system_prompt(preserve_structure),
+        request_payload
     )
     if not request_spec then
         print("[TEOcean AI] 构建请求失败:", tostring(build_err))
@@ -558,14 +735,23 @@ function TEO_request_ai_translation(source_text, mod_id, set_key, card_key)
 
             local ok, content, parse_err, parsed_data = TEO_parse_ai_response(request_spec.provider, code, body)
             if ok then
-                local parsed_content = parse_ai_response(content) or content
+                local parsed_content = parse_ai_response(content, preserve_structure,
+                    expected_shape or (preserve_structure and (type(source_payload) == 'table' and source_payload or nil) or nil))
+                if not parsed_content and not preserve_structure then
+                    parsed_content = content
+                end
                 if TEO_dbg_print then
                     TEO_dbg_print("[TEO AI Manager] 翻译成功:", card_id, request_spec.provider, parsed_content)
                 end
 
+                if preserve_structure and not parsed_content then
+                    print("[TEOcean AI] 结构化翻译解析失败:", card_id)
+                    return
+                end
+
                 -- 持久化到卡牌级缓存
-                save_ai_card_cache(mod_id, set_key, card_key, parsed_content)
-                TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content)
+                save_ai_card_cache(mod_id, set_key, card_key, parsed_content, preserve_structure)
+                TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content, preserve_structure, source_payload)
             else
                 print("[TEOcean AI] 请求或解析失败:", tostring(parse_err), "Code:", tostring(code), "Card:", card_id)
                 if TEO_dbg_print and parsed_data then

@@ -197,6 +197,109 @@ function TEO_merge_table(dest, src)
     return dest
 end
 
+function TEO_deep_copy(obj, seen)
+    if type(obj) ~= 'table' then return obj end
+    seen = seen or {}
+    if seen[obj] then return seen[obj] end
+    local res = {}
+    seen[obj] = res
+    for k, v in pairs(obj) do
+        res[TEO_deep_copy(k, seen)] = TEO_deep_copy(v, seen)
+    end
+    return res
+end
+
+function TEO_is_sequence_table(t)
+    if type(t) ~= 'table' then return false end
+    local count = 0
+    local max_index = 0
+    for k, _ in pairs(t) do
+        if type(k) ~= 'number' or k <= 0 or k % 1 ~= 0 then
+            return false
+        end
+        count = count + 1
+        if k > max_index then max_index = k end
+    end
+    return count > 0 and count == max_index
+end
+
+function TEO_table_has_nested_table(t)
+    if type(t) ~= 'table' then return false end
+    for _, v in pairs(t) do
+        if type(v) == 'table' then
+            return true
+        end
+    end
+    return false
+end
+
+function TEO_collect_text_parts(value, parts)
+    parts = parts or {}
+    if type(value) == 'string' then
+        parts[#parts + 1] = value
+    elseif type(value) == 'number' or type(value) == 'boolean' then
+        parts[#parts + 1] = tostring(value)
+    elseif type(value) == 'table' then
+        if TEO_is_sequence_table(value) then
+            for i = 1, #value do
+                TEO_collect_text_parts(value[i], parts)
+            end
+        else
+            for _, v in pairs(value) do
+                TEO_collect_text_parts(v, parts)
+            end
+        end
+    end
+    return parts
+end
+
+function TEO_loc_translation_uses_tree(data)
+    if type(data) ~= 'table' then return false end
+    if type(data.name) == 'table' then
+        return true
+    end
+    if type(data.text) == 'table' and TEO_table_has_nested_table(data.text) then
+        return true
+    end
+    for k, v in pairs(data) do
+        if k ~= 'name' and k ~= 'text' and type(v) == 'table' and TEO_table_has_nested_table(v) then
+            return true
+        end
+    end
+    return false
+end
+
+function TEO_loc_translation_shape_matches(expected, actual)
+    if expected == nil then return actual == nil end
+    if type(expected) ~= 'table' then
+        if actual == nil then return true end
+        return type(actual) ~= 'table'
+    end
+    if type(actual) ~= 'table' then return false end
+
+    local expected_array = TEO_is_sequence_table(expected)
+    local actual_array = TEO_is_sequence_table(actual)
+    if expected_array ~= actual_array then return false end
+
+    if expected_array then
+        if #expected ~= #actual then return false end
+        for i = 1, #expected do
+            if not TEO_loc_translation_shape_matches(expected[i], actual[i]) then return false end
+        end
+        return true
+    end
+
+    for k, v in pairs(expected) do
+        local actual_child = actual[k]
+        if type(v) == 'table' then
+            if not TEO_loc_translation_shape_matches(v, actual_child) then return false end
+        else
+            if actual_child ~= nil and type(actual_child) == 'table' then return false end
+        end
+    end
+    return true
+end
+
 TEO_last_loc_read_error = TEO_last_loc_read_error or nil
 
 local function TEO_set_loc_read_error(path, stage, err)

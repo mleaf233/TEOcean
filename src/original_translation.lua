@@ -7,8 +7,10 @@ if not TEO then
     TEO = TEO_get_mod()
 end
 
-function TEO_get_original_localization(mod_id, loc_type, loc_key)
-    local cache_key = string.format("%s:%s:%s", mod_id or "base", loc_type or "", loc_key or "")
+function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_structure)
+    preserve_structure = preserve_structure == true
+    local cache_key = string.format("%s:%s:%s:%s", mod_id or "base", loc_type or "", loc_key or "",
+        preserve_structure and "raw" or "flat")
 
     if original_loc_cache[cache_key] then
         TEO_dbg_print('[TEOcean] 从缓存获取原版翻译:', cache_key)
@@ -301,6 +303,11 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key)
             TEO_dbg_print('[TEOcean] Back 无 loc_txt，使用默认名称:', loc_key, back_name)
             original_text = { name = back_name .. " Deck", text = {} }
         end
+    end
+
+    if preserve_structure then
+        original_loc_cache[cache_key] = original_text
+        return original_text
     end
 
     -- 数据规范化：确保返回的数据格式安全
