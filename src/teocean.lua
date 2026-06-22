@@ -5,8 +5,8 @@ if SMODS.Atlas then
     SMODS.Atlas({
         key = "modicon",
         path = "logo.png",
-        px = 370,
-        py = 387
+        px = 32,
+        py = 32
     })
 end
 
