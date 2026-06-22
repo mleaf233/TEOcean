@@ -60,7 +60,7 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Show Original Translation**: Display original text alongside translated text for cards
 - **Show Original Blind Translation**: Display original text for Blind challenges
 - **Enable AI Translation**: Enable automatic AI translation via DeepSeek API
-- **API Key**: Your DeepSeek API key for AI translation (get one at https://platform.deepseek.com/api_keys)
+- **API Key**: Your DeepSeek API key for AI translation (get one at [deepseek](https://platform.deepseek.com/api_keys))
 
 ## Development
 
@@ -91,3 +91,11 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 
 - This project is licensed under GPLv3.
 - Please comply with each mod's individual license terms. This mod only modifies the target mod's `localization` files locally; make backups when necessary and obtain the original author's permission before distribution.
+
+## Acknowledgments
+
+The following projects/individuals have provided help and contributions to the development of this project (in no particular order):
+
+- [@Brookling](https://github.com/Brookling) - Provided art support
+- [smods](https://github.com/Steamodded/smods) - Provided SMODS framework support and some code inspiration
+- And all players who have provided translation contributions and feedback
