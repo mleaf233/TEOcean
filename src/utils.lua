@@ -619,7 +619,7 @@ function TEO_create_hover_tooltip(args)
     -- 游戏会自动从 G.localization.descriptions 中查找
     local tooltip_key = args.tooltip_key or "teo_show_original"
 
-    TEO_dbg_print('[TEOcean Tooltip] 使用 key:', tooltip_key)
+    -- TEO_dbg_print('[TEOcean Tooltip] 使用 key:', tooltip_key)
 
     -- 直接返回 set/key 对象，让游戏自动处理
     local tooltip_content = {

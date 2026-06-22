@@ -5,6 +5,59 @@
 -- Hook generate_card_ui
 -- 检查当前卡牌是否已翻译/已请求，如果未请求则发起请求
 local generate_card_ui_ai_ref = generate_card_ui
+
+local function TEO_debug_loc_lines(value, lines)
+    lines = lines or {}
+    if type(value) == 'string' then
+        lines[#lines + 1] = value
+        return lines
+    end
+    if type(value) == 'number' or type(value) == 'boolean' then
+        lines[#lines + 1] = tostring(value)
+        return lines
+    end
+    if type(value) ~= 'table' then
+        return lines
+    end
+
+    if #value > 0 then
+        local only_scalars = true
+        for i = 1, #value do
+            if type(value[i]) == 'table' then
+                only_scalars = false
+                break
+            end
+        end
+
+        if only_scalars then
+            local parts = {}
+            for i = 1, #value do
+                parts[#parts + 1] = tostring(value[i] or "")
+            end
+            lines[#lines + 1] = table.concat(parts, " ")
+            return lines
+        end
+
+        for i = 1, #value do
+            TEO_debug_loc_lines(value[i], lines)
+        end
+    end
+    return lines
+end
+
+local function TEO_append_debug_loc_text(debug_text, label, value)
+    local lines = TEO_debug_loc_lines(value, {})
+    if #lines == 0 then
+        table.insert(debug_text, label .. ": " .. tostring(value))
+        return
+    end
+
+    for i = 1, #lines do
+        local prefix = (i == 1) and (label .. ": ") or (label .. "[" .. i .. "]: ")
+        table.insert(debug_text, prefix .. tostring(lines[i]))
+    end
+end
+
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     -- 跳过非卡牌对象 - 在调用原函数之前检查
     if not _c or type(_c) ~= 'table' or not _c.key or not _c.set then
@@ -40,7 +93,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     end
 
     -- 在原函数调用之前触发 AI 翻译，确保 G.localization 已更新
-    if ai_enabled and mod_id and mod_id ~= 'base' then
+    if ai_enabled and mod_id and mod_id ~= 'base' and not TEO_suspend_ai_resolve then
         if TEO_resolve_card_localization then
             TEO_resolve_card_localization(mod_id, _c.set, _c.key)
         end
@@ -57,16 +110,10 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         if loc_data then
             local debug_text = {}
             if loc_data.name then
-                table.insert(debug_text, "Name: " .. tostring(loc_data.name))
+                TEO_append_debug_loc_text(debug_text, "Name", loc_data.name)
             end
             if loc_data.text then
-                if type(loc_data.text) == 'table' then
-                    for i, line in ipairs(loc_data.text) do
-                        table.insert(debug_text, "Text[" .. i .. "]: " .. tostring(line))
-                    end
-                else
-                    table.insert(debug_text, "Text: " .. tostring(loc_data.text))
-                end
+                TEO_append_debug_loc_text(debug_text, "Text", loc_data.text)
             end
             TEO_dbg_print(string.format("[TEOcean AI Debug] Card hover: %s.%s.%s\n%s",
                 mod_id or 'unknown', _c.set, _c.key, table.concat(debug_text, "\n")))
@@ -92,7 +139,7 @@ function create_UIBox_blind_popup(blind, discovered, vars)
     end
 
     -- 在原函数调用之前触发AI翻译（因为原函数会通过localize()读取G.localization）
-    if ai_enabled and mod_id and mod_id ~= 'base' and blind_key then
+    if ai_enabled and mod_id and mod_id ~= 'base' and blind_key and not TEO_suspend_ai_resolve then
         if TEO_resolve_card_localization then
             TEO_resolve_card_localization(mod_id, 'Blind', blind_key)
         end
@@ -108,16 +155,10 @@ function create_UIBox_blind_popup(blind, discovered, vars)
         if loc_data then
             local debug_text = {}
             if loc_data.name then
-                table.insert(debug_text, "Name: " .. tostring(loc_data.name))
+                TEO_append_debug_loc_text(debug_text, "Name", loc_data.name)
             end
             if loc_data.text then
-                if type(loc_data.text) == 'table' then
-                    for i, line in ipairs(loc_data.text) do
-                        table.insert(debug_text, "Text[" .. i .. "]: " .. tostring(line))
-                    end
-                else
-                    table.insert(debug_text, "Text: " .. tostring(loc_data.text))
-                end
+                TEO_append_debug_loc_text(debug_text, "Text", loc_data.text)
             end
             TEO_dbg_print(string.format("[TEOcean AI Debug] Blind hover: %s.Blind.%s\n%s",
                 mod_id or 'unknown', blind_key or 'unknown', table.concat(debug_text, "\n")))

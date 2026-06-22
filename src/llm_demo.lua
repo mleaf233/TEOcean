@@ -23,19 +23,39 @@ end
 
 local function get_test_config()
     local mod = TEO_get_mod and TEO_get_mod("TEOcean")
-    local cfg = (mod and mod.config) or {}
+    local saved_cfg = (mod and mod.config) or {}
+    local display_cfg = (TEO and TEO._api_key_display_config) or nil
+    local source_cfg = type(display_cfg) == "table" and display_cfg or saved_cfg
     return {
-        api_url = cfg.api_url or "",
-        api_model = cfg.api_model or "",
-        api_key = cfg.api_key or "",
-        api_format = cfg.api_format or "auto",
+        api_url = source_cfg.api_url or saved_cfg.api_url or "",
+        api_model = source_cfg.api_model or saved_cfg.api_model or "",
+        api_key = (type(display_cfg) == "table" and (display_cfg._original_api_key or display_cfg.api_key))
+            or source_cfg.api_key
+            or saved_cfg.api_key
+            or "",
+        api_format = source_cfg.api_format or saved_cfg.api_format or "auto",
     }
 end
 
---- 通用测试翻译（单句）
---- @param text_to_translate string
---- @param callback function callback(success, result, error_message)
-function TEO_test_translation(text_to_translate, callback)
+local function preview_text(value, max_len)
+    local text
+    if type(value) == "string" then
+        text = value
+    else
+        local ok, encoded = pcall(function()
+            return json.encode(value)
+        end)
+        text = ok and encoded or tostring(value)
+    end
+
+    max_len = max_len or 6000
+    if #text > max_len then
+        return text:sub(1, max_len) .. "\n...[truncated " .. tostring(#text - max_len) .. " chars]"
+    end
+    return text
+end
+
+local function run_translation_test(cfg, text_to_translate, callback, debug_label)
     if not https then
         local err = "[TEOcean Demo] 错误：https 模块未加载，无法发送请求。"
         print(err)
@@ -43,7 +63,6 @@ function TEO_test_translation(text_to_translate, callback)
         return
     end
 
-    local cfg = get_test_config()
     if not (TEO_has_required_ai_config and TEO_has_required_ai_config(cfg)) then
         local err = "[TEOcean Demo] 错误：AI 配置不完整（需要 API URL / Model / API Key）。"
         print(err)
@@ -63,7 +82,8 @@ function TEO_test_translation(text_to_translate, callback)
         return
     end
 
-    TEO_dbg_print("[TEOcean Demo] 发起测试请求", request_spec.provider, request_spec.url)
+    TEO_dbg_print("[TEOcean Demo] 发起测试请求", debug_label or "default", request_spec.provider, request_spec.url)
+    TEO_dbg_print("[TEOcean Demo] 测试请求负载:", preview_text(request_spec.body))
 
     https.asyncRequest(
         request_spec.url,
@@ -73,14 +93,24 @@ function TEO_test_translation(text_to_translate, callback)
             data = json.encode(request_spec.body)
         },
         function(code, body, response_headers)
+            local body_text = type(body) == "string" and body or tostring(body or "")
+            TEO_dbg_print("[TEOcean Demo] 响应元信息:",
+                "label=", tostring(debug_label or "default"),
+                "provider=", request_spec.provider,
+                "code=", tostring(code),
+                "body_type=", type(body),
+                "body_len=", tostring(#body_text))
+            TEO_dbg_print("[TEOcean Demo] 响应原文:", preview_text(body_text))
+
             local ok, result_text, parse_err, raw = TEO_parse_ai_response(request_spec.provider, code, body)
             if ok then
+                TEO_dbg_print("[TEOcean Demo] 翻译成功结果:", preview_text(result_text))
                 if callback then callback(true, result_text, nil) end
             else
                 local err = "[TEOcean Demo] 请求失败: " .. tostring(parse_err)
                 print(err)
                 if TEO_dbg_print and raw then
-                    TEO_dbg_print("[TEOcean Demo] 原始错误响应", raw)
+                    TEO_dbg_print("[TEOcean Demo] 原始错误响应", preview_text(raw))
                 end
                 if callback then callback(false, nil, err) end
             end
@@ -88,9 +118,30 @@ function TEO_test_translation(text_to_translate, callback)
     )
 end
 
+--- 通用测试翻译（单句）
+--- @param text_to_translate string
+--- @param callback function callback(success, result, error_message)
+function TEO_test_translation(text_to_translate, callback)
+    local cfg = get_test_config()
+    return run_translation_test(cfg, text_to_translate, callback, "default")
+end
+
 -- 兼容旧函数名
 function TEO_test_deepseek_translation(text_to_translate, callback)
-    return TEO_test_translation(text_to_translate, callback)
+    local cfg = get_test_config()
+    cfg.api_url = "https://api.deepseek.com/chat/completions"
+    cfg.api_format = "openai"
+    return run_translation_test(cfg, text_to_translate, callback, "deepseek-temp")
+end
+
+function TEO_test_deepseek_translation_with_key(text_to_translate, api_key, callback)
+    local cfg = get_test_config()
+    cfg.api_url = "https://api.deepseek.com/chat/completions"
+    cfg.api_format = "openai"
+    if type(api_key) == "string" and api_key ~= "" then
+        cfg.api_key = api_key
+    end
+    return run_translation_test(cfg, text_to_translate, callback, "deepseek-key")
 end
 
 --- 测试基础网络连接

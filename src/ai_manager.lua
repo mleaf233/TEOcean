@@ -18,32 +18,34 @@ local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
 local PENDING_CARD_REQUESTS = {} -- 卡牌级请求跟踪：{ [mod_id.set_key.card_key] = true }
 
 local LOC_REFRESH_PENDING = false
-local LOC_REFRESH_DELAY = 5
+local LOC_REFRESH_DELAY = 0.1
+local refresh_hovered_card_popup = nil
+TEO_suspend_ai_resolve = TEO_suspend_ai_resolve or false
+local REFRESHING_HOVERED_POPUP = false
 
 --- 请求延迟刷新本地化（批量处理）
 local function TEO_request_localization_refresh()
     if LOC_REFRESH_PENDING then return end
     LOC_REFRESH_PENDING = true
 
+    local function run_refresh()
+        if refresh_hovered_card_popup then
+            TEO_dbg_print("[TEOcean AI] 刷新当前悬停卡牌弹窗...")
+            pcall(refresh_hovered_card_popup)
+        end
+        LOC_REFRESH_PENDING = false
+        return true
+    end
+
     if G and G.E_MANAGER then
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
             delay = LOC_REFRESH_DELAY,
             blockable = false,
-            func = function()
-                if init_localization then
-                    TEO_dbg_print("[TEOcean AI] 执行批量本地化刷新...")
-                    pcall(init_localization)
-                end
-                LOC_REFRESH_PENDING = false
-                return true
-            end
+            func = run_refresh
         }))
     else
-        -- 降级方案
-        TEO_dbg_print("[TEOcean AI] 执行批量本地化刷新（立即刷新无延迟）...")
-        if init_localization then pcall(init_localization) end
-        LOC_REFRESH_PENDING = false
+        run_refresh()
     end
 end
 
@@ -68,18 +70,23 @@ end
 -- 系统提示词 (保持不变)
 local sys_prompt = [[对**接下来我给你的文本内容**进行翻译成中文，要求如下：
 ### 输出格式 (必须)
-你必须仅返回一个合法的 JSON 对象，不要包含任何额外的 Markdown 代码块标签、前序或后续说明。严格遵循以下要求：
-1. 如果英语中遇到条件语句的倒装（相对于中文而言），需要以中文的语序改变语句顺序（即json输出中数组的顺序）
+你必须仅返回一个合法的 JSON 对象，不要包含任何额外的 Markdown 代码块标签、前序或后续说明。输出类似这样的结构：
+{
+  "name": "翻译后的卡牌名称",
+  "text": ["描述行1", "描述行2", ...]
+}
+以下是严格遵循的要求：
+1. 翻译后的语句如果不通顺，需要以中文的语序改变语句顺序（即json输出中数组的顺序）
 2. 翻译中的游戏术语尽量还原
 3. 遇到数字时，统一用阿拉伯数字
-4. 保持原有层级、数组顺序、字段数量不变
+4. 保持原有层级、字段数量不变
 5. 只翻译字符串值；数字、布尔值、空表、控制标签和键名都不要改
 6. 遇到“倍乘”“倍增”时，不需要翻译出来，只需要写数字表示（例如X3、+10)
 8. 如果需要逗号，请改成另起一行文本，也就是不要出现逗号，句号同理
 10. 如果输入里存在 name/text 结构，保持它；如果存在更深层嵌套，也必须原样保留
 11. 不要把多层表拍平，不要合并不同 box
 12. 保留 {C:...}、#1#、^^ 等占位符
-13. 有 #1#/#2# 几率 的字样时，翻译为“有 #1#/#2# 几率”，不要翻译为“有 #1#/#2# 概率”，并且统一用 / 符号分割分子和分母
+13. 有 #1#/#2# 几率 的字样时，翻译为“有 #1#/#2# 几率”，不要翻译为“有 #1#/#2# 概率”，并且统一用 / 符号分割分子和分母，分母和分子之间不允许有中文
 14. 可供参考的替换词汇表，遇到词汇匹配可直接根据选择替换（每个词汇以|或换行分隔）：
 Arcana -> 秘术 | Minor Arcana Packs -> 秘术包 | Jumbo Arcana Pack -> 巨型秘术包 | Mega Arcana Pack -> 超级秘术包 | Arcana Pack -> 秘术包
 held in hand -> 留在手牌中 | Joker -> 小丑 | give -> 给予 | chance -> 几率 | has a {C:green}#1# in #2# chance -> 有{C:green}#1#/#2#{}几率
@@ -187,6 +194,20 @@ local function sanitize_translation_tree(node, expected)
     return res
 end
 
+local function strip_runtime_loc_metadata(node)
+    if type(node) ~= 'table' then
+        return node
+    end
+
+    local res = {}
+    for k, v in pairs(node) do
+        if k ~= 'name_parsed' and k ~= 'text_parsed' and k ~= 'unlock_parsed' then
+            res[k] = strip_runtime_loc_metadata(v)
+        end
+    end
+    return res
+end
+
 local function build_ai_system_prompt(preserve_structure)
     if preserve_structure then
         return "You are a professional game localization expert. " .. tree_sys_prompt
@@ -194,9 +215,40 @@ local function build_ai_system_prompt(preserve_structure)
     return "You are a professional game localization expert. " .. sys_prompt
 end
 
+local function format_ai_debug_value(value)
+    local text
+    if type(value) == 'string' then
+        text = value
+    elseif type(value) == 'table' then
+        local ok, encoded = pcall(json.encode, value)
+        text = ok and encoded or tostring(value)
+    else
+        text = tostring(value)
+    end
+
+    local max_len = 20000
+    if #text > max_len then
+        return text:sub(1, max_len) .. "\n...[truncated " .. tostring(#text - max_len) .. " chars]"
+    end
+    return text
+end
+
+local function debug_ai_api_success(card_id, provider, code, body, parsed_data, content, parsed_content, preserve_structure)
+    if not TEO_dbg_print then return end
+
+    -- TEO_dbg_print("[TEOcean AI Debug] API success:", card_id, provider, "code=", tostring(code),
+    --     "shape=", preserve_structure and "tree" or "flat")
+    -- TEO_dbg_print("[TEOcean AI Debug] Raw API body:", format_ai_debug_value(body))
+    -- TEO_dbg_print("[TEOcean AI Debug] Provider parsed data:", format_ai_debug_value(parsed_data))
+    -- TEO_dbg_print("[TEOcean AI Debug] Extracted content:", format_ai_debug_value(content))
+    -- TEO_dbg_print("[TEOcean AI Debug] Parsed translation:",
+    --     format_ai_debug_value(strip_runtime_loc_metadata(parsed_content)))
+end
+
 local function encode_ai_source_payload(source_payload, preserve_structure)
     if preserve_structure then
-        local ok, encoded = pcall(json.encode, source_payload)
+        local clean_payload = strip_runtime_loc_metadata(source_payload)
+        local ok, encoded = pcall(json.encode, clean_payload)
         if ok and type(encoded) == 'string' and encoded ~= "" then
             return encoded
         end
@@ -232,6 +284,9 @@ local function encode_ai_source_payload(source_payload, preserve_structure)
 end
 
 local function pack_ai_cache_entry(content, preserve_structure)
+    if type(content) == 'table' then
+        content = strip_runtime_loc_metadata(content)
+    end
     return {
         __teo_shape = preserve_structure and 'tree' or 'flat',
         __teo_content = content
@@ -243,7 +298,9 @@ local function normalize_ai_cache_entry(card_data)
         local preserve_structure = card_data.__teo_shape == 'tree'
         return {
             __teo_shape = preserve_structure and 'tree' or 'flat',
-            __teo_content = card_data.__teo_content
+            __teo_content = type(card_data.__teo_content) == 'table'
+                and strip_runtime_loc_metadata(card_data.__teo_content)
+                or card_data.__teo_content
         }
     end
 
@@ -426,7 +483,7 @@ local function parse_ai_response(content, preserve_structure, expected_shape)
 
     if success and type(data) == 'table' then
         if preserve_structure then
-            return sanitize_translation_tree(data, expected_shape or data)
+            return sanitize_translation_tree(data, strip_runtime_loc_metadata(expected_shape or data))
         else
             -- 规范化输出格式
             local res = {
@@ -470,6 +527,131 @@ local function deep_copy(obj)
     local res = setmetatable({}, getmetatable(obj))
     for k, v in pairs(obj) do res[k] = deep_copy(v) end
     return res
+end
+
+local function deep_equal(lhs, rhs)
+    if lhs == rhs then
+        return true
+    end
+    if type(lhs) ~= type(rhs) then
+        return false
+    end
+    if type(lhs) ~= 'table' then
+        return false
+    end
+
+    local seen = {}
+    for k, v in pairs(lhs) do
+        if not deep_equal(v, rhs[k]) then
+            return false
+        end
+        seen[k] = true
+    end
+
+    for k in pairs(rhs) do
+        if not seen[k] then
+            return false
+        end
+    end
+
+    return true
+end
+
+local function runtime_loc_has_parsed_fields(loc_data)
+    if type(loc_data) ~= 'table' then
+        return false
+    end
+    if loc_data.name ~= nil and type(loc_data.name_parsed) ~= 'table' then
+        return false
+    end
+    if loc_data.text ~= nil and type(loc_data.text_parsed) ~= 'table' then
+        return false
+    end
+    if loc_data.unlock ~= nil and type(loc_data.unlock_parsed) ~= 'table' then
+        return false
+    end
+    return true
+end
+
+local function should_skip_ai_override(current_loc, next_loc)
+    if type(current_loc) ~= 'table' or not runtime_loc_has_parsed_fields(current_loc) then
+        return false
+    end
+    return deep_equal(strip_runtime_loc_metadata(current_loc), strip_runtime_loc_metadata(next_loc))
+end
+
+local function rebuild_loc_parsed_lines(lines)
+    if type(lines) ~= 'table' then
+        return {}
+    end
+
+    local parsed = {}
+    for i = 1, #lines do
+        local line = lines[i]
+        if type(line) == 'table' then
+            parsed[#parsed + 1] = rebuild_loc_parsed_lines(line)
+        else
+            parsed[#parsed + 1] = loc_parse_string(tostring(line or ""))
+        end
+    end
+    return parsed
+end
+
+local function rebuild_loc_parsed_field(value)
+    if value == nil then
+        return nil
+    end
+    if type(value) == 'table' then
+        return rebuild_loc_parsed_lines(value)
+    end
+    return { loc_parse_string(tostring(value or "")) }
+end
+
+local function sync_runtime_loc_parsed_fields(loc_data)
+    if type(loc_data) ~= 'table' then
+        return loc_data
+    end
+
+    loc_data.name_parsed = rebuild_loc_parsed_field(loc_data.name) or {}
+    loc_data.text_parsed = rebuild_loc_parsed_field(loc_data.text) or {}
+    if loc_data.unlock ~= nil then
+        loc_data.unlock_parsed = rebuild_loc_parsed_field(loc_data.unlock) or {}
+    else
+        loc_data.unlock_parsed = nil
+    end
+    return loc_data
+end
+
+refresh_hovered_card_popup = function()
+    if REFRESHING_HOVERED_POPUP then
+        return false
+    end
+
+    local target = G and G.CONTROLLER and G.CONTROLLER.hovering and G.CONTROLLER.hovering.target or nil
+    if not target or target.REMOVED or type(target.is) ~= 'function' or not target:is(Card) then
+        return false
+    end
+    if not target.config or not target.config.center or not target.generate_UIBox_ability_table then
+        return false
+    end
+
+    REFRESHING_HOVERED_POPUP = true
+    TEO_suspend_ai_resolve = true
+    local ok, result = pcall(function()
+        target.ability_UIBox_table = target:generate_UIBox_ability_table()
+        target.config.h_popup = G.UIDEF.card_h_popup(target)
+        target.config.h_popup_config = target:align_h_popup()
+
+        if target.children and target.children.h_popup then
+            target.children.h_popup:remove()
+            target.children.h_popup = nil
+        end
+        Node.hover(target)
+        return true
+    end)
+    TEO_suspend_ai_resolve = false
+    REFRESHING_HOVERED_POPUP = false
+    return ok and result or false
 end
 
 --- 将翻译结果应用到游戏内存 (Runtime Override)
@@ -523,8 +705,10 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
 
     if preserve_structure then
         local has_target_shape = type(target_card_loc) == 'table' and next(target_card_loc) ~= nil
-        local shape_source = expected_shape or (has_target_shape and target_card_loc or translated_content)
-        local tree_loc = sanitize_translation_tree(translated_content, shape_source)
+        local clean_target_card_loc = strip_runtime_loc_metadata(target_card_loc)
+        local clean_shape_source = strip_runtime_loc_metadata(expected_shape or (has_target_shape and clean_target_card_loc or translated_content))
+        local clean_translated_content = strip_runtime_loc_metadata(translated_content)
+        local tree_loc = sanitize_translation_tree(clean_translated_content, clean_shape_source)
         if not tree_loc then
             if TEO_dbg_print then
                 TEO_dbg_print("[TEOcean AI] 结构化翻译结构不匹配，跳过:", mod_id, set_key, card_key)
@@ -532,6 +716,13 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
             return false
         end
 
+        sync_runtime_loc_parsed_fields(tree_loc)
+        if should_skip_ai_override(target_card_loc, tree_loc) then
+            if TEO_dbg_print then
+                TEO_dbg_print("[TEOcean AI] Override 未变化，跳过刷新:", mod_id, actual_set_key, card_key)
+            end
+            return false
+        end
         G.localization.descriptions[actual_set_key][card_key] = tree_loc
 
         TEO_dbg_print(("[TEOcean AI] Applied Tree Translation for key: %s"):format(tostring(card_key)))
@@ -653,6 +844,13 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
     end
 
     -- 内存修改（使用实际的 set key）
+    sync_runtime_loc_parsed_fields(new_loc_data)
+    if should_skip_ai_override(target_card_loc, new_loc_data) then
+        if TEO_dbg_print then
+            TEO_dbg_print("[TEOcean AI] Override 未变化，跳过刷新:", mod_id, actual_set_key, card_key)
+        end
+        return false
+    end
     G.localization.descriptions[actual_set_key][card_key] = new_loc_data
 
     -- 打印日志到后台 (Console)
@@ -742,6 +940,8 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
                 end
                 if TEO_dbg_print then
                     TEO_dbg_print("[TEO AI Manager] 翻译成功:", card_id, request_spec.provider, parsed_content)
+                    debug_ai_api_success(card_id, request_spec.provider, code, body, parsed_data, content, parsed_content,
+                        preserve_structure)
                 end
 
                 if preserve_structure and not parsed_content then
