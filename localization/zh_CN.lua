@@ -34,6 +34,12 @@ return {
                     "需要先配置 API URL、模型和 API Key"
                 }
             },
+            teo_disable_edge_sidebar = {
+                name = "关闭侧边栏",
+                text = {
+                    "勾选可以彻底关闭侧边栏"
+                }
+            },
             teo_enable_debug = {
                 name = "启用DEBUG模式",
                 text = {
@@ -64,6 +70,7 @@ return {
             teo_optional_config = "可选配置",
             teo_runtime_override = "在内存中动态翻译",
             teo_enable_ai = "启用AI翻译",
+            teo_disable_edge_sidebar = "关闭侧边栏",
             teo_set_api_key = "设置AI翻译",
             teo_api_key_popup_title = "请输入 AI 接口配置",
             teo_api_settings_popup_title = "AI 翻译接口配置",

@@ -92,6 +92,10 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         mod_id = G.P_CENTERS[_c.key].mod.id
     end
 
+    if mod_id and mod_id ~= 'base' and TEO_set_last_hovered_translation_target then
+        TEO_set_last_hovered_translation_target(mod_id, _c.set, _c.key, _c.name or _c.key)
+    end
+
     -- 在原函数调用之前触发 AI 翻译，确保 G.localization 已更新
     if ai_enabled and mod_id and mod_id ~= 'base' and not TEO_suspend_ai_resolve then
         if TEO_resolve_card_localization then
@@ -136,6 +140,10 @@ function create_UIBox_blind_popup(blind, discovered, vars)
     if blind then
         blind_key = blind.key
         mod_id = blind.mod and blind.mod.id
+    end
+
+    if mod_id and mod_id ~= 'base' and blind_key and TEO_set_last_hovered_translation_target then
+        TEO_set_last_hovered_translation_target(mod_id, 'Blind', blind_key, blind.name or blind_key)
     end
 
     -- 在原函数调用之前触发AI翻译（因为原函数会通过localize()读取G.localization）
@@ -186,6 +194,9 @@ local function hook_change_viewed_back()
                 if target_back and target_back.mod and target_back.mod.id and target_back.mod.id ~= 'base' then
                     local mod_id = target_back.mod.id
                     local back_key = target_back.key
+                    if TEO_set_last_hovered_translation_target then
+                        TEO_set_last_hovered_translation_target(mod_id, 'Back', back_key, target_back.name or back_key)
+                    end
                     if TEO_resolve_card_localization then
                         TEO_dbg_print('[TEOcean AI] Back 切换，触发 AI 翻译:', mod_id, back_key)
                         TEO_resolve_card_localization(mod_id, 'Back', back_key)

@@ -16,12 +16,18 @@ end
 local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = { __teo_shape, __teo_content } } } }
 local PENDING_REQUESTS = {}      -- 正在请求中的文本哈希集合
 local PENDING_CARD_REQUESTS = {} -- 卡牌级请求跟踪：{ [mod_id.set_key.card_key] = true }
+local LAST_HOVERED_TRANSLATION_TARGET = nil
 
 local LOC_REFRESH_PENDING = false
 local LOC_REFRESH_DELAY = 0.1
 local refresh_hovered_card_popup = nil
 TEO_suspend_ai_resolve = TEO_suspend_ai_resolve or false
 local REFRESHING_HOVERED_POPUP = false
+
+local function get_ai_card_id(mod_id, set_key, card_key)
+    if not mod_id or not set_key or not card_key then return nil end
+    return tostring(mod_id) .. "." .. tostring(set_key) .. "." .. tostring(card_key)
+end
 
 --- 请求延迟刷新本地化（批量处理）
 local function TEO_request_localization_refresh()
@@ -407,9 +413,8 @@ local function load_ai_card_cache(mod_id)
     if TEO_dbg_print then TEO_dbg_print("[TEO AI Cache] 已加载缓存，modid=" .. mod_id .. " from " .. cache_file) end
 end
 
-local function save_ai_card_cache(mod_id, set_key, card_key, content, preserve_structure)
-    if not TEO or not TEO.path or not mod_id or not set_key or not card_key then return end
-
+local function persist_ai_card_cache(mod_id, log_set_key, log_card_key)
+    if not TEO or not TEO.path or not mod_id then return false end
     local lang = TEO_get_cur_language and TEO_get_cur_language() or 'zh_CN'
     local cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/'
     local cache_file = cache_dir .. lang .. '.lua'
@@ -422,17 +427,17 @@ local function save_ai_card_cache(mod_id, set_key, card_key, content, preserve_s
         pcall(NFS.createDirectory, cache_dir)
     end
 
-    -- 更新内存缓存
-    AI_CARD_CACHE[mod_id] = AI_CARD_CACHE[mod_id] or {}
-    AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
-    AI_CARD_CACHE[mod_id][set_key][card_key] = pack_ai_cache_entry(content, preserve_structure == true)
-
     -- 构建完整的缓存数据结构
     local cache_data = { descriptions = {} }
-    for s_key, s_data in pairs(AI_CARD_CACHE[mod_id]) do
-        cache_data.descriptions[s_key] = cache_data.descriptions[s_key] or {}
-        for c_key, c_data in pairs(s_data) do
-            cache_data.descriptions[s_key][c_key] = pack_ai_cache_entry(c_data.__teo_content, c_data.__teo_shape == 'tree')
+    for s_key, s_data in pairs(AI_CARD_CACHE[mod_id] or {}) do
+        if type(s_data) == 'table' and next(s_data) then
+            cache_data.descriptions[s_key] = cache_data.descriptions[s_key] or {}
+            for c_key, c_data in pairs(s_data) do
+                if type(c_data) == 'table' and c_data.__teo_content ~= nil then
+                    cache_data.descriptions[s_key][c_key] =
+                        pack_ai_cache_entry(c_data.__teo_content, c_data.__teo_shape == 'tree')
+                end
+            end
         end
     end
 
@@ -443,11 +448,24 @@ local function save_ai_card_cache(mod_id, set_key, card_key, content, preserve_s
 
     if ok then
         if TEO_dbg_print then
-            TEO_dbg_print("[TEOcean AI Cache] 已保存缓存:", mod_id, set_key, card_key, "to", cache_file)
+            TEO_dbg_print("[TEOcean AI Cache] 已保存缓存:", mod_id, log_set_key or "", log_card_key or "", "to", cache_file)
         end
+        return true
     else
         print("[TEOcean AI Cache] 保存缓存失败:", err)
+        return false
     end
+end
+
+local function save_ai_card_cache(mod_id, set_key, card_key, content, preserve_structure)
+    if not TEO or not TEO.path or not mod_id or not set_key or not card_key then return end
+
+    -- 更新内存缓存
+    AI_CARD_CACHE[mod_id] = AI_CARD_CACHE[mod_id] or {}
+    AI_CARD_CACHE[mod_id][set_key] = AI_CARD_CACHE[mod_id][set_key] or {}
+    AI_CARD_CACHE[mod_id][set_key][card_key] = pack_ai_cache_entry(content, preserve_structure == true)
+
+    return persist_ai_card_cache(mod_id, set_key, card_key)
 end
 
 -- 获取卡片的AI翻译缓存
@@ -469,6 +487,100 @@ function TEO_get_ai_card_translation(mod_id, set_key, card_key)
     end
 
     return nil
+end
+
+function TEO_set_last_hovered_translation_target(mod_id, set_key, card_key, display_name)
+    if not mod_id or mod_id == 'base' or not set_key or not card_key then return end
+
+    LAST_HOVERED_TRANSLATION_TARGET = {
+        mod_id = mod_id,
+        set_key = set_key,
+        card_key = card_key,
+        display_name = display_name or card_key,
+        timestamp = G and G.TIMERS and G.TIMERS.REAL or nil
+    }
+end
+
+function TEO_get_last_hovered_translation_target()
+    if not LAST_HOVERED_TRANSLATION_TARGET then return nil end
+
+    return {
+        mod_id = LAST_HOVERED_TRANSLATION_TARGET.mod_id,
+        set_key = LAST_HOVERED_TRANSLATION_TARGET.set_key,
+        card_key = LAST_HOVERED_TRANSLATION_TARGET.card_key,
+        display_name = LAST_HOVERED_TRANSLATION_TARGET.display_name,
+        timestamp = LAST_HOVERED_TRANSLATION_TARGET.timestamp
+    }
+end
+
+function TEO_clear_ai_card_translation(mod_id, set_key, card_key)
+    if not TEO or not TEO.path or not mod_id or not set_key or not card_key then return false end
+
+    if not AI_CARD_CACHE[mod_id] then
+        load_ai_card_cache(mod_id)
+    end
+
+    if not AI_CARD_CACHE[mod_id] or not AI_CARD_CACHE[mod_id][set_key] or
+        AI_CARD_CACHE[mod_id][set_key][card_key] == nil then
+        return false
+    end
+
+    AI_CARD_CACHE[mod_id][set_key][card_key] = nil
+    if not next(AI_CARD_CACHE[mod_id][set_key]) then
+        AI_CARD_CACHE[mod_id][set_key] = nil
+    end
+
+    persist_ai_card_cache(mod_id, set_key, card_key)
+    return true
+end
+
+function TEO_retranslate_last_hovered_card()
+    local target = TEO_get_last_hovered_translation_target and TEO_get_last_hovered_translation_target() or nil
+    if not target then
+        print('[TEOcean AI] 没有可重译的悬停卡牌')
+        return false
+    end
+
+    local TEO_mod = TEO_get_mod and TEO_get_mod() or TEO
+    if not (TEO_mod and TEO_mod.config and TEO_mod.config.enable_ai_translation) then
+        print('[TEOcean AI] AI 翻译未启用，无法重译')
+        return false
+    end
+
+    local card_id = get_ai_card_id(target.mod_id, target.set_key, target.card_key)
+    if card_id and PENDING_CARD_REQUESTS[card_id] then
+        print('[TEOcean AI] 该卡牌已有翻译请求进行中:', card_id)
+        return false
+    end
+
+    if not TEO_get_original_localization or not TEO_request_ai_translation then
+        print('[TEOcean AI] 重译接口未就绪')
+        return false
+    end
+
+    local original_data = TEO_get_original_localization(target.mod_id, target.set_key, target.card_key, true, "source")
+    if not original_data then
+        print('[TEOcean AI] 未找到原始本地化，无法重译:', card_id or target.card_key)
+        return false
+    end
+
+    local preserve_structure = type(original_data) == 'table' and TEO_loc_translation_uses_tree and
+        TEO_loc_translation_uses_tree(original_data) or false
+
+    local queued = TEO_request_ai_translation(
+        original_data,
+        target.mod_id,
+        target.set_key,
+        target.card_key,
+        preserve_structure,
+        original_data,
+        true
+    )
+
+    if queued then
+        print('[TEOcean AI] 已重新请求翻译:', card_id or target.card_key)
+    end
+    return queued == true
 end
 
 --- 解析 AI 返回内容
@@ -863,10 +975,12 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
 end
 
 --- 请求 AI 翻译（卡牌级别）
-function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, preserve_structure, expected_shape)
-    if source_payload == nil then return end
-    if not https then return end
-    if not mod_id or not set_key or not card_key then return end
+function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, preserve_structure, expected_shape,
+                                    force_refresh)
+    if source_payload == nil then return false end
+    if not https then return false end
+    if not mod_id or not set_key or not card_key then return false end
+    force_refresh = force_refresh == true
 
     if preserve_structure == nil and type(source_payload) == 'table' and TEO_loc_translation_uses_tree then
         preserve_structure = TEO_loc_translation_uses_tree(source_payload)
@@ -879,11 +993,11 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
         if TEO_dbg_print then
             TEO_dbg_print("[TEOcean AI] 生成请求负载失败:", tostring(payload_err), mod_id, set_key, card_key)
         end
-        return
+        return false
     end
 
     -- 生成卡片唯一标识
-    local card_id = mod_id .. "." .. set_key .. "." .. card_key
+    local card_id = get_ai_card_id(mod_id, set_key, card_key)
 
     -- 0. 预加载该 mod 的缓存
     if not AI_CARD_CACHE[mod_id] then
@@ -891,23 +1005,25 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
     end
 
     -- 1. 检查卡牌级缓存
-    local cached, cached_is_tree = TEO_get_ai_card_translation(mod_id, set_key, card_key)
-    if cached and (preserve_structure == cached_is_tree) then
-        if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 命中卡片缓存:", card_id) end
-        TEO_apply_ai_override(mod_id, set_key, card_key, cached, cached_is_tree, source_payload)
-        return
+    if not force_refresh then
+        local cached, cached_is_tree = TEO_get_ai_card_translation(mod_id, set_key, card_key)
+        if cached and (preserve_structure == cached_is_tree) then
+            if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 命中卡片缓存:", card_id) end
+            TEO_apply_ai_override(mod_id, set_key, card_key, cached, cached_is_tree, source_payload)
+            return true
+        end
     end
 
     -- 2. 检查队列（避免重复请求）
     if PENDING_CARD_REQUESTS[card_id] then
         if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 请求已在队列中:", card_id) end
-        return
+        return false
     end
 
     local request_cfg = TEO_get_ai_request_config()
     if not (TEO_has_required_ai_config and TEO_has_required_ai_config(request_cfg)) then
         print("[TEOcean AI] AI 配置不完整：请填写 API URL、Model、API Key")
-        return
+        return false
     end
 
     local request_spec, build_err = TEO_build_ai_request(
@@ -917,7 +1033,7 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
     )
     if not request_spec then
         print("[TEOcean AI] 构建请求失败:", tostring(build_err))
-        return
+        return false
     end
 
     PENDING_CARD_REQUESTS[card_id] = true
@@ -960,6 +1076,7 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
             end
         end
     )
+    return true
 end
 
 function TEO_get_cached_ai_translation(source_text)

@@ -514,6 +514,10 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.show_original_blind_translation == nil then
         mod.config.show_original_blind_translation = false
     end
+    -- 初始化"关闭侧边栏"配置项
+    if mod and mod.config and mod.config.disable_edge_sidebar == nil then
+        mod.config.disable_edge_sidebar = false
+    end
     -- 初始化"启用运行时覆盖"配置项
     if mod and mod.config and mod.config.runtime_override == nil then
         mod.config.runtime_override = true

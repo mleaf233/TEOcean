@@ -35,6 +35,12 @@ return {
                     "Requires API URL, model and API key"
                 }
             },
+            teo_disable_edge_sidebar = {
+                name = "Disable Sidebar",
+                text = {
+                    "Check to completely disable the sidebar"
+                }
+            },
             teo_enable_debug = {
                 name = "Enable DEBUG Mode",
                 text = {
@@ -65,6 +71,7 @@ return {
             teo_optional_config = "Optional Config",
             teo_runtime_override = "Runtime Override (In-Memory)",
             teo_enable_ai = "Enable AI Translation",
+            teo_disable_edge_sidebar = "Disable Sidebar",
             teo_set_api_key = "Set AI API",
             teo_api_key_popup_title = "Enter AI API Settings",
             teo_api_settings_popup_title = "AI API Settings",

@@ -22,6 +22,7 @@ assert(SMODS.load_file('src/ui.lua'), "Failed to load UI file. ")()
 assert(SMODS.load_file('src/original_translation.lua'), "Failed to load original translation file. ")()
 assert(SMODS.load_file('src/ai_manager.lua'), "Failed to load AI Manager. ")()
 assert(SMODS.load_file('src/ai_translation.lua'), "Failed to load AI Translation UI. ")()
+assert(SMODS.load_file('src/edge_widget.lua'), "Failed to load edge widget file. ")()
 assert(SMODS.load_file('src/llm_demo.lua'), "Failed to load LLM demo file. ")()
 -- 手动重载回调：在模组配置中调用以立即触发合并/备份/写入操作
 G.FUNCS = G.FUNCS or {}
@@ -299,6 +300,27 @@ if mod then
                                             }
                                         },
                                         TEO_create_hover_tooltip{ tooltip_key = "teo_enable_ai" }
+                                    }
+                                },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm" },
+                                    nodes = {
+                                        {
+                                            n = G.UIT.C,
+                                            config = { align = "cl", padding = 0.05 },
+                                            nodes = {
+                                                create_toggle({
+                                                    label = localize('teo_disable_edge_sidebar') or "关闭侧边栏",
+                                                    ref_table = mod.config,
+                                                    ref_value = 'disable_edge_sidebar',
+                                                    callback = function(_set_toggle)
+                                                        TEO_save_configs()
+                                                    end
+                                                })
+                                            }
+                                        },
+                                        TEO_create_hover_tooltip{ tooltip_key = "teo_disable_edge_sidebar" }
                                     }
                                 },
                                 {
