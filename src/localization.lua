@@ -704,7 +704,7 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
     end
 
     if TEO_get_original_localization then
-        original_data = TEO_get_original_localization(mod_id, set_key, card_key, true)
+        original_data = TEO_get_original_localization(mod_id, set_key, card_key, true, "source")
         original_is_tree = original_data and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(original_data)
     end
 

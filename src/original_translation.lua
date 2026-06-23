@@ -7,9 +7,20 @@ if not TEO then
     TEO = TEO_get_mod()
 end
 
-function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_structure)
+function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_structure, lookup_mode)
     preserve_structure = preserve_structure == true
-    local cache_key = string.format("%s:%s:%s:%s", mod_id or "base", loc_type or "", loc_key or "",
+    lookup_mode = lookup_mode or (preserve_structure and "source" or "display")
+    if lookup_mode ~= "source" then
+        lookup_mode = "display"
+    end
+
+    local lang = TEO_get_cur_language() or 'en-us'
+    if lang == nil or type(lang) ~= "string" then
+        lang = G and G.SETTINGS and G.SETTINGS.language or 'en-us'
+    end
+    local cache_lang = lookup_mode == "source" and "source" or lang
+    local cache_key = string.format("%s:%s:%s:%s:%s:%s", lookup_mode, mod_id or "base", cache_lang or "",
+        loc_type or "", loc_key or "",
         preserve_structure and "raw" or "flat")
 
     if original_loc_cache[cache_key] then
@@ -39,8 +50,14 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_struc
 
     local TEO_mod = TEO_get_mod()
     if not TEO_mod or not TEO_mod.path then return nil end
-    local lang = TEO_get_cur_language() or 'en-us'
     local teo_path = TEO_ensure_slash(TEO_mod.path)
+    local target_path = nil
+    if target_mod and target_mod.path then
+        target_path = target_mod.path
+        if target_path:sub(-1) ~= '/' and target_path:sub(-1) ~= '\\' then
+            target_path = target_path .. '/'
+        end
+    end
 
     local function flexible_lookup(loc_table, c_type, c_key)
         if not loc_table or type(loc_table) ~= 'table' then
@@ -111,197 +128,191 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_struc
         return nil
     end
 
-    -- 1) 从备份文件读取 (原版对应语言尚未合并覆盖前的翻译)
-    local backup_paths = {
-        teo_path .. 'impl/backup/' .. mod_id .. '/localization/' .. lang .. '.lua'
-    }
-
-    if lang ~= 'en-us' then
-        table.insert(backup_paths, teo_path .. 'impl/backup/' .. mod_id .. '/localization/en-us.lua')
-    end
-
-    for _, path in ipairs(backup_paths) do
-        TEO_dbg_print('[TEOcean] 尝试读取备份:', path)
-        if NFS.getInfo(path) then
-            local loc_tbl = TEO_read_loc_file(path)
-            if loc_tbl then
-                TEO_dbg_print('[TEOcean] 成功载入备份文件内容')
-                original_text = flexible_lookup(loc_tbl, loc_type, loc_key)
-                if original_text then
-                    TEO_dbg_print('[TEOcean] 在备份中找到目标文本!')
-                    break
-                end
-            else
-                TEO_dbg_print('[TEOcean] 警告: 备份文件載入结果为空')
-            end
-        else
-            TEO_dbg_print('[TEOcean] 备份路径不存在')
-        end
-    end
-
-    -- 2) 从 mod 原始目录读取 (回退方案)
-    if not original_text and target_mod and target_mod.path then
-        local target_path = target_mod.path
-        if target_path:sub(-1) ~= '/' and target_path:sub(-1) ~= '\\' then
-            target_path = target_path .. '/'
-        end
-
-        if lang == nil or type(lang) ~= "string" then
-            lang = G.SETTINGS.language or 'en-us'
-        end
-
-        -- 只读取原mod的本地化目录，不读取impl/mods/（人工翻译）
-        local src_paths = {
-            target_path .. 'localization/' .. lang .. '.lua',
-            target_path .. 'localization/en-us.lua',
-            target_path .. 'localization/default.lua',
-        }
-
-        for _, path in ipairs(src_paths) do
-            TEO_dbg_print('[TEOcean] 尝试读取源码本地化:', path)
+    local function lookup_loc_paths(paths, log_label, found_label)
+        for _, path in ipairs(paths) do
+            TEO_dbg_print('[TEOcean ' .. lookup_mode .. '] 尝试读取' .. log_label .. ':', path)
             if NFS.getInfo(path) then
                 local loc_tbl = TEO_read_loc_file(path)
                 if loc_tbl then
-                    original_text = flexible_lookup(loc_tbl, loc_type, loc_key)
-                    if original_text then
-                        TEO_dbg_print('[TEOcean] 在源码本地化中找到目标文本!')
-                        break
+                    local found_text = flexible_lookup(loc_tbl, loc_type, loc_key)
+                    if found_text then
+                        TEO_dbg_print('[TEOcean ' .. lookup_mode .. '] 在' .. found_label .. '中找到目标文本!')
+                        return found_text
                     end
+                else
+                    TEO_dbg_print('[TEOcean ' .. lookup_mode .. '] 警告: ' .. found_label .. '文件载入结果为空')
                 end
+            else
+                TEO_dbg_print('[TEOcean ' .. lookup_mode .. '] 路径不存在:', path)
             end
+        end
+        return nil
+    end
+
+    if lookup_mode == "display" then
+        -- UI 对照只显示当前语言的原 mod 翻译，不回退到英文。
+        local backup_paths = {
+            teo_path .. 'impl/backup/' .. mod_id .. '/localization/' .. lang .. '.lua'
+        }
+        original_text = lookup_loc_paths(backup_paths, '原版翻译备份', '原版翻译备份')
+
+        if not original_text and target_path then
+            local current_lang_paths = {
+                target_path .. 'localization/' .. lang .. '.lua'
+            }
+            original_text = lookup_loc_paths(current_lang_paths, '目标当前语言本地化', '目标当前语言本地化')
+        end
+    else
+        -- AI 源文本优先使用英文/default，不读取当前语言翻译。
+        if target_path then
+            local source_paths = {
+                target_path .. 'localization/en-us.lua',
+                target_path .. 'localization/default.lua',
+            }
+            original_text = lookup_loc_paths(source_paths, 'AI 源文本', 'AI 源文本')
+        end
+
+        if not original_text then
+            local backup_source_paths = {
+                teo_path .. 'impl/backup/' .. mod_id .. '/localization/en-us.lua',
+                teo_path .. 'impl/backup/' .. mod_id .. '/localization/default.lua',
+            }
+            original_text = lookup_loc_paths(backup_source_paths, 'AI 源文本备份', 'AI 源文本备份')
         end
     end
 
-    -- 3) 从 SMODS.Centers 读取内联的 loc_txt (第三层回退)
-    -- 适用于像 Bloonlatro 这样直接在代码中定义 loc_txt 的 mod
-    if not original_text and loc_key and SMODS.Centers and SMODS.Centers[loc_key] then
-        local center = SMODS.Centers[loc_key]
-        if center.loc_txt then
-            TEO_dbg_print('[TEOcean] 从 SMODS.Centers 读取内联 loc_txt:', loc_key)
-            original_text = center.loc_txt
-        end
-    end
-
-    -- 4) 对于 Blind 类型，额外尝试从 G.P_BLINDS 读取
-    if not original_text and loc_type == 'Blind' and G and G.P_BLINDS and G.P_BLINDS[loc_key] then
-        local blind_obj = G.P_BLINDS[loc_key]
-        if blind_obj.loc_txt then
-            TEO_dbg_print('[TEOcean] 从 G.P_BLINDS 读取内联 loc_txt:', loc_key)
-            original_text = blind_obj.loc_txt
-        elseif blind_obj.name and type(blind_obj.name) == 'table' then
-            -- 有些 blind 直接在 name 字段存储本地化数据
-            TEO_dbg_print('[TEOcean] 从 G.P_BLINDS.name 读取内联本地化:', loc_key)
-            original_text = { name = blind_obj.name, text = blind_obj.text }
-        end
-    end
-
-    -- 5) 对于 Tag 类型，额外尝试从 G.P_TAGS 或 SMODS.Tags 读取
-    if not original_text and loc_type == 'Tag' then
-        -- 首先尝试 G.P_TAGS（游戏运行时标签表）
-        if G and G.P_TAGS and G.P_TAGS[loc_key] then
-            local tag_obj = G.P_TAGS[loc_key]
-            if tag_obj.loc_txt then
-                TEO_dbg_print('[TEOcean] 从 G.P_TAGS 读取内联 loc_txt:', loc_key)
-                original_text = tag_obj.loc_txt
-            end
-        end
-        -- 如果 G.P_TAGS 未找到，尝试 SMODS.Tags
-        if not original_text and SMODS and SMODS.Tags and SMODS.Tags[loc_key] then
-            local tag_obj = SMODS.Tags[loc_key]
-            if tag_obj.loc_txt then
-                TEO_dbg_print('[TEOcean] 从 SMODS.Tags 读取内联 loc_txt:', loc_key)
-                original_text = tag_obj.loc_txt
-            end
-        end
-    end
-
-    -- 6) 对于 Sticker 类型（显示为 Other set），额外尝试从 SMODS.Stickers 读取
-    if not original_text and loc_type == 'Other' and SMODS and SMODS.Stickers and SMODS.Stickers[loc_key] then
-        local sticker_obj = SMODS.Stickers[loc_key]
-        if sticker_obj.loc_txt then
-            TEO_dbg_print('[TEOcean] 从 SMODS.Stickers 读取内联 loc_txt:', loc_key)
-            original_text = sticker_obj.loc_txt
-        elseif sticker_obj.name then
-            -- 有些 sticker 使用 name 字段存储英文名称（字符串）
-            -- 构造标准的本地化数据格式
-            TEO_dbg_print('[TEOcean] 从 SMODS.Stickers.name 读取内联本地化:', loc_key, sticker_obj.name)
-            original_text = { name = sticker_obj.name, text = sticker_obj.text or {} }
-        end
-    end
-
-    -- 7) 对于 Seal 类型（显示为 Other set，key 以 _seal 结尾），尝试从 G.P_SEALS 或 SMODS.Seals 读取
-    if not original_text and loc_type == 'Other' and string.sub(loc_key, -5) == '_seal' then
-        -- 尝试 G.P_SEALS（游戏运行时表）
-        if G and G.P_SEALS then
-            -- Seal 的 key 存储时不带 _seal 后缀，需要去掉
-            local seal_key_base = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
-            local seal_obj = G.P_SEALS[seal_key_base]
-            if seal_obj then
-                if seal_obj.loc_txt then
-                    TEO_dbg_print('[TEOcean] 从 G.P_SEALS 读取内联 loc_txt:', loc_key)
-                    original_text = seal_obj.loc_txt
-                elseif seal_obj.key and SMODS.Seals and SMODS.Seals[seal_obj.key] then
-                    -- 如果 G.P_SEALS 没有 loc_txt，尝试从 SMODS.Seals 读取
-                    local s_mod_seal = SMODS.Seals[seal_obj.key]
-                    if s_mod_seal and s_mod_seal.loc_txt then
-                        TEO_dbg_print('[TEOcean] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
-                        original_text = s_mod_seal.loc_txt
-                    end
-                end
-            end
-        end
-        -- 如果 G.P_SEALS 未找到，尝试直接从 SMODS.Seals 读取
-        if not original_text and SMODS and SMODS.Seals then
-            for seal_key, seal_obj in pairs(SMODS.Seals) do
-                -- 检查 key 是否匹配（seal_key + '_seal' == loc_key）
-                if seal_key and seal_key:lower() .. '_seal' == loc_key then
-                    if seal_obj.loc_txt then
-                        TEO_dbg_print('[TEOcean] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
-                        original_text = seal_obj.loc_txt
-                        break
-                    end
-                end
-            end
-        end
-        -- 如果仍然没有找到，使用 key 生成默认英文名称
-        if not original_text and loc_key then
-            local seal_name = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
-            seal_name = seal_name:gsub("^%l", string.upper)  -- 首字母大写
-            TEO_dbg_print('[TEOcean] Seal 无 loc_txt，使用默认名称:', loc_key, seal_name)
-            original_text = { name = seal_name .. " Seal", text = {} }
-        end
-    end
-
-    -- 8) 对于 Back 类型（卡背牌组），尝试从 G.P_CENTERS 读取
-    if not original_text and loc_type == 'Back' then
-        -- Back 对象存储在 G.P_CENTERS 中
-        if G and G.P_CENTERS and G.P_CENTERS[loc_key] then
-            local back_obj = G.P_CENTERS[loc_key]
-            if back_obj.loc_txt then
-                TEO_dbg_print('[TEOcean] 从 G.P_CENTERS 读取 Back loc_txt:', loc_key)
-                original_text = back_obj.loc_txt
-            elseif back_obj.name and type(back_obj.name) == 'string' then
-                -- 如果没有 loc_txt，尝试直接使用 name 和 text 字段
-                TEO_dbg_print('[TEOcean] 从 G.P_CENTERS.name 读取 Back 本地化:', loc_key, back_obj.name)
-                original_text = { name = back_obj.name, text = back_obj.text or {} }
-            end
-        end
-        -- 如果 G.P_CENTERS 未找到，尝试从 SMODS.Centers 读取（再次检查，因为 Back 是 Center 的子类）
-        if not original_text and SMODS and SMODS.Centers and SMODS.Centers[loc_key] then
+    if lookup_mode == "source" then
+        -- 3) 从 SMODS.Centers 读取内联的 loc_txt (AI 源文本回退)
+        -- 适用于像 Bloonlatro 这样直接在代码中定义 loc_txt 的 mod
+        if not original_text and loc_key and SMODS.Centers and SMODS.Centers[loc_key] then
             local center = SMODS.Centers[loc_key]
             if center.loc_txt then
-                TEO_dbg_print('[TEOcean] 从 SMODS.Centers 读取 Back loc_txt:', loc_key)
+                TEO_dbg_print('[TEOcean source] 从 SMODS.Centers 读取内联 loc_txt:', loc_key)
                 original_text = center.loc_txt
-            elseif center.name and type(center.name) == 'string' then
-                TEO_dbg_print('[TEOcean] 从 SMODS.Centers.name 读取 Back 本地化:', loc_key, center.name)
-                original_text = { name = center.name, text = center.text or {} }
             end
         end
-        -- 如果仍然没有找到，使用 key 生成默认英文名称
-        if not original_text and loc_key then
-            local back_name = loc_key:gsub("^%l", string.upper)  -- 首字母大写
-            TEO_dbg_print('[TEOcean] Back 无 loc_txt，使用默认名称:', loc_key, back_name)
-            original_text = { name = back_name .. " Deck", text = {} }
+
+        -- 4) 对于 Blind 类型，额外尝试从 G.P_BLINDS 读取
+        if not original_text and loc_type == 'Blind' and G and G.P_BLINDS and G.P_BLINDS[loc_key] then
+            local blind_obj = G.P_BLINDS[loc_key]
+            if blind_obj.loc_txt then
+                TEO_dbg_print('[TEOcean source] 从 G.P_BLINDS 读取内联 loc_txt:', loc_key)
+                original_text = blind_obj.loc_txt
+            elseif blind_obj.name and type(blind_obj.name) == 'table' then
+                -- 有些 blind 直接在 name 字段存储本地化数据
+                TEO_dbg_print('[TEOcean source] 从 G.P_BLINDS.name 读取内联本地化:', loc_key)
+                original_text = { name = blind_obj.name, text = blind_obj.text }
+            end
+        end
+
+        -- 5) 对于 Tag 类型，额外尝试从 G.P_TAGS 或 SMODS.Tags 读取
+        if not original_text and loc_type == 'Tag' then
+            -- 首先尝试 G.P_TAGS（游戏运行时标签表）
+            if G and G.P_TAGS and G.P_TAGS[loc_key] then
+                local tag_obj = G.P_TAGS[loc_key]
+                if tag_obj.loc_txt then
+                    TEO_dbg_print('[TEOcean source] 从 G.P_TAGS 读取内联 loc_txt:', loc_key)
+                    original_text = tag_obj.loc_txt
+                end
+            end
+            -- 如果 G.P_TAGS 未找到，尝试 SMODS.Tags
+            if not original_text and SMODS and SMODS.Tags and SMODS.Tags[loc_key] then
+                local tag_obj = SMODS.Tags[loc_key]
+                if tag_obj.loc_txt then
+                    TEO_dbg_print('[TEOcean source] 从 SMODS.Tags 读取内联 loc_txt:', loc_key)
+                    original_text = tag_obj.loc_txt
+                end
+            end
+        end
+
+        -- 6) 对于 Sticker 类型（显示为 Other set），额外尝试从 SMODS.Stickers 读取
+        if not original_text and loc_type == 'Other' and SMODS and SMODS.Stickers and SMODS.Stickers[loc_key] then
+            local sticker_obj = SMODS.Stickers[loc_key]
+            if sticker_obj.loc_txt then
+                TEO_dbg_print('[TEOcean source] 从 SMODS.Stickers 读取内联 loc_txt:', loc_key)
+                original_text = sticker_obj.loc_txt
+            elseif sticker_obj.name then
+                -- 有些 sticker 使用 name 字段存储英文名称（字符串）
+                -- 构造标准的本地化数据格式
+                TEO_dbg_print('[TEOcean source] 从 SMODS.Stickers.name 读取内联本地化:', loc_key, sticker_obj.name)
+                original_text = { name = sticker_obj.name, text = sticker_obj.text or {} }
+            end
+        end
+
+        -- 7) 对于 Seal 类型（显示为 Other set，key 以 _seal 结尾），尝试从 G.P_SEALS 或 SMODS.Seals 读取
+        if not original_text and loc_type == 'Other' and string.sub(loc_key, -5) == '_seal' then
+            -- 尝试 G.P_SEALS（游戏运行时表）
+            if G and G.P_SEALS then
+                -- Seal 的 key 存储时不带 _seal 后缀，需要去掉
+                local seal_key_base = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
+                local seal_obj = G.P_SEALS[seal_key_base]
+                if seal_obj then
+                    if seal_obj.loc_txt then
+                        TEO_dbg_print('[TEOcean source] 从 G.P_SEALS 读取内联 loc_txt:', loc_key)
+                        original_text = seal_obj.loc_txt
+                    elseif seal_obj.key and SMODS.Seals and SMODS.Seals[seal_obj.key] then
+                        -- 如果 G.P_SEALS 没有 loc_txt，尝试从 SMODS.Seals 读取
+                        local s_mod_seal = SMODS.Seals[seal_obj.key]
+                        if s_mod_seal and s_mod_seal.loc_txt then
+                            TEO_dbg_print('[TEOcean source] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
+                            original_text = s_mod_seal.loc_txt
+                        end
+                    end
+                end
+            end
+            -- 如果 G.P_SEALS 未找到，尝试直接从 SMODS.Seals 读取
+            if not original_text and SMODS and SMODS.Seals then
+                for seal_key, seal_obj in pairs(SMODS.Seals) do
+                    -- 检查 key 是否匹配（seal_key + '_seal' == loc_key）
+                    if seal_key and seal_key:lower() .. '_seal' == loc_key then
+                        if seal_obj.loc_txt then
+                            TEO_dbg_print('[TEOcean source] 从 SMODS.Seals 读取内联 loc_txt:', loc_key)
+                            original_text = seal_obj.loc_txt
+                            break
+                        end
+                    end
+                end
+            end
+            -- 如果仍然没有找到，使用 key 生成默认英文名称
+            if not original_text and loc_key then
+                local seal_name = string.sub(loc_key, 1, -6)  -- 去掉 '_seal'
+                seal_name = seal_name:gsub("^%l", string.upper)  -- 首字母大写
+                TEO_dbg_print('[TEOcean source] Seal 无 loc_txt，使用默认名称:', loc_key, seal_name)
+                original_text = { name = seal_name .. " Seal", text = {} }
+            end
+        end
+
+        -- 8) 对于 Back 类型（卡背牌组），尝试从 G.P_CENTERS 读取
+        if not original_text and loc_type == 'Back' then
+            -- Back 对象存储在 G.P_CENTERS 中
+            if G and G.P_CENTERS and G.P_CENTERS[loc_key] then
+                local back_obj = G.P_CENTERS[loc_key]
+                if back_obj.loc_txt then
+                    TEO_dbg_print('[TEOcean source] 从 G.P_CENTERS 读取 Back loc_txt:', loc_key)
+                    original_text = back_obj.loc_txt
+                elseif back_obj.name and type(back_obj.name) == 'string' then
+                    -- 如果没有 loc_txt，尝试直接使用 name 和 text 字段
+                    TEO_dbg_print('[TEOcean source] 从 G.P_CENTERS.name 读取 Back 本地化:', loc_key, back_obj.name)
+                    original_text = { name = back_obj.name, text = back_obj.text or {} }
+                end
+            end
+            -- 如果 G.P_CENTERS 未找到，尝试从 SMODS.Centers 读取（再次检查，因为 Back 是 Center 的子类）
+            if not original_text and SMODS and SMODS.Centers and SMODS.Centers[loc_key] then
+                local center = SMODS.Centers[loc_key]
+                if center.loc_txt then
+                    TEO_dbg_print('[TEOcean source] 从 SMODS.Centers 读取 Back loc_txt:', loc_key)
+                    original_text = center.loc_txt
+                elseif center.name and type(center.name) == 'string' then
+                    TEO_dbg_print('[TEOcean source] 从 SMODS.Centers.name 读取 Back 本地化:', loc_key, center.name)
+                    original_text = { name = center.name, text = center.text or {} }
+                end
+            end
+            -- 如果仍然没有找到，使用 key 生成默认英文名称
+            if not original_text and loc_key then
+                local back_name = loc_key:gsub("^%l", string.upper)  -- 首字母大写
+                TEO_dbg_print('[TEOcean source] Back 无 loc_txt，使用默认名称:', loc_key, back_name)
+                original_text = { name = back_name .. " Deck", text = {} }
+            end
         end
     end
 
@@ -491,7 +502,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
         if mod_id and mod_id ~= 'base' then
             -- 获取原文数据
-            local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key)
+            local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key, false, "display")
 
             if original_data then
                 TEO_dbg_print('[TEOcean] 找到原文数据，准备插入UI，ModID:', mod_id, 'Key:', _c.key)
@@ -545,7 +556,7 @@ function create_UIBox_blind_popup(blind, discovered, vars)
     if not mod_id and blind.mod then mod_id = blind.mod.id end
 
     if mod_id and mod_id ~= 'base' then
-        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind.config.blind.key)
+        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind.config.blind.key, false, "display")
         if original_data then
             TEO_dbg_print('[TEOcean] 找到 Blind 原文数据:', blind.config.blind.key)
             -- 传入 vars (blind popup 的 vars 通常在调用时传入)
@@ -580,7 +591,7 @@ function create_UIBox_blind_choice(type, run_info)
 
     if blind and blind.mod then
         local mod_id = blind.mod.id
-        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind_key)
+        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind_key, false, "display")
         if original_data then
             TEO_dbg_print('[TEOcean] 找到 Blind Choice 原文数据:', blind_key)
             -- 这里 vars 不太容易获取，暂传 nil
@@ -627,7 +638,7 @@ if not G.UIDEF.card_h_popup_teo_ref then
 
         if not mod_id or mod_id == 'base' then return ret_val end
 
-        local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key)
+        local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key, false, "display")
 
         if original_data then
             -- 尝试获取 vars

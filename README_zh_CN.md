@@ -97,6 +97,7 @@ QQ群:
 
 ```powershell
 .\tools\upstream-localization.ps1 list
+.\tools\upstream-localization.ps1 add <modid> -Repo <repo-url>
 .\tools\upstream-localization.ps1 init
 .\tools\upstream-localization.ps1 check
 .\tools\upstream-localization.ps1 accept <modid>
@@ -104,6 +105,7 @@ QQ群:
 ```
 
 - `list`：列出 `impl/mods/*` 中已适配 mod 的配置状态。
+- `add <modid> -Repo <repo-url>`：创建 `impl/mods/<modid>/localization/zh_CN.lua`，写入 `tools/upstream-sources.json`，并默认建立上游基线；可用 `-Ref <branch>` 指定分支，`-Paths <path1>,<path2>` 指定特殊本地化路径，`-NoInit` 仅登记不联网初始化。
 - `init`：为尚未建立基线的 mod 拉取上游本地化文件，写入 `impl/upstream/<modid>/`，并记录当前 commit 到 `tools/upstream-lock.json`。
 - `check`：比较 `tools/upstream-lock.json` 记录的 baseline commit 和远程最新 commit；只有本地化路径发生变化时才标记为需要更新。
 - `accept <modid>`：人工翻译已经追上游后，刷新本地缓存并把该 mod 的 baseline 更新到远程最新 commit。
@@ -114,6 +116,8 @@ QQ群:
 ```text
 impl/todo/<modid>/upstream_changed.md
 ```
+
+如果某个 mod 显示 `UNCONFIGURED`，可以用 `add <modid> -Repo <repo-url> -Force` 补充或替换上游仓库配置。
 
 ## 目录关系
 

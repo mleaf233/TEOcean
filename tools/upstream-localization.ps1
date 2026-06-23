@@ -1,12 +1,20 @@
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("init", "check", "accept", "accept-all", "list")]
+    [ValidateSet("add", "init", "check", "accept", "accept-all", "list")]
     [string]$Command = "check",
 
     [Parameter(Position = 1)]
     [string[]]$ModId,
 
-    [switch]$Force
+    [string]$Repo,
+
+    [string]$Ref = "HEAD",
+
+    [string[]]$Paths,
+
+    [switch]$Force,
+
+    [switch]$NoInit
 )
 
 $ErrorActionPreference = "Stop"
@@ -445,6 +453,126 @@ function Save-LockEntries {
     Write-JsonObject $LockPath $lock
 }
 
+function Save-SourceEntries {
+    param(
+        [string[]]$DefaultPaths,
+        [System.Collections.IDictionary]$SourceEntries
+    )
+
+    $mods = [ordered]@{}
+    foreach ($key in ($SourceEntries.Keys | Sort-Object)) {
+        $mods[$key] = $SourceEntries[$key]
+    }
+
+    $sources = [ordered]@{
+        version = 1
+        defaultPaths = @($DefaultPaths)
+        mods = $mods
+    }
+
+    Write-JsonObject $SourcesPath $sources
+}
+
+function New-SourceEntry {
+    param(
+        [string]$RepoUrl,
+        [string]$SourceRef,
+        [string[]]$SourcePaths
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RepoUrl)) {
+        throw "Command 'add' requires -Repo."
+    }
+
+    if ([string]::IsNullOrWhiteSpace($SourceRef)) {
+        $SourceRef = "HEAD"
+    }
+
+    $entry = [ordered]@{
+        repo = $RepoUrl
+        ref = $SourceRef
+    }
+
+    $normalizedPaths = @()
+    if ($null -ne $SourcePaths -and $SourcePaths.Count -gt 0) {
+        $normalizedPaths = @(
+            $SourcePaths |
+                ForEach-Object { Normalize-RepoPath ([string]$_) } |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                Select-Object -Unique
+        )
+    }
+
+    if ($normalizedPaths.Count -gt 0) {
+        $entry.paths = @($normalizedPaths)
+    }
+
+    return $entry
+}
+
+function Ensure-AdaptedModSkeleton {
+    param([string]$ModId)
+
+    Assert-SafeModId $ModId
+
+    $modDir = Join-Path $ImplModsDir $ModId
+    $localizationDir = Join-Path $modDir "localization"
+    New-Item -ItemType Directory -Force -Path $localizationDir | Out-Null
+
+    $zhPath = Join-Path $localizationDir "zh_CN.lua"
+    if (-not (Test-Path -LiteralPath $zhPath)) {
+        $content = @(
+            "return {",
+            "  translator = {",
+            "    `"TODO`",",
+            "  },",
+            "}",
+            ""
+        )
+        Set-Content -LiteralPath $zhPath -Value $content -Encoding UTF8
+        Write-Host "[$ModId] created $zhPath"
+    }
+    else {
+        Write-Host "[$ModId] localization skeleton already exists."
+    }
+}
+
+function Add-Mod {
+    param(
+        [string]$ModId,
+        [string]$RepoUrl,
+        [string]$SourceRef,
+        [string[]]$SourcePaths,
+        [System.Collections.IDictionary]$SourceEntries,
+        [System.Collections.IDictionary]$LockEntries,
+        [string[]]$DefaultPaths
+    )
+
+    Assert-SafeModId $ModId
+    $shouldWriteSource = (-not $SourceEntries.Contains($ModId)) -or $Force
+    if ($shouldWriteSource -and [string]::IsNullOrWhiteSpace($RepoUrl)) {
+        throw "Command 'add' requires -Repo when creating or replacing source config."
+    }
+
+    Ensure-AdaptedModSkeleton $ModId
+
+    if ($SourceEntries.Contains($ModId) -and -not $Force) {
+        Write-Host "[$ModId] source config already exists; use -Force to replace it."
+    }
+    else {
+        $SourceEntries[$ModId] = New-SourceEntry $RepoUrl $SourceRef $SourcePaths
+        Save-SourceEntries $DefaultPaths $SourceEntries
+        Write-Host "[$ModId] source config saved."
+    }
+
+    if ($NoInit) {
+        Write-Host "[$ModId] baseline init skipped because -NoInit was set."
+        return
+    }
+
+    Update-Baseline $ModId $SourceEntries[$ModId] $LockEntries $DefaultPaths $false
+}
+
 function Update-Baseline {
     param(
         [string]$ModId,
@@ -655,6 +783,21 @@ $adaptedModIds = Get-AdaptedModIds
 
 if ($Command -eq "list") {
     Write-ConfigurationList $adaptedModIds $sourceEntries $lockEntries
+    return
+}
+
+if ($Command -eq "add") {
+    $selected = @($ModId | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    if ($selected.Count -ne 1) {
+        throw "Command 'add' requires exactly one mod id."
+    }
+
+    if (-not $NoInit) {
+        Assert-GitAvailable
+        Ensure-ToolState
+    }
+
+    Add-Mod $selected[0] $Repo $Ref $Paths $sourceEntries $lockEntries $defaultPaths
     return
 }
 

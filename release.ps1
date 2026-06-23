@@ -49,7 +49,20 @@ try {
         # 跳过路径中包含 "\.venv\" 或以 "\.venv" 结尾的项
         # 跳过路径中包含 "\.git\" 或以 "\.git" 结尾的项
         # 跳过路径中包含 "\.idea\" 或以 "\.idea" 结尾的项
+        # 跳过开发缓存、备份和缺失报告目录及其内容
+        $RelativePath = $_.FullName.Substring($Source.FullName.Length).TrimStart([char[]]"\/")
+        $NormalizedRelativePath = $RelativePath -replace '/', '\'
+        $ExcludedRelativeRoots = @('impl\upstream', 'impl\backup', 'impl\todo')
+        $IsExcludedRelativePath = $false
+        foreach ($Root in $ExcludedRelativeRoots) {
+            if ($NormalizedRelativePath -ieq $Root -or $NormalizedRelativePath -ilike ($Root + '\*')) {
+                $IsExcludedRelativePath = $true
+                break
+            }
+        }
+
         # 合并后的正则表达式
+        (-not $IsExcludedRelativePath) -and
         ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv|\.git|\.idea)[\\/]?|release\.ps1$)")
     }
 
@@ -71,7 +84,7 @@ try {
         }
     }
 
-    Write-Log "✅ 复制完成（已排除 Libs、smods、Balatro 文件夹和 release.ps1 文件）"
+    Write-Log "✅ 复制完成（已排除 Libs、smods、game、.venv、.git、.idea、impl/upstream、impl/backup、impl/todo 和 release.ps1）"
 }
 catch {
     Write-Log "❌ 复制失败: $($_.Exception.Message)"

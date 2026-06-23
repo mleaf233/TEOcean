@@ -85,12 +85,14 @@ Common commands:
 
 ```powershell
 .\tools\upstream-localization.ps1 list
+.\tools\upstream-localization.ps1 add <modid> -Repo <repo-url>
 .\tools\upstream-localization.ps1 init
 .\tools\upstream-localization.ps1 check
 .\tools\upstream-localization.ps1 accept <modid>
 .\tools\upstream-localization.ps1 accept-all
 ```
 
+- `add <modid> -Repo <repo-url>`: creates `impl/mods/<modid>/localization/zh_CN.lua`, writes `tools/upstream-sources.json`, and initializes the upstream baseline by default. Use `-Ref <branch>`, `-Paths <path1>,<path2>`, or `-NoInit` as needed.
 - `init`: initializes missing baselines and copies upstream localization files into `impl/upstream/<modid>/`.
 - `check`: compares the recorded baseline commit with the latest remote commit, reporting only localization-path changes.
 - `accept <modid>`: updates the baseline after the manual translation has caught up with upstream.
