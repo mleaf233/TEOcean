@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "defaultPaths": [
+    "localization/default.lua",
+    "localization/en-us.lua",
+    "localization/default.json",
+    "localization/en-us.json",
+    "localization/default",
+    "localization/en-us"
+  ],
+  "mods": {
+    "aikoyorisshenanigans": {
+      "repo": "https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans.git",
+      "ref": "HEAD"
+    },
+    "allinjest": {
+      "repo": "https://github.com/survovoaneend/All-In-Jest.git",
+      "ref": "HEAD"
+    },
+    "blueprint": {
+      "repo": "https://github.com/stupxd/Blueprint.git",
+      "ref": "HEAD"
+    },
+    "Bunco": {
+      "repo": "https://github.com/jumbocarrot0/Bunco.git",
+      "ref": "HEAD"
+    },
+    "Cryptid": {
+      "repo": "https://github.com/SpectralPack/Cryptid.git",
+      "ref": "HEAD"
+    },
+    "CryptidMoreMarioJokers": {
+      "repo": "https://github.com/smg9000/Cryptid-MoreMarioJokers.git",
+      "ref": "HEAD"
+    },
+    "dpp": {
+      "repo": "https://github.com/Joglacraft/DebugPlusPlus.git",
+      "ref": "HEAD"
+    },
+    "entr": {
+      "repo": "https://github.com/lord-ruby/Entropy.git",
+      "ref": "HEAD"
+    },
+    "JoyousSpring": {
+      "repo": "https://github.com/nh6574/JoyousSpring.git",
+      "ref": "HEAD"
+    },
+    "kingdomhearts": {
+      "repo": "https://github.com/cloudzXIII/FinalMix.git",
+      "ref": "HEAD"
+    },
+    "LuckyRabbit": {
+      "repo": "https://github.com/Trif3ctal/Lucky-Rabbit.git",
+      "ref": "HEAD"
+    },
+    "mayhem": {
+      "repo": "https://codeberg.org/BalatroMayhem/Mayhem.git",
+      "ref": "HEAD"
+    },
+    "monarchy": {
+      "repo": "https://github.com/itsmythie/balatro-monarchy.git",
+      "ref": "HEAD"
+    },
+    "ortalab": {
+      "repo": "https://github.com/EremelMods/Ortalab.git",
+      "ref": "HEAD"
+    },
+    "paperback": {
+      "repo": "https://github.com/Balatro-Paperback/paperback.git",
+      "ref": "beta"
+    },
+    "plantain": {
+      "repo": "https://github.com/IcebergLettuce0/Plantain.git",
+      "ref": "HEAD"
+    },
+    "RevosVault": {
+      "repo": "https://github.com/Cdrvo/Revos-Vault---Balatro-Mod.git",
+      "ref": "HEAD"
+    },
+    "Sculio": {
+      "repo": "https://github.com/crmykybord/Sculio.git",
+      "ref": "HEAD"
+    }
+  }
+}

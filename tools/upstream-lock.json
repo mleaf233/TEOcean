@@ -1,0 +1,297 @@
+﻿{
+    "version":  1,
+    "mods":  {
+                 "aikoyorisshenanigans":  {
+                                              "repo":  "https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans.git",
+                                              "baselineRef":  "HEAD",
+                                              "baselineCommit":  "3efcccac4a5b6f095378e0ceeae12114f3df73dc",
+                                              "resolvedPaths":  [
+                                                                    "localization/en-us.lua"
+                                                                ],
+                                              "hashes":  {
+                                                             "localization/en-us.lua":  "sha256:e774b72d347220a8f50bfc4148d4a0d5f680a880fb7865c81fa04be29b0370e1"
+                                                         },
+                                              "updatedAt":  "2026-06-23T08:38:25Z"
+                                          },
+                 "allinjest":  {
+                                   "repo":  "https://github.com/survovoaneend/All-In-Jest.git",
+                                   "baselineRef":  "HEAD",
+                                   "baselineCommit":  "0df3ead70d1a68af5fbb7777f91603c12df9d0bc",
+                                   "resolvedPaths":  [
+                                                         "localization/default.lua",
+                                                         "localization/en-us.lua"
+                                                     ],
+                                   "hashes":  {
+                                                  "localization/default.lua":  "sha256:f87335711fb1b2d0bc96e02f111f925a494f0af2f7528372f3f5a76950bf4b5e",
+                                                  "localization/en-us.lua":  "sha256:418e42f6f369f23e400c034ff8e2a160b439fd12a3baa3d1f18b642eff46a42b"
+                                              },
+                                   "updatedAt":  "2026-06-23T08:38:33Z"
+                               },
+                 "blueprint":  {
+                                   "repo":  "https://github.com/stupxd/Blueprint.git",
+                                   "baselineRef":  "HEAD",
+                                   "baselineCommit":  "4e18c481834f3fed0c68e7f7ff064393e2e2d8dd",
+                                   "resolvedPaths":  [
+                                                         "localization/en-us.lua"
+                                                     ],
+                                   "hashes":  {
+                                                  "localization/en-us.lua":  "sha256:3e45af7dae35a32b87086af999a0a2db43e5376cb01d4a6301249e7ebdcfb314"
+                                              },
+                                   "updatedAt":  "2026-06-23T08:38:36Z"
+                               },
+                 "Bunco":  {
+                               "repo":  "https://github.com/jumbocarrot0/Bunco.git",
+                               "baselineRef":  "HEAD",
+                               "baselineCommit":  "c78e90ecb3860b2e6229272fc7f33d23987b66bc",
+                               "resolvedPaths":  [
+                                                     "localization/default.lua"
+                                                 ],
+                               "hashes":  {
+                                              "localization/default.lua":  "sha256:3710cfbcd24b4fc607b419e236d0602e7fb1aa1127d72571b97bb33c407ebd2a"
+                                          },
+                               "updatedAt":  "2026-06-23T08:38:42Z"
+                           },
+                 "Cryptid":  {
+                                 "repo":  "https://github.com/SpectralPack/Cryptid.git",
+                                 "baselineRef":  "HEAD",
+                                 "baselineCommit":  "5191ad6dab017f978206100ca83142da4a4d38fc",
+                                 "resolvedPaths":  [
+                                                       "localization/en-us.lua"
+                                                   ],
+                                 "hashes":  {
+                                                "localization/en-us.lua":  "sha256:98e54d8e4f3c9dedad8f5cf83873301215f83aefc64d5592380fbc19e6a41c23"
+                                            },
+                                 "updatedAt":  "2026-06-23T08:38:52Z"
+                             },
+                 "CryptidMoreMarioJokers":  {
+                                                "repo":  "https://github.com/smg9000/Cryptid-MoreMarioJokers.git",
+                                                "baselineRef":  "HEAD",
+                                                "baselineCommit":  "cd7d7df6db9204811509c105b4014922318103d6",
+                                                "resolvedPaths":  [
+                                                                      "localization/en-us.lua"
+                                                                  ],
+                                                "hashes":  {
+                                                               "localization/en-us.lua":  "sha256:bb8b291e05da6155ba72959b1b331fd7ad5fa3b7f87997beb94a230ca0106fa5"
+                                                           },
+                                                "updatedAt":  "2026-06-23T08:38:55Z"
+                                            },
+                 "dpp":  {
+                             "repo":  "https://github.com/Joglacraft/DebugPlusPlus.git",
+                             "baselineRef":  "HEAD",
+                             "baselineCommit":  "d4dbf3b9bb4364024aef21140e27721066efcb45",
+                             "resolvedPaths":  [
+                                                   "localization/en-us.lua"
+                                               ],
+                             "hashes":  {
+                                            "localization/en-us.lua":  "sha256:e71705993b55ab42d20cacc9fe64fc4c5666fb55b62453ed0567da7cdf86bebb"
+                                        },
+                             "updatedAt":  "2026-06-23T08:38:58Z"
+                         },
+                 "entr":  {
+                              "repo":  "https://github.com/lord-ruby/Entropy.git",
+                              "baselineRef":  "HEAD",
+                              "baselineCommit":  "dee6f4b96ac3e190af64ef0521682f439512e0ad",
+                              "resolvedPaths":  [
+                                                    "localization/en-us.lua"
+                                                ],
+                              "hashes":  {
+                                             "localization/en-us.lua":  "sha256:1efdd0726b2ed00fd6819c463954a79a6ab40a3308da234a644620b5bfd7cefb"
+                                         },
+                              "updatedAt":  "2026-06-23T08:39:05Z"
+                          },
+                 "JoyousSpring":  {
+                                      "repo":  "https://github.com/nh6574/JoyousSpring.git",
+                                      "baselineRef":  "HEAD",
+                                      "baselineCommit":  "909cca0ccfe1532af2a82db655a5ea89d8805ec6",
+                                      "resolvedPaths":  [
+                                                            "localization/default.lua",
+                                                            "localization/default"
+                                                        ],
+                                      "hashes":  {
+                                                     "localization/default.lua":  "sha256:9a379922620a15ee0584c50359fbbf352b9be11b06515c7cf3d8a4636a716aeb",
+                                                     "localization/default/00_00ModInfo.lua":  "sha256:3eb1500875ca7e1586047f3e4c97c35acff10c844df7c53e254dc8d8f7d17961",
+                                                     "localization/default/00_01Glossary.lua":  "sha256:a1fd98ccf97a734ba55c8e872acaae005f3d30c406211241b239e77aeadd71bc",
+                                                     "localization/default/00_02GeneralUI.lua":  "sha256:487f38a8245e38ebcb44ca7ab1bfa44917f7a32077745c8f55a2720a681afc9b",
+                                                     "localization/default/00_03Effects.lua":  "sha256:7287dd7a6c60c99b65d00fde0e0a63263d4987561447c63bd95260cb18bda059",
+                                                     "localization/default/00_04Config.lua":  "sha256:0a9727c7dc980cf69d68fed888a60aafbadd42528425bd2ef40749b64651549f",
+                                                     "localization/default/00_05CardTypes.lua":  "sha256:e8aa5ff8a03ac5d9732203c6319bfba3e97fcca9aed58a486cb1158f8ed5ebf4",
+                                                     "localization/default/00_06Misc.lua":  "sha256:378583a103c2b3657dc14f66eb33a557ce9232e1c5af10feb18cad61663aa2bd",
+                                                     "localization/default/00_07Tutorials.lua":  "sha256:3f9f8e79f91533990b27adffb47f914cbb5b0f9a4e53fa4192e07a0853497672",
+                                                     "localization/default/01Tags.lua":  "sha256:0ec39fd1137e3078a796ed01f7b8792f340d153e782ab403f930a38f05f7a953",
+                                                     "localization/default/02Boosters.lua":  "sha256:36da56abaefe0374d894850b9e18e42cdad187febadc167639ab717d8a65bb5a",
+                                                     "localization/default/03Challenges.lua":  "sha256:2f9e5c00c6c47367f9f0e8bbd52be5ab5aea77d72fefb6ebf7871c2791ea91e8",
+                                                     "localization/default/04Blinds.lua":  "sha256:97fb2a696af599e9098fa377c39a5c77cb79a0903e1687cf4b1dce53b8c3f22a",
+                                                     "localization/default/05Opponent.lua":  "sha256:4db0d0e2d8fb6ec50250ee65aa881a3d8bf2b153ccd59130af53417c475c8f7b",
+                                                     "localization/default/06Deck.lua":  "sha256:88b376605ecfba42b877760b8d2ad4b8075fa8270640c0f248d052776662cc47",
+                                                     "localization/default/archetypes/01Dragonmaid.lua":  "sha256:e127da6e74fac1cfdae2d75e5a9dbaaf2d8c3407b969013b8a4deec70845e568",
+                                                     "localization/default/archetypes/02LiveTwin.lua":  "sha256:ded201f6d61c0a710b08a1738d8b158a86dc2767f35bf74c6e89c7eddf9cb512",
+                                                     "localization/default/archetypes/03Dogmatika.lua":  "sha256:6adbd07035792de4562edab45f102aa87c8f677017df11a8668b4e5f4c7dd4ea",
+                                                     "localization/default/archetypes/04GhostGirls.lua":  "sha256:a579343ed5bba8dae518371dd4fa3c1b89e3e4e60e1b092832971f4d85379654",
+                                                     "localization/default/archetypes/05Spright.lua":  "sha256:d440d48172b59d8334da315dd54064478bffee6fbcfafa8a4b6be5b3c41cad9a",
+                                                     "localization/default/archetypes/06MekkKnight.lua":  "sha256:815ff324e81c7980574bac3b5191935b3bad6b63cfe960f4fa664cee0f940df4",
+                                                     "localization/default/archetypes/07Generaider.lua":  "sha256:b5185f79cee61635fa21c5efa76b8a1e6e5a51b9735395a42ea05ae30fc229d9",
+                                                     "localization/default/archetypes/08Ghoti.lua":  "sha256:f81258b4b9450c05e3897b2bb761b94772fe1736c8db17bb55879b7f8b655ed9",
+                                                     "localization/default/archetypes/09PSYFrame.lua":  "sha256:8e3645913555eca546a70c1d9b9ab52aa1e3cbd1f77c2ea6c12668970cc1ef86",
+                                                     "localization/default/archetypes/10Runick.lua":  "sha256:19c45d2567ed3fba4c7091e914eded50acd61d048469bee8e41db63454a7f367",
+                                                     "localization/default/archetypes/11BurningAbyss.lua":  "sha256:8d1adba741d7e90172f01b18e6d8ef23b8fff47f6331836064b130d2e001d1ee",
+                                                     "localization/default/archetypes/12Labrynth.lua":  "sha256:2ad0e8ec2d91b9c205dcbfb06a700e012fae4be419c0cd3d2048a77c38f2ef6a",
+                                                     "localization/default/archetypes/13Subterror.lua":  "sha256:8461aa8310dc4bb4d91a14cf4f70e63ed2c90c620127b3ad22525a4b0a5f5d6f",
+                                                     "localization/default/archetypes/14Eldlich.lua":  "sha256:0db0977ebcb3f6237a4919b31ae91f49fd88886ba2334b06806c7c3a8e95600b",
+                                                     "localization/default/archetypes/15Ignister.lua":  "sha256:3909f7420cbca1f839fb075d9bd789adf37375f169c6dba11976584d9386fd47",
+                                                     "localization/default/archetypes/16Solfachord.lua":  "sha256:dbebedd6e600bd1444101d5855b7a26d5e325ca400d2eb8b9bf4e787d53bfd3d",
+                                                     "localization/default/archetypes/17Witchcrafter.lua":  "sha256:582100d52fb42491349fac718f4615cecf8405f4b1c66ed927818b26d4dc992b",
+                                                     "localization/default/archetypes/18Shaddoll.lua":  "sha256:fd3496cea55589b4c1adea8f315773debaebe12f3bb6eb68ce73825754569425",
+                                                     "localization/default/archetypes/19Paleozoic.lua":  "sha256:4ccc4a99bfa78807e45d644135f1979a1c4bd1fe51410b29a9025e98da72caf0",
+                                                     "localization/default/archetypes/20Invoked.lua":  "sha256:c25ae8dd4c798822ddeb2d9100ea806ac8d2334577fa453b2716ee5e4da8beee",
+                                                     "localization/default/archetypes/21Danger.lua":  "sha256:57ed5a17f46c59d6fc565755022afdc2f0aef0051e40be1c95473b327b9f838d",
+                                                     "localization/default/archetypes/22Adamancipator.lua":  "sha256:7baf7ac763176711a63a06175a9c25ca6e25fc1a81bcb130b4e6ce62a960ff0e",
+                                                     "localization/default/archetypes/23VirtualWorld.lua":  "sha256:69bdbd2a493558953d2bcf36c166fad1e0ced1235cf48a9f2e80ea1ee61295e1",
+                                                     "localization/default/archetypes/24FlowerCardian.lua":  "sha256:6bce369de8de7883cf02b60d770e02ef3daf146a59f774854c112b947792e4ad",
+                                                     "localization/default/archetypes/25FortuneLady.lua":  "sha256:09871de8c91fa4e61eb3b96cb88385a2397c2ca57e00f1029e7279e23e653228",
+                                                     "localization/default/archetypes/26Mimighoul.lua":  "sha256:ad916d7e21331e5ce5363c77db23198a92c7dee017b574c683f12c7b9ff3ad17",
+                                                     "localization/default/archetypes/27Artifact.lua":  "sha256:69c788a85dc411ff211d6e21aad5dfe7356bf2d232645c0e382a9205c0021e36",
+                                                     "localization/default/archetypes/28Purrely.lua":  "sha256:9469601c5d4db4070504724ea565e41dd30e2bf90b38a8d4a55244a07497124f",
+                                                     "localization/default/archetypes/29Beetrooper.lua":  "sha256:84c805fe6f6002ad7e137d4da72d662b0c849bc28d87e1ca55945a85219d1238",
+                                                     "localization/default/archetypes/30Battlewasp.lua":  "sha256:86cb6fbbe977c13cd7b1e7c14af977818ea4235298ed793533c99c592358db1f",
+                                                     "localization/default/archetypes/31Zoodiac.lua":  "sha256:aeb06d22c4812ae7d1fc16bc19a1d52ee04a8186d1f61ca2d1060c110daf5d72",
+                                                     "localization/default/archetypes/32CenturIon.lua":  "sha256:a2aebf32f2ab2d0d3f33082d3a1c15ee422a47a80a2dd09cd4e827bf5934c493",
+                                                     "localization/default/archetypes/33WhiteForest.lua":  "sha256:654f3ba882dfc0cf5b55205c45cbbfd08840a354fa28d29aab27e8073cda2740",
+                                                     "localization/default/archetypes/34Dracotail.lua":  "sha256:ac0e4260d21a0ad032c9bbb90bbf191dddd625899d68267f10b0e8342e41fe34",
+                                                     "localization/default/archetypes/35SkyStriker.lua":  "sha256:7a8af45078c2bec209cbaabc08196ae1d32e4bc311fef9c61dfc31290a3da60c",
+                                                     "localization/default/archetypes/36VoicelessVoice.lua":  "sha256:b60b44c62f3d65fc18fdb7be112b7576a812a5e19b52ed63c4e8848439ac58a5",
+                                                     "localization/default/archetypes/37Drytron.lua":  "sha256:e36c1b2266810a9478016f367d76c53c178dff01e9d3287a65f70949b08dc060",
+                                                     "localization/default/archetypes/38HazyFlame.lua":  "sha256:cb75ec176022abed943412168f3cd2479f9f471d4e7bd475694456bf1c914315",
+                                                     "localization/default/archetypes/39TimeThief.lua":  "sha256:d6e223d5e8ec2927ef830694e982d93aa975cb26a55b3b2b649fb8061006ccd6",
+                                                     "localization/default/archetypes/40DarkMagician.lua":  "sha256:af6dcbfb8dc23d59186dd8e2b774cb270362fd261e1b6652e4cf7171719de2f2",
+                                                     "localization/default/archetypes/41SForce.lua":  "sha256:4b1fce08949cb39b74d8a293d9a93d703104caf243b3515d261e6d874a1ba221",
+                                                     "localization/default/archetypes/42EndoftheWorld.lua":  "sha256:dce9ca9e4b7dfd1c7a33241c3313a933a932ff8103bffbe3666cf7b006c59885",
+                                                     "localization/default/archetypes/98FreeAgents.lua":  "sha256:f7e40c1b0b3b7b3be7e224b1169be86e0ab42f218b7c3523e4d76de7793791f8",
+                                                     "localization/default/archetypes/98SPYRAL.lua":  "sha256:cba2882af51f3da89a40bafd1925f180640b695f68a4b72629090c96365d86c4",
+                                                     "localization/default/archetypes/99_00FreeAgents.lua":  "sha256:ac442fcf05a94e6d195d292804bb9ee8171950bf306f37750eca4c8879aff76e",
+                                                     "localization/default/archetypes/99_01Effect.lua":  "sha256:2460eb330dc287bb327e1e64f6d60e98e164ef6a32218433c8a971e6031cefb4",
+                                                     "localization/default/archetypes/99_02Trap.lua":  "sha256:597f0248d3210e5f13339dad87820f835529ee5f4f7bf1bf7321e0ce526a7eb8",
+                                                     "localization/default/archetypes/99_03_01Pendulum.lua":  "sha256:05eb7fb2c9806ab2a2ef2bf4fbd1eb30d7dc5ee3914cdf7f78d1af2503a72e0d",
+                                                     "localization/default/archetypes/99_03_02PendulumRitual.lua":  "sha256:437a0a2baab04efd62b784b9a3d5d953a1106564599795768b25f1fd7d415ef1",
+                                                     "localization/default/archetypes/99_03_03PendulumFusion.lua":  "sha256:9acf3a612a2b5d31a0f4e14f9b44e42d8d4e7d217bd1ad9b3e0e254059947c7f",
+                                                     "localization/default/archetypes/99_03_04PendulumSynchro.lua":  "sha256:f64e5b578e981c3a509f86d79f2b94c0ee37404acd7b2d75394ace25be331f62",
+                                                     "localization/default/archetypes/99_03_05PendulumXyz.lua":  "sha256:40177553e6e6fc71b2772c44823dc31783b40f4f613e4b358736ca86b755bd55",
+                                                     "localization/default/archetypes/99_04Ritual.lua":  "sha256:e833cf71d142d8953bc57847acbb442337b8916a055ee767648c1d85faf7d189",
+                                                     "localization/default/archetypes/99_05Fusion.lua":  "sha256:fd759779bfc2e7ed8c5c036bf75f28a1d5e67bac387ec596a410c4219776e493",
+                                                     "localization/default/archetypes/99_06Synchro.lua":  "sha256:ddf65d692c9dd964167ccaaff0e783fc3458e4810077efd9c0c59839f6688b04",
+                                                     "localization/default/archetypes/99_07Xyz.lua":  "sha256:749bb8e3278ee1d287c2cb090d3d712a8674e85d45483274891f4226d42d48c7",
+                                                     "localization/default/archetypes/99_08Link.lua":  "sha256:0dd33fd7fa6c4bbfe2119ca9df81f0dc661d4ed13f4df71e23b1982bff8c9a29",
+                                                     "localization/default/archetypes/99_09Field.lua":  "sha256:d653a1caa0ea77e5430e650a1f039eeae2b5a88dfa14ff694b8f3166115489c4",
+                                                     "localization/default/archetypes/99_98Normal.lua":  "sha256:2c4342feb9028ef542bb61f8bd751404a60d32ab9a999de541a87b739bc91427",
+                                                     "localization/default/archetypes/99_99Token.lua":  "sha256:402407e3b4e1dcf5a3189f04fabd5aba77291fc41c1b6d5fc8457d85ba0ba614"
+                                                 },
+                                      "updatedAt":  "2026-06-23T08:39:11Z"
+                                  },
+                 "kingdomhearts":  {
+                                       "repo":  "https://github.com/cloudzXIII/FinalMix.git",
+                                       "baselineRef":  "HEAD",
+                                       "baselineCommit":  "8199a19ccd7fbcf821b2fbe05d6e4092efc61051",
+                                       "resolvedPaths":  [
+                                                             "localization/en-us.lua"
+                                                         ],
+                                       "hashes":  {},
+                                       "updatedAt":  "2026-06-23T08:51:52Z"
+                                   },
+                 "LuckyRabbit":  {
+                                     "repo":  "https://github.com/Trif3ctal/Lucky-Rabbit.git",
+                                     "baselineRef":  "HEAD",
+                                     "baselineCommit":  "8ccebcd33e24c28512f9fe300d50703bac391567",
+                                     "resolvedPaths":  [
+                                                           "localization/en-us.lua"
+                                                       ],
+                                     "hashes":  {
+                                                    "localization/en-us.lua":  "sha256:67f34e5e2c44111a02852811af2fcef41f11991d4c5b9e0fde20dc40663114cd"
+                                                },
+                                     "updatedAt":  "2026-06-23T08:39:19Z"
+                                 },
+                 "mayhem":  {
+                                "repo":  "https://codeberg.org/BalatroMayhem/Mayhem.git",
+                                "baselineRef":  "HEAD",
+                                "baselineCommit":  "5731e9697245024feab4cf5884c300f446e8142d",
+                                "resolvedPaths":  [
+                                                      "localization/default.lua"
+                                                  ],
+                                "hashes":  {
+                                               "localization/default.lua":  "sha256:19e6284e6350cdab84c047c948b94214f0909ceda3f8d559de0f0ddc38685769"
+                                           },
+                                "updatedAt":  "2026-06-23T08:39:26Z"
+                            },
+                 "monarchy":  {
+                                  "repo":  "https://github.com/itsmythie/balatro-monarchy.git",
+                                  "baselineRef":  "HEAD",
+                                  "baselineCommit":  "039bbecb677834cbd065fa5e8a607a106a10b69f",
+                                  "resolvedPaths":  [
+                                                        "localization/en-us.lua"
+                                                    ],
+                                  "hashes":  {
+                                                 "localization/en-us.lua":  "sha256:65c4fb59f4a3318f7e2178539102e087202d3e9d628142f25f87203c4252ff67"
+                                             },
+                                  "updatedAt":  "2026-06-23T08:39:30Z"
+                              },
+                 "ortalab":  {
+                                 "repo":  "https://github.com/EremelMods/Ortalab.git",
+                                 "baselineRef":  "HEAD",
+                                 "baselineCommit":  "e85d82897f1af22e599ed54b47b004395cc57710",
+                                 "resolvedPaths":  [
+                                                       "localization/default.lua"
+                                                   ],
+                                 "hashes":  {
+                                                "localization/default.lua":  "sha256:45853b3c23d6c63f437220246ea80ad465d8acd4acf87df0425cc8b86a8e9c35"
+                                            },
+                                 "updatedAt":  "2026-06-23T08:39:34Z"
+                             },
+                 "paperback":  {
+                                   "repo":  "https://github.com/Balatro-Paperback/paperback.git",
+                                   "baselineRef":  "beta",
+                                   "baselineCommit":  "8dbd1e7b795b166e1de00608ab8589ea67250bd5",
+                                   "resolvedPaths":  [
+                                                         "localization/en-us.lua"
+                                                     ],
+                                   "hashes":  {
+                                                  "localization/en-us.lua":  "sha256:f7ce8042efdbcd82703756058cb58a5d84cb0db6476155370c77703517cd93b6"
+                                              },
+                                   "updatedAt":  "2026-06-23T08:39:39Z"
+                               },
+                 "plantain":  {
+                                  "repo":  "https://github.com/IcebergLettuce0/Plantain.git",
+                                  "baselineRef":  "HEAD",
+                                  "baselineCommit":  "df89d68977923964deea2d1de4bdc7315074cbb3",
+                                  "resolvedPaths":  [
+                                                        "localization/en-us.lua"
+                                                    ],
+                                  "hashes":  {
+                                                 "localization/en-us.lua":  "sha256:65e438e38832cdbcb5857966ab68b02b1a0c4841735ed4b6ee37b780bd15e30d"
+                                             },
+                                  "updatedAt":  "2026-06-23T08:39:43Z"
+                              },
+                 "RevosVault":  {
+                                    "repo":  "https://github.com/Cdrvo/Revos-Vault---Balatro-Mod.git",
+                                    "baselineRef":  "HEAD",
+                                    "baselineCommit":  "b722dc4de7240c43cb51144ac24536ae7ac37475",
+                                    "resolvedPaths":  [
+                                                          "localization/en-us.lua"
+                                                      ],
+                                    "hashes":  {
+                                                   "localization/en-us.lua":  "sha256:ab2417456aef57c49755f5f2ffa5dd3143c16ead4a28efa423a5eb0c1e203688"
+                                               },
+                                    "updatedAt":  "2026-06-23T08:39:48Z"
+                                },
+                 "Sculio":  {
+                                "repo":  "https://github.com/crmykybord/Sculio.git",
+                                "baselineRef":  "HEAD",
+                                "baselineCommit":  "8c89dfcd0e96bbc9437fabf515a027d426a7f3b1",
+                                "resolvedPaths":  [
+                                                      "localization/en-us.lua"
+                                                  ],
+                                "hashes":  {
+                                               "localization/en-us.lua":  "sha256:d96eef5412ee763b5220a3ec12313841f0f24c5d96f76aa0738dfe1e04b20782"
+                                           },
+                                "updatedAt":  "2026-06-23T08:39:52Z"
+                            }
+             }
+}
+

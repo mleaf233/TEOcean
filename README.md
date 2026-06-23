@@ -72,12 +72,38 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - To support additional mods, create a new folder under `impl/mods/` according to the modid. Refer to the existing examples for details.
 - This mod uses `priority: -10` in metadata.json to ensure it loads before the mods it adapts.
 
+### Upstream Localization Checks
+
+The repository can track the upstream localization baseline for manually translated mods, so maintainers can tell when a remote mod changed its source localization files.
+
+- Source config: `tools/upstream-sources.json`
+- Baseline lock: `tools/upstream-lock.json`
+- Local cache: `impl/upstream/`; only `.gitkeep` is committed, while cached upstream files are ignored
+- Fetch mode: uses Git partial clone and sparse checkout, downloading only content needed by configured localization paths
+
+Common commands:
+
+```powershell
+.\tools\upstream-localization.ps1 list
+.\tools\upstream-localization.ps1 init
+.\tools\upstream-localization.ps1 check
+.\tools\upstream-localization.ps1 accept <modid>
+.\tools\upstream-localization.ps1 accept-all
+```
+
+- `init`: initializes missing baselines and copies upstream localization files into `impl/upstream/<modid>/`.
+- `check`: compares the recorded baseline commit with the latest remote commit, reporting only localization-path changes.
+- `accept <modid>`: updates the baseline after the manual translation has caught up with upstream.
+
 ## Directory Structure
 
 - `impl/mods/<modid>/localization/` — Source of your override/supplemental translations
 - `impl/backup/<modid>/localization/` — Automatic backup of the target mod's original localization (backed up once only)
 - `impl/ai/<modid>/` — AI translation cache (Lua format)
 - `impl/todo/<modid>/` — Missing translation reports generated automatically
+- `impl/upstream/` — Local upstream source localization cache for development; only `.gitkeep` is committed
+- `tools/upstream-sources.json` — Upstream repository and localization path config
+- `tools/upstream-lock.json` — Confirmed upstream baseline commits and file hashes
 - Target write path: `<target_mod_path>/localization/<lang>.lua`
 
 ## Troubleshooting

@@ -2,3 +2,7 @@ Libs/*
 copy_log.txt
 init_copy*
 .idea/*
+
+# Local cache for upstream mod localization files.
+/impl/upstream/*
+!/impl/upstream/.gitkeep

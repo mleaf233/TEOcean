@@ -84,12 +84,46 @@ QQ群:
 - 适配更多mod，需要根据modid在impl/mods/ 下新建文件夹，具体参考已有的。
 - 本mod使用 `priority: -10` 确保在适配的mod之前加载。
 
+### 上游本地化变更检查
+
+本仓库可以记录每个已人工翻译 mod 的上游本地化基线，用来判断远程仓库是否改动了 `default.lua`、`en-us.lua` 等原始翻译文件。
+
+- 源配置：`tools/upstream-sources.json`
+- 基线锁：`tools/upstream-lock.json`
+- 本地缓存：`impl/upstream/`，只提交 `.gitkeep`，实际缓存文件会被 `.gitignore` 忽略
+- 拉取方式：使用 Git partial clone 与 sparse checkout，只下载配置中的本地化路径所需内容
+
+常用命令：
+
+```powershell
+.\tools\upstream-localization.ps1 list
+.\tools\upstream-localization.ps1 init
+.\tools\upstream-localization.ps1 check
+.\tools\upstream-localization.ps1 accept <modid>
+.\tools\upstream-localization.ps1 accept-all
+```
+
+- `list`：列出 `impl/mods/*` 中已适配 mod 的配置状态。
+- `init`：为尚未建立基线的 mod 拉取上游本地化文件，写入 `impl/upstream/<modid>/`，并记录当前 commit 到 `tools/upstream-lock.json`。
+- `check`：比较 `tools/upstream-lock.json` 记录的 baseline commit 和远程最新 commit；只有本地化路径发生变化时才标记为需要更新。
+- `accept <modid>`：人工翻译已经追上游后，刷新本地缓存并把该 mod 的 baseline 更新到远程最新 commit。
+- `accept-all`：对所有已配置 mod 执行 `accept`。
+
+如果 `check` 发现上游本地化变更，会生成：
+
+```text
+impl/todo/<modid>/upstream_changed.md
+```
+
 ## 目录关系
 
 - `impl/mods/<modid>/localization/` — 你的覆盖/补充翻译来源
 - `impl/backup/<modid>/localization/` — 自动备份原来mod自带的本地化（仅备份一次）
 - `impl/ai/<modid>/` — AI翻译缓存（Lua格式）
 - `impl/todo/<modid>/` — 自动生成的缺失翻译报告
+- `impl/upstream/` — 开发用上游原始本地化缓存，仅 `.gitkeep` 会提交
+- `tools/upstream-sources.json` — 上游仓库和本地化路径配置
+- `tools/upstream-lock.json` — 已确认翻译基线的上游 commit 与文件 hash
 - 目标写入路径：`<target_mod_path>/localization/<lang>.lua`
 
 ## 故障排查
