@@ -671,6 +671,115 @@ end
 -- 卡牌级本地化获取（集成AI翻译）
 -- ========================================================================================
 
+local function TEO_is_source_language(lang)
+    return lang == 'en-us' or lang == 'default'
+end
+
+local function TEO_find_target_mod(mod_id)
+    if not mod_id then return nil end
+    for _, m in ipairs(SMODS.mod_list or {}) do
+        if m.id == mod_id then
+            return m
+        end
+    end
+    return nil
+end
+
+local function TEO_find_loc_entry(loc_table, set_key, card_key)
+    if type(loc_table) ~= 'table' or not set_key or not card_key then return nil end
+
+    local candidates = TEO_get_loc_set_key_candidates and TEO_get_loc_set_key_candidates(set_key) or { set_key }
+    local search_bases = {}
+    if type(loc_table.descriptions) == 'table' then
+        search_bases[#search_bases + 1] = loc_table.descriptions
+    end
+    search_bases[#search_bases + 1] = loc_table
+
+    for _, base in ipairs(search_bases) do
+        if type(base) == 'table' then
+            for _, candidate_set in ipairs(candidates) do
+                local category = base[candidate_set]
+                local loc_entry = type(category) == 'table' and category[card_key] or nil
+                local is_tree = loc_entry and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(loc_entry)
+                if loc_entry and TEO_loc_has_content and TEO_loc_has_content(loc_entry, is_tree) then
+                    return loc_entry, is_tree, candidate_set
+                end
+            end
+        end
+    end
+    return nil
+end
+
+local function TEO_runtime_override_source(mod_id, set_key, card_key)
+    local sources = TEO_ai_runtime_override_sources
+    if type(sources) ~= 'table' or not mod_id or not set_key or not card_key then return nil end
+    return sources[mod_id] and sources[mod_id][set_key] and sources[mod_id][set_key][card_key] or nil
+end
+
+--- 获取受保护的人工翻译。返回值: loc, is_tree, source.
+--- source 为 impl / target / runtime.
+function TEO_get_protected_manual_localization(mod_id, set_key, card_key, options)
+    if not mod_id or not set_key or not card_key then return nil end
+
+    options = options or {}
+    local include_impl = options.include_impl ~= false
+    local include_target_lang_file = options.include_target_lang_file ~= false
+    local include_runtime = options.include_runtime ~= false
+    local source_data = options.source_data
+    local lang = options.lang or (TEO_get_cur_language and TEO_get_cur_language()) or 'zh_CN'
+
+    local TEO_mod = TEO_get_mod and TEO_get_mod() or TEO
+    if include_impl and TEO_mod and TEO_mod.path then
+        local impl_file = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
+        if NFS.getInfo(impl_file) then
+            local impl_data = TEO_read_loc_file(impl_file)
+            local impl_loc, impl_is_tree = TEO_find_loc_entry(impl_data, set_key, card_key)
+            if impl_loc then
+                return impl_loc, impl_is_tree, 'impl'
+            end
+        end
+    end
+
+    if include_target_lang_file and not TEO_is_source_language(lang) then
+        local target_mod = TEO_find_target_mod(mod_id)
+        if target_mod and target_mod.path then
+            local target_file = TEO_ensure_slash(target_mod.path) .. 'localization/' .. lang .. '.lua'
+            if NFS.getInfo(target_file) then
+                local target_data = TEO_read_loc_file(target_file)
+                local target_loc, target_is_tree = TEO_find_loc_entry(target_data, set_key, card_key)
+                if target_loc and not (source_data and TEO_loc_equals and TEO_loc_equals(target_loc, source_data)) then
+                    return target_loc, target_is_tree, 'target'
+                end
+            end
+        end
+    end
+
+    if include_runtime and not TEO_is_source_language(lang) and G and G.localization and G.localization.descriptions then
+        local candidates = TEO_get_loc_set_key_candidates and TEO_get_loc_set_key_candidates(set_key) or { set_key }
+        for _, candidate_set in ipairs(candidates) do
+            local runtime_loc = G.localization.descriptions[candidate_set] and
+                G.localization.descriptions[candidate_set][card_key] or nil
+            local runtime_is_tree = runtime_loc and TEO_loc_translation_uses_tree and
+                TEO_loc_translation_uses_tree(runtime_loc)
+            if runtime_loc and TEO_loc_has_content and TEO_loc_has_content(runtime_loc, runtime_is_tree) then
+                local source = TEO_runtime_override_source(mod_id, candidate_set, card_key)
+                if source == 'ai' or source == 'cache' then
+                    goto continue_runtime
+                end
+                if source == 'manual' then
+                    return runtime_loc, runtime_is_tree, 'runtime'
+                end
+                if not (source_data and TEO_loc_equals and TEO_loc_equals(runtime_loc, source_data)) then
+                    return runtime_loc, runtime_is_tree, 'runtime'
+                end
+            end
+            ::continue_runtime::
+        end
+    end
+
+    return nil
+end
+
 --- 获取卡片本地化数据，优先级：impl/mods > impl/ai > AI请求
 -- @param mod_id string mod ID
 -- @param set_key string set类型 (如 'Joker', 'Tarot' 等)
@@ -683,47 +792,31 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
     if not TEO_mod or not TEO_mod.path then return nil end
 
     local lang = TEO_get_cur_language() or 'zh_CN'
-    local actual_set_key = (set_key == 'Booster') and 'Other' or set_key
+    local actual_set_key = TEO_resolve_actual_loc_set_key and TEO_resolve_actual_loc_set_key(set_key) or
+        ((set_key == 'Booster') and 'Other' or set_key)
     local original_data = nil
     local original_is_tree = nil
-
-    local function has_loc_content(loc_data, is_tree)
-        if type(loc_data) == 'string' then
-            return loc_data ~= ""
-        end
-        if type(loc_data) ~= 'table' then
-            return false
-        end
-        if loc_data.name ~= nil or loc_data.text ~= nil then
-            return true
-        end
-        if is_tree then
-            return true
-        end
-        return next(loc_data) ~= nil
-    end
 
     if TEO_get_original_localization then
         original_data = TEO_get_original_localization(mod_id, set_key, card_key, true, "source")
         original_is_tree = original_data and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(original_data)
     end
 
-    -- 1. 检查 impl/mods 手动翻译（最高优先级）
-    local impl_file = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/' .. lang .. '.lua'
-    if NFS.getInfo(impl_file) then
-        local impl_data = TEO_read_loc_file(impl_file)
-        local impl_loc = impl_data and
-            impl_data.descriptions and
-            impl_data.descriptions[set_key] and
-            impl_data.descriptions[set_key][card_key] or nil
-        -- 验证手动翻译数据包含实际内容（非空 name 或 text）
-        local impl_is_tree = impl_loc and TEO_loc_translation_uses_tree and TEO_loc_translation_uses_tree(impl_loc)
-        if impl_loc and has_loc_content(impl_loc, impl_is_tree) then
+    -- 1. 检查受保护的人工翻译（impl/mods > 目标当前语言文件 > 运行时当前语言）
+    if TEO_get_protected_manual_localization then
+        local manual_loc, manual_is_tree, manual_source = TEO_get_protected_manual_localization(
+            mod_id,
+            set_key,
+            card_key,
+            { lang = lang, source_data = original_data }
+        )
+        if manual_loc then
             if TEO_dbg_print then
-                TEO_dbg_print('[TEOcean AI Loc] 使用适配的人工翻译:', mod_id, set_key, card_key)
+                TEO_dbg_print('[TEOcean AI Loc] 使用受保护的人工翻译:', manual_source, mod_id, set_key, card_key)
             end
-            TEO_apply_ai_override(mod_id, set_key, card_key, impl_loc, impl_is_tree, original_data or impl_loc)
-            return impl_loc
+            TEO_apply_ai_override(mod_id, set_key, card_key, manual_loc, manual_is_tree, original_data or manual_loc,
+                'manual')
+            return manual_loc
         end
     end
 
@@ -733,7 +826,7 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
         local ai_cached_type = type(ai_cached)
         local ai_cached_has_content = false
         if ai_cached_type == 'table' then
-            ai_cached_has_content = has_loc_content(ai_cached, ai_cached_is_tree)
+            ai_cached_has_content = TEO_loc_has_content and TEO_loc_has_content(ai_cached, ai_cached_is_tree)
         elseif ai_cached_type == 'string' then
             ai_cached_has_content = ai_cached ~= ""
         end
@@ -751,7 +844,7 @@ function TEO_resolve_card_localization(mod_id, set_key, card_key)
                 TEO_dbg_print('[TEOcean AI Loc] 使用AI缓存:', mod_id, set_key, card_key)
             end
             -- AI缓存的数据需要应用到 G.localization
-            TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached, ai_cached_is_tree, original_data)
+            TEO_apply_ai_override(mod_id, set_key, card_key, ai_cached, ai_cached_is_tree, original_data, 'cache')
             return ai_cached
         elseif ai_cached and ai_cached_has_content and TEO_dbg_print and expected_is_tree ~= nil and not cache_shape_matches then
             TEO_dbg_print('[TEOcean AI Loc] 跳过结构不匹配的AI缓存:', mod_id, set_key, card_key,

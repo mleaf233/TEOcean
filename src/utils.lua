@@ -269,6 +269,103 @@ function TEO_loc_translation_uses_tree(data)
     return false
 end
 
+function TEO_resolve_actual_loc_set_key(set_key)
+    local localization_set_map = {
+        Booster = 'Other',
+    }
+    return localization_set_map[set_key] or set_key
+end
+
+function TEO_get_loc_set_key_candidates(set_key)
+    local candidates = {}
+    local function add_candidate(value)
+        if not value then return end
+        for _, existing in ipairs(candidates) do
+            if existing == value then return end
+        end
+        candidates[#candidates + 1] = value
+    end
+
+    add_candidate(set_key)
+    add_candidate(TEO_resolve_actual_loc_set_key(set_key))
+    return candidates
+end
+
+function TEO_loc_has_content(loc_data, is_tree)
+    if type(loc_data) == 'string' then
+        return loc_data ~= ''
+    end
+    if type(loc_data) == 'number' or type(loc_data) == 'boolean' then
+        return true
+    end
+    if type(loc_data) ~= 'table' then
+        return false
+    end
+
+    local function value_has_content(value)
+        if type(value) == 'string' then return value ~= '' end
+        if type(value) == 'number' or type(value) == 'boolean' then return true end
+        if type(value) ~= 'table' then return false end
+        for _, child in pairs(value) do
+            if value_has_content(child) then return true end
+        end
+        return false
+    end
+
+    if value_has_content(loc_data.name) or value_has_content(loc_data.text) or value_has_content(loc_data.unlock) then
+        return true
+    end
+    if is_tree then
+        return next(loc_data) ~= nil
+    end
+    return next(loc_data) ~= nil
+end
+
+function TEO_strip_runtime_loc_metadata(node)
+    if type(node) ~= 'table' then
+        return node
+    end
+
+    local res = {}
+    for k, v in pairs(node) do
+        if k ~= 'name_parsed' and k ~= 'text_parsed' and k ~= 'unlock_parsed' then
+            res[k] = TEO_strip_runtime_loc_metadata(v)
+        end
+    end
+    return res
+end
+
+function TEO_deep_equal(lhs, rhs)
+    if lhs == rhs then
+        return true
+    end
+    if type(lhs) ~= type(rhs) then
+        return false
+    end
+    if type(lhs) ~= 'table' then
+        return false
+    end
+
+    local seen = {}
+    for k, v in pairs(lhs) do
+        if not TEO_deep_equal(v, rhs[k]) then
+            return false
+        end
+        seen[k] = true
+    end
+
+    for k in pairs(rhs) do
+        if not seen[k] then
+            return false
+        end
+    end
+    return true
+end
+
+function TEO_loc_equals(lhs, rhs)
+    return TEO_deep_equal(TEO_strip_runtime_loc_metadata(lhs), TEO_strip_runtime_loc_metadata(rhs))
+end
+
 function TEO_loc_translation_shape_matches(expected, actual)
     if expected == nil then return actual == nil end
     if type(expected) ~= 'table' then

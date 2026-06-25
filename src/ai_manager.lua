@@ -316,10 +316,22 @@ local function normalize_ai_cache_entry(card_data)
 end
 
 local function resolve_actual_set_key(set_key)
+    if TEO_resolve_actual_loc_set_key then
+        return TEO_resolve_actual_loc_set_key(set_key)
+    end
     local localization_set_map = {
         ['Booster'] = 'Other',
     }
     return localization_set_map[set_key] or set_key
+end
+
+TEO_ai_runtime_override_sources = TEO_ai_runtime_override_sources or {}
+
+local function mark_runtime_override_source(mod_id, set_key, card_key, source)
+    if not mod_id or not set_key or not card_key then return end
+    TEO_ai_runtime_override_sources[mod_id] = TEO_ai_runtime_override_sources[mod_id] or {}
+    TEO_ai_runtime_override_sources[mod_id][set_key] = TEO_ai_runtime_override_sources[mod_id][set_key] or {}
+    TEO_ai_runtime_override_sources[mod_id][set_key][card_key] = source or 'ai'
 end
 
 --- 计算简单哈希
@@ -767,17 +779,34 @@ refresh_hovered_card_popup = function()
 end
 
 --- 将翻译结果应用到游戏内存 (Runtime Override)
-function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, preserve_structure, expected_shape)
+function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, preserve_structure, expected_shape, source)
     if not mod_id or not set_key or not card_key or not translated_content then return end
+    source = source or 'ai'
 
     if TEO_dbg_print then
         TEO_dbg_print("[TEOcean AI Check] 尝试应用 Override - Mod:", mod_id, "Set:", set_key, "Key:",
-            card_key)
+            card_key, "Source:", source)
     end
 
     if not G.localization or not G.localization.descriptions then return end
 
     local actual_set_key = resolve_actual_set_key(set_key)
+
+    if source ~= 'manual' and TEO_get_protected_manual_localization then
+        local manual_loc, manual_is_tree, manual_source = TEO_get_protected_manual_localization(
+            mod_id,
+            set_key,
+            card_key,
+            { source_data = expected_shape }
+        )
+        if manual_loc then
+            if TEO_dbg_print then
+                TEO_dbg_print("[TEOcean AI] 检测到人工翻译，跳过 AI Override:", manual_source, mod_id, set_key,
+                    card_key)
+            end
+            return false, 'manual_exists', manual_loc, manual_is_tree
+        end
+    end
 
     local target_set = G.localization.descriptions[actual_set_key]
     if not target_set then
@@ -830,12 +859,14 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
 
         sync_runtime_loc_parsed_fields(tree_loc)
         if should_skip_ai_override(target_card_loc, tree_loc) then
+            mark_runtime_override_source(mod_id, actual_set_key, card_key, source)
             if TEO_dbg_print then
                 TEO_dbg_print("[TEOcean AI] Override 未变化，跳过刷新:", mod_id, actual_set_key, card_key)
             end
             return false
         end
         G.localization.descriptions[actual_set_key][card_key] = tree_loc
+        mark_runtime_override_source(mod_id, actual_set_key, card_key, source)
 
         TEO_dbg_print(("[TEOcean AI] Applied Tree Translation for key: %s"):format(tostring(card_key)))
         TEO_request_localization_refresh()
@@ -958,12 +989,14 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
     -- 内存修改（使用实际的 set key）
     sync_runtime_loc_parsed_fields(new_loc_data)
     if should_skip_ai_override(target_card_loc, new_loc_data) then
+        mark_runtime_override_source(mod_id, actual_set_key, card_key, source)
         if TEO_dbg_print then
             TEO_dbg_print("[TEOcean AI] Override 未变化，跳过刷新:", mod_id, actual_set_key, card_key)
         end
         return false
     end
     G.localization.descriptions[actual_set_key][card_key] = new_loc_data
+    mark_runtime_override_source(mod_id, actual_set_key, card_key, source)
 
     -- 打印日志到后台 (Console)
     TEO_dbg_print(("[TEOcean AI] Applied Translation for key: %s \nName: %s"):format(tostring(card_key),
@@ -988,6 +1021,23 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
         preserve_structure = preserve_structure == true
     end
 
+    if TEO_get_protected_manual_localization then
+        local manual_loc, manual_is_tree, manual_source = TEO_get_protected_manual_localization(
+            mod_id,
+            set_key,
+            card_key,
+            { source_data = source_payload }
+        )
+        if manual_loc then
+            if TEO_dbg_print then
+                TEO_dbg_print("[TEOcean AI Manager] 检测到人工翻译，跳过 AI 请求:", manual_source, mod_id, set_key,
+                    card_key)
+            end
+            TEO_apply_ai_override(mod_id, set_key, card_key, manual_loc, manual_is_tree, source_payload, 'manual')
+            return false
+        end
+    end
+
     local request_payload, payload_err = encode_ai_source_payload(source_payload, preserve_structure)
     if not request_payload or request_payload == "" then
         if TEO_dbg_print then
@@ -1009,7 +1059,7 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
         local cached, cached_is_tree = TEO_get_ai_card_translation(mod_id, set_key, card_key)
         if cached and (preserve_structure == cached_is_tree) then
             if TEO_dbg_print then TEO_dbg_print("[TEOcean AI Manager] 命中卡片缓存:", card_id) end
-            TEO_apply_ai_override(mod_id, set_key, card_key, cached, cached_is_tree, source_payload)
+            TEO_apply_ai_override(mod_id, set_key, card_key, cached, cached_is_tree, source_payload, 'cache')
             return true
         end
     end
@@ -1065,9 +1115,27 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
                     return
                 end
 
+                if TEO_get_protected_manual_localization then
+                    local manual_loc, manual_is_tree, manual_source = TEO_get_protected_manual_localization(
+                        mod_id,
+                        set_key,
+                        card_key,
+                        { source_data = source_payload }
+                    )
+                    if manual_loc then
+                        if TEO_dbg_print then
+                            TEO_dbg_print("[TEOcean AI Manager] 回调阶段检测到人工翻译，丢弃 AI 结果:", manual_source,
+                                mod_id, set_key, card_key)
+                        end
+                        TEO_apply_ai_override(mod_id, set_key, card_key, manual_loc, manual_is_tree, source_payload,
+                            'manual')
+                        return
+                    end
+                end
+
                 -- 持久化到卡牌级缓存
                 save_ai_card_cache(mod_id, set_key, card_key, parsed_content, preserve_structure)
-                TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content, preserve_structure, source_payload)
+                TEO_apply_ai_override(mod_id, set_key, card_key, parsed_content, preserve_structure, source_payload, 'ai')
             else
                 print("[TEOcean AI] 请求或解析失败:", tostring(parse_err), "Code:", tostring(code), "Card:", card_id)
                 if TEO_dbg_print and parsed_data then
