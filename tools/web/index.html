@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="TEOcean 上游本地化管理工具">
+  <title>上游本地化管理 · TEOcean</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <div class="progress" id="progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="TEOcean 上游本地化管理首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 7h-9m5-4 4 4-4 4M4 17h9m-5 4-4-4 4-4"/></svg>
+        </span>
+        <span>TEOcean</span>
+        <span class="brand-tag">本地工具</span>
+      </a>
+      <div class="header-actions">
+        <span class="connection" id="connection"><span class="connection-dot"></span><span>正在连接</span></span>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="切换浅色或深色主题" title="切换主题">
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-shell" tabindex="-1">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">UPSTREAM LOCALIZATION</p>
+        <h1 id="page-title">上游本地化管理</h1>
+        <p class="intro-copy">检查 Mod 的上游语言文件，管理同步基线，并把需要翻译的变化集中到待处理报告。</p>
+      </div>
+      <button class="button button-primary" id="check-button" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-9m5-4 4 4-4 4M4 17h9m-5 4-4-4 4-4"/></svg>
+        <span>检查全部</span>
+      </button>
+    </section>
+
+    <section class="stats-grid" aria-label="概览">
+      <article class="stat-card"><span class="stat-label">全部 Mod</span><strong id="stat-total">—</strong><span class="stat-note">已适配或已配置</span></article>
+      <article class="stat-card"><span class="stat-label">基线正常</span><strong id="stat-tracked">—</strong><span class="stat-note">当前无待处理报告</span></article>
+      <article class="stat-card stat-attention"><span class="stat-label">发现更新</span><strong id="stat-update">—</strong><span class="stat-note">需要跟进翻译</span></article>
+      <article class="stat-card"><span class="stat-label">待完成设置</span><strong id="stat-setup">—</strong><span class="stat-note">未配置或无基线</span></article>
+    </section>
+
+    <section class="workspace" aria-labelledby="mod-list-title">
+      <div class="workspace-head">
+        <div>
+          <h2 id="mod-list-title">Mod 列表</h2>
+          <p id="selection-summary">加载配置中…</p>
+        </div>
+        <button class="button button-secondary" id="add-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          添加 Mod
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-field" for="search-input">
+          <span class="sr-only">搜索 Mod</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search-input" type="search" placeholder="搜索 Mod ID 或仓库" autocomplete="off">
+        </label>
+        <div class="filter-group" role="group" aria-label="筛选状态">
+          <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="filter-chip" type="button" data-filter="needs-update" aria-pressed="false">有更新</button>
+          <button class="filter-chip" type="button" data-filter="no-baseline" aria-pressed="false">无基线</button>
+          <button class="filter-chip" type="button" data-filter="unconfigured" aria-pressed="false">未配置</button>
+        </div>
+      </div>
+
+      <div class="bulk-actions" aria-label="批量操作">
+        <button class="button button-secondary" id="init-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 19h14"/></svg>
+          初始化基线
+        </button>
+        <button class="button button-secondary" id="accept-button" type="button" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+          接受所选基线
+        </button>
+        <button class="button button-quiet-danger" id="accept-all-button" type="button">
+          接受全部基线
+        </button>
+        <button class="button button-ghost" id="refresh-button" type="button" title="重新读取本地配置">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><path d="M20 4v7h-7"/></svg>
+          刷新列表
+        </button>
+      </div>
+
+      <div class="list-frame" id="list-frame" aria-busy="true">
+        <div class="list-header" aria-hidden="true">
+          <div><input id="select-all" type="checkbox" aria-label="选择当前显示的全部 Mod"></div>
+          <div>Mod</div><div>状态</div><div>上游仓库</div><div>基线提交</div><div>更新时间</div>
+        </div>
+        <div id="mod-list" class="mod-list" role="list" aria-live="polite">
+          <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
+        </div>
+        <div class="empty-state" id="empty-state" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M8 10h8m-8 4h5"/></svg>
+          <h3>没有符合条件的 Mod</h3>
+          <p>试试清除搜索词或切换筛选条件。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="output-panel" aria-labelledby="output-title">
+      <div class="output-head">
+        <div>
+          <h2 id="output-title">运行结果</h2>
+          <p id="output-meta">操作结果会显示在这里</p>
+        </div>
+        <div class="output-actions">
+          <button class="button button-quiet-danger button-small" id="cancel-task" type="button" hidden>取消当前任务</button>
+          <button class="button button-ghost button-small" id="clear-output" type="button">清空</button>
+        </div>
+      </div>
+      <pre id="output" tabindex="0" aria-live="polite">尚未运行任何操作。</pre>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>服务只监听本机地址。操作在后台执行，卡住时可以取消任务。</p>
+    <button class="button button-secondary button-small" id="shutdown-button" type="button">关闭本地服务</button>
+  </footer>
+
+  <dialog id="add-dialog" class="dialog">
+    <form id="add-form" method="dialog" novalidate>
+      <div class="dialog-head">
+        <div><p class="eyebrow">NEW SOURCE</p><h2>添加 Mod</h2></div>
+        <button class="icon-button dialog-close" type="button" aria-label="关闭添加窗口">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="mod-id">Mod ID <span aria-hidden="true">*</span></label>
+          <input id="mod-id" name="modId" required autocomplete="off" pattern="[A-Za-z0-9][A-Za-z0-9._-]*" aria-describedby="mod-id-help">
+          <small id="mod-id-help">必须与 impl/mods 中使用的目录名一致。</small>
+        </div>
+        <div class="field">
+          <label for="repo-url">上游仓库地址 <span aria-hidden="true">*</span></label>
+          <input id="repo-url" name="repo" type="text" required autocomplete="url" placeholder="https://github.com/owner/repo.git">
+        </div>
+        <div class="field">
+          <label for="git-ref">分支或引用</label>
+          <input id="git-ref" name="ref" value="HEAD" autocomplete="off">
+          <small>通常保留 HEAD；指定分支时可填写 main、beta 等。</small>
+        </div>
+        <div class="field">
+          <label for="source-paths">本地化路径</label>
+          <textarea id="source-paths" name="paths" rows="5" placeholder="每行一个路径；留空时使用默认路径"></textarea>
+          <small id="default-paths-help">正在读取默认路径…</small>
+        </div>
+        <label class="check-option"><input id="no-init" name="noInit" type="checkbox"><span><strong>暂不初始化基线</strong><small>只保存配置并创建中文本地化骨架，不拉取上游仓库。</small></span></label>
+        <label class="check-option"><input id="replace-source" name="force" type="checkbox"><span><strong>覆盖已有来源配置</strong><small>仅在这个 Mod 已经配置过时使用。</small></span></label>
+      </div>
+      <p class="form-error" id="add-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button button-secondary dialog-cancel" type="button">取消</button>
+        <button class="button button-primary" type="submit">保存并继续</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="dialog dialog-compact">
+    <form method="dialog" id="confirm-form">
+      <div class="confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9 2.7 17a2 2 0 0 0 1.73 3h15.14a2 2 0 0 0 1.73-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+      <h2 id="confirm-title">确认操作</h2>
+      <p id="confirm-message"></p>
+      <label class="check-option confirm-force" id="force-option" hidden><input id="confirm-force" type="checkbox"><span><strong>强制覆盖已有基线</strong><small>已存在的基线也会重新拉取并更新。</small></span></label>
+      <div class="dialog-actions">
+        <button class="button button-secondary" value="cancel">取消</button>
+        <button class="button button-danger" id="confirm-submit" value="confirm">确认</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="report-dialog" class="dialog report-dialog">
+    <div class="dialog-head">
+      <div><p class="eyebrow">CHANGE REPORT</p><h2 id="report-title">更新报告</h2></div>
+      <button class="icon-button report-close" type="button" aria-label="关闭更新报告">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <pre id="report-content" tabindex="0"></pre>
+  </dialog>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

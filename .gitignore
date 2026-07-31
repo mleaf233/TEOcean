@@ -5,4 +5,5 @@ init_copy*
 
 # Local cache for upstream mod localization files.
 /impl/upstream/*
+impl/todo/*
 !/impl/upstream/.gitkeep

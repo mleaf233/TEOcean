@@ -28,13 +28,9 @@
 826195372 小丑牌交流群
 ```
 
-
-
-# 兼容适配中
+## 兼容适配中
 
 以下mod因修改了游戏底层，与本mod功能产生冲突，正在努力适配：
 
-1. Menthol
-
-2. Aikoyori'sShenanigans
-3. FelisAdditionsGallery
+1. Aikoyori'sShenanigans
+2. FelisAdditionsGallery
