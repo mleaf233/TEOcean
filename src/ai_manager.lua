@@ -20,6 +20,7 @@ local LAST_HOVERED_TRANSLATION_TARGET = nil
 
 local LOC_REFRESH_PENDING = false
 local LOC_REFRESH_DELAY = 0.1
+local LOC_REFRESH_CONTEXTS = {}
 local refresh_hovered_card_popup = nil
 TEO_suspend_ai_resolve = TEO_suspend_ai_resolve or false
 local REFRESHING_HOVERED_POPUP = false
@@ -30,14 +31,33 @@ local function get_ai_card_id(mod_id, set_key, card_key)
 end
 
 --- 请求延迟刷新本地化（批量处理）
-local function TEO_request_localization_refresh()
+local function TEO_request_localization_refresh(mod_id, set_key, card_key)
+    local refresh_id = get_ai_card_id(mod_id, set_key, card_key)
+    if refresh_id then
+        LOC_REFRESH_CONTEXTS[refresh_id] = true
+    end
     if LOC_REFRESH_PENDING then return end
     LOC_REFRESH_PENDING = true
 
     local function run_refresh()
+        local completed_ids = {}
+        for id in pairs(LOC_REFRESH_CONTEXTS) do
+            completed_ids[#completed_ids + 1] = id
+        end
+        table.sort(completed_ids)
+        LOC_REFRESH_CONTEXTS = {}
+        local completed_label = #completed_ids > 0 and table.concat(completed_ids, ", ") or "unknown"
+
         if refresh_hovered_card_popup then
-            TEO_dbg_print("[TEOcean AI] 刷新当前悬停卡牌弹窗...")
-            pcall(refresh_hovered_card_popup)
+            TEO_dbg_print("[TEOcean AI] 刷新当前悬停卡牌弹窗... 翻译完成:", completed_label)
+            local ok, refreshed, detail = pcall(refresh_hovered_card_popup, completed_ids)
+            if not ok then
+                print("[TEOcean AI] 刷新悬停弹窗异常:", tostring(refreshed), "翻译完成:", completed_label)
+            elseif refreshed == true then
+                TEO_dbg_print("[TEOcean AI] 悬停弹窗刷新成功:", tostring(detail), "翻译完成:", completed_label)
+            else
+                TEO_dbg_print("[TEOcean AI] 悬停弹窗未刷新:", tostring(detail), "翻译完成:", completed_label)
+            end
         end
         LOC_REFRESH_PENDING = false
         return true
@@ -746,18 +766,33 @@ local function sync_runtime_loc_parsed_fields(loc_data)
     return loc_data
 end
 
-refresh_hovered_card_popup = function()
+refresh_hovered_card_popup = function(completed_ids)
     if REFRESHING_HOVERED_POPUP then
-        return false
+        return false, "已有刷新正在执行"
     end
 
     local target = G and G.CONTROLLER and G.CONTROLLER.hovering and G.CONTROLLER.hovering.target or nil
-    if not target or target.REMOVED or type(target.is) ~= 'function' or not target:is(Card) then
-        return false
+    if not target then
+        return false, "当前没有悬停目标"
+    end
+    if target.REMOVED then
+        return false, "当前悬停目标已被移除"
+    end
+    if type(target.is) ~= 'function' or not target:is(Card) then
+        return false, "当前悬停目标不是 Card"
     end
     if not target.config or not target.config.center or not target.generate_UIBox_ability_table then
-        return false
+        return false, "当前 Card 缺少 center 或弹窗生成函数"
     end
+
+    local center = target.config.center
+    local target_key = center.key or target.config.center_key or "unknown"
+    local target_mod = center.mod and center.mod.id or center.mod_id or "unknown"
+    local target_label = tostring(target_mod) .. "." .. tostring(center.set or target.ability and target.ability.set or "unknown") ..
+        "." .. tostring(target_key)
+    local completed_label = type(completed_ids) == 'table' and #completed_ids > 0 and
+        table.concat(completed_ids, ", ") or "unknown"
+    TEO_dbg_print("[TEOcean AI] 刷新目标:", target_label, "翻译完成:", completed_label)
 
     REFRESHING_HOVERED_POPUP = true
     TEO_suspend_ai_resolve = true
@@ -775,7 +810,10 @@ refresh_hovered_card_popup = function()
     end)
     TEO_suspend_ai_resolve = false
     REFRESHING_HOVERED_POPUP = false
-    return ok and result or false
+    if not ok then
+        error(("刷新目标 %s 失败: %s"):format(target_label, tostring(result)), 0)
+    end
+    return result == true, target_label
 end
 
 --- 将翻译结果应用到游戏内存 (Runtime Override)
@@ -869,7 +907,7 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
         mark_runtime_override_source(mod_id, actual_set_key, card_key, source)
 
         TEO_dbg_print(("[TEOcean AI] Applied Tree Translation for key: %s"):format(tostring(card_key)))
-        TEO_request_localization_refresh()
+        TEO_request_localization_refresh(mod_id, set_key, card_key)
         return true
     end
 
@@ -1003,7 +1041,7 @@ function TEO_apply_ai_override(mod_id, set_key, card_key, translated_content, pr
         tostring(new_loc_data.name)))
 
     -- 刷新（批量延迟）
-    TEO_request_localization_refresh()
+    TEO_request_localization_refresh(mod_id, set_key, card_key)
     return true
 end
 
