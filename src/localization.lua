@@ -1,5 +1,17 @@
 local TEO = SMODS.current_mod
 
+-- Source languages are reference data only. They must never be written back to
+-- an adapted mod, even when the current game language is English/default.
+local function TEO_is_source_language(lang)
+    return lang == 'en-us' or lang == 'default'
+end
+
+local function TEO_add_writable_language(langs, lang)
+    if lang and not TEO_is_source_language(lang) then
+        TEO_insert_unique_first(langs, lang)
+    end
+end
+
 local function diff_table(base, other)
     if type(base) ~= 'table' then return nil end
     local res = {}
@@ -61,8 +73,15 @@ function merge_impl_mod_localizations(in_memory)
     -- languages to process (原 mod 文件 + impl 覆盖)
     local langs = {}
 
-    if G and G.SETTINGS and G.SETTINGS.language then TEO_insert_unique_first(langs, G.SETTINGS.language) end
-    if G and G.SETTINGS and G.SETTINGS.real_language then TEO_insert_unique_first(langs, G.SETTINGS.real_language) end
+    if G and G.SETTINGS and G.SETTINGS.language then TEO_add_writable_language(langs, G.SETTINGS.language) end
+    if G and G.SETTINGS and G.SETTINGS.real_language then
+        TEO_add_writable_language(langs, G.SETTINGS.real_language)
+    end
+
+    if #langs == 0 then
+        TEO_dbg_print('[TEOcean Language Packs] 当前语言为只读源语言，跳过磁盘合并')
+        return
+    end
 
     for _, target_mod in ipairs(SMODS.mod_list or {}) do
         if not (target_mod and target_mod.id and target_mod.path) then goto continue end
@@ -114,10 +133,15 @@ function merge_single_mod_localization(target_mod, mod)
 
     local langs = {} -- 默认处理的语言
     if G and G.SETTINGS and G.SETTINGS.language then
-        TEO_insert_unique_first(langs, G.SETTINGS.language)
+        TEO_add_writable_language(langs, G.SETTINGS.language)
     end
     if G and G.SETTINGS and G.SETTINGS.real_language then
-        TEO_insert_unique_first(langs, G.SETTINGS.real_language)
+        TEO_add_writable_language(langs, G.SETTINGS.real_language)
+    end
+
+    if #langs == 0 then
+        TEO_dbg_print(('[TEOcean] 当前语言为只读源语言，跳过 %s 的磁盘合并'):format(tostring(target_mod.id)))
+        return
     end
 
     local merged_by_lang = {}
@@ -353,10 +377,15 @@ function restore_original_localization_for_mod(target_mod)
     -- languages to process
     local langs = {}
     if G and G.SETTINGS and G.SETTINGS.language then
-        TEO_insert_unique_first(langs, G.SETTINGS.language)
+        TEO_add_writable_language(langs, G.SETTINGS.language)
     end
     if G and G.SETTINGS and G.SETTINGS.real_language then
-        TEO_insert_unique_first(langs, G.SETTINGS.real_language)
+        TEO_add_writable_language(langs, G.SETTINGS.real_language)
+    end
+
+    if #langs == 0 then
+        TEO_dbg_print(('[TEOcean] 当前语言为只读源语言，跳过 %s 的本地化恢复'):format(tostring(target_mod and target_mod.id)))
+        return
     end
 
     if not (target_mod and target_mod.id and target_mod.path) then return end
@@ -526,6 +555,10 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
 
     -- 检查是否有对应的 impl 文件
     local lang = TEO_get_cur_language() or 'zh_CN'
+    if TEO_is_source_language(lang) then
+        TEO_dbg_print('[TEOcean Runtime] 当前语言为只读源语言，跳过运行时覆盖:', lang)
+        return false
+    end
     local impl_base = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/'
     local impl_file = impl_base .. lang .. '.lua'
 
@@ -660,10 +693,6 @@ end
 -- ========================================================================================
 -- 卡牌级本地化获取（集成AI翻译）
 -- ========================================================================================
-
-local function TEO_is_source_language(lang)
-    return lang == 'en-us' or lang == 'default'
-end
 
 local function TEO_find_target_mod(mod_id)
     if not mod_id then return nil end
