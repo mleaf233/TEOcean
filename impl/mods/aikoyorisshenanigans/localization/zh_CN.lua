@@ -35,8 +35,7 @@ for i = 1, #word_letter do
             name = upper .. " for " .. w,
             text = {
                 "将所有选择的字母牌",
-                "转换为 {C:red}#1#{}",
-                "{C:inactive,s:0.75}（最多转换 #2# 张牌）{}"
+                "转换为 {C:red}#1#{}"
             },
         }
     end
@@ -57,8 +56,30 @@ poker_hand_desc["akyrs_assignment"] = { '为变量赋值' }
 poker_hands_name["akyrs_tripair"] = "三连对"
 poker_hand_desc["akyrs_tripair"] = { '三组不同点数的对子' }
 
-poker_hands_name["akyrs_Triplush"] = "三连对同花"
-poker_hand_desc["akyrs_Triplush"] = { '三组不同点数的对子', '并且包含同花' }
+poker_hands_name["akyrs_triplush"] = "三连对同花"
+poker_hand_desc["akyrs_triplush"] = { '三组不同点数的对子', '并且包含同花' }
+
+poker_hands_name["akyrs_twintriple"] = "双三条"
+poker_hand_desc["akyrs_twintriple"] = { '两组三条' }
+
+poker_hands_name["akyrs_twinflupple"] = "同花双三条"
+poker_hand_desc["akyrs_twinflupple"] = { '同时包含同花的双三条' }
+
+poker_hands_name["akyrs_twinflush"] = "双重同花"
+poker_hand_desc["akyrs_twinflush"] = { '两组同花' }
+
+poker_hands_name["akyrs_flushbung"] = "双倍同花"
+poker_hand_desc["akyrs_flushbung"] = { '规模加倍的同花' }
+
+poker_hands_name["akyrs_twinstraight"] = "双顺子"
+poker_hand_desc["akyrs_twinstraight"] = { '两组顺子', '点数不得重复' }
+
+poker_hands_name["akyrs_direstraight"] = "超长顺子"
+poker_hand_desc["akyrs_direstraight"] = { '长度至少加倍的顺子' }
+
+poker_hands_name["akyrs_twinstraightflush"] = "同花双顺子"
+poker_hand_desc["akyrs_twinstraightflush"] = { '同时包含同花的两组顺子', '点数不得重复' }
+
 local localization = {
     translator = {
         "mleaf233",
@@ -167,6 +188,97 @@ local localization = {
                     "但{C:blue}+#3#{}手牌上限",
                     "你只有{C:red}1次出牌{}机会",
                     "基础盲注要求分数{C:red}X#1#{}",
+                },
+            },
+            b_akyrs_developer_deck = {
+                name = "开发者牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_prism_deck = {
+                name = "棱镜牌组",
+                text = {
+                    "以{X:dark_edition,C:white}#1#{}点生命开局",
+                    "惩罚{C:red,E:1}更加严厉{}",
+                    "生命{C:red}不会{}恢复",
+                    "{C:dark_edition}+#2#{}个小丑牌槽位",
+                    "{C:dark_edition}+#3#{}个消耗牌槽位",
+                },
+            },
+            b_akyrs_kaleidoscopic_deck = {
+                name = "万花筒牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_sheared_deck = {
+                name = "剪切牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_vision_deck = {
+                name = "幻视牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_animosity_deck = {
+                name = "敌意牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_weaver_deck = {
+                name = "织者牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_puppet_deck = {
+                name = "傀儡牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_shining_deck = {
+                name = "闪耀牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_dotted_deck = {
+                name = "点阵牌组",
+                text = {
+                    "{C:blue}出牌{}与{C:red}弃牌{}",
+                    "会{C:attention}相互交换{}",
+                },
+            },
+            b_akyrs_flora_deck = {
+                name = "花神牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_discord_deck = {
+                name = "纷争牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_nitro_deck = {
+                name = "硝基牌组",
+                text = {
+                    "{C:red,s:1.5,E:akyrs_shrivel}制作中{}",
+                },
+            },
+            b_akyrs_judge_deck = {
+                name = "裁决牌组",
+                text = {
+                    "以{X:green,C:white}#1#{}点生命开局",
+                    "每回合{X:green,C:white}+#2#{}点生命",
+                    "{C:dark_edition}+#3#{}个小丑牌槽位",
                 },
             },
         },
@@ -586,6 +698,13 @@ local localization = {
                     "这也会影响{C:attention}炸弹{}Boss盲注的提示词选择",
                 },
             },
+            dd_akyrs_toggle_colourblind_ui = {
+                name = "高对比度界面",
+                text = {
+                    "部分界面对某些玩家而言可能难以辨认",
+                    "目前会将部分绿色与黄色元素改为橙色与蓝色",
+                },
+            },
             dd_akyrs_experimental_feature = {
                 name = "实验性功能",
                 text = {
@@ -636,6 +755,12 @@ local localization = {
                     "{X:dark_edition,C:white}@lyman{}",
                 },
             },
+            dd_akyrs_credit_marcyptata64 = {
+                name = "美术鸣谢",
+                text = {
+                    "{X:akyrs_gappie_cred,C:white}@marcyptata64{}",
+                },
+            },
             dd_akyrs_hibana_conditions = {
                 name = "循环选项",
                 text = {
@@ -645,7 +770,7 @@ local localization = {
                     "{X:dark_edition,C:white}4{} - 5",
                 },
             },
-            dd_akyrs_tldr_tldr = {
+            dd_akyrs_tldr_tldr_old = {
                 name = "太长不看",
                 text = {
                     "每张牌{C:mult}+#1#{}倍率",
@@ -976,7 +1101,7 @@ local localization = {
                     "氧化层",
                 },
             },
-            dd_akyrs_break_up_tip = {
+            dd_akyrs_pure_cards_tip = {
                 name = "纯净牌",
                 text = {
                     "{C:attention}纯净牌{}可以组成{C:attention}纯净牌型",
@@ -986,7 +1111,7 @@ local localization = {
                     "例如 这是一个{C:attention}纯净同花{}",
                 },
             },
-            dd_akyrs_break_up_tip_no_preview = {
+            dd_akyrs_pure_cards_tip_no_preview = {
                 name = "纯净牌",
                 text = {
                     "{C:attention}纯净牌{}可以组成{C:attention}纯净牌型",
@@ -1007,8 +1132,7 @@ local localization = {
             j_hatena = {
                 name = "????????",
                 text = {
-                    "这张牌{C:attention}完全{}未知",
-                    "{C:inactive}（你永远不会知道它是什么）",
+                    "这张牌的能力已被{C:attention}隐藏{}",
                 },
             },
             dd_akyrs_neon_seal_ex = {
@@ -1018,6 +1142,20 @@ local localization = {
                     "并在手牌中留{C:green}1{}张带此蜡封的牌",
                     "它会生成{C:green}1{}张{C:akyrs_umbral_p,X:akyrs_umbral_y}暗影{}牌",
                     "{C:inactive}（取较小值）",
+                },
+            },
+            dd_akyrs_non_functional = {
+                name = "警告！",
+                text = {
+                    "{C:red,E:akyrs_shrivel,s:1.9}这张牌",
+                    "{C:red,E:akyrs_shrivel,s:1.8}不会生效！",
+                },
+            },
+            dd_akyrs_scenario_tooltip = {
+                name = "情境",
+                text = {
+                    "{B:1,V:2}#3# #4#{}",
+                    "{C:blue}#1#{} / #2#回合剩余",
                 },
             },
         },
@@ -1057,11 +1195,11 @@ local localization = {
                     "{C:white,X:mult}X#2#{}倍率",
                 },
             },
-            e_akyrs_dyed = {
-                name = "染色",
+            e_akyrs_charged = {
+                name = "充能",
                 text = {
                     "{C:purple}+#1#{}分数",
-                    "每次触发获得{C:purple}+#2#{}",
+                    "每次触发获得{C:purple}+#2# {C:inactive}[+#3#]{}",
                 },
             },
             e_akyrs_sliced = {
@@ -1081,30 +1219,97 @@ local localization = {
             },
             e_akyrs_enchanted = {
                 name = "附魔",
-                text = {
-                    "制作中",
-                },
+                text = {},
             },
         },
         Enchantment = {
-            ench_akyrs_unbreaking = {
-                name = "耐久",
+            ench_akyrs_multi_enchant_book = {
+                name = "附魔书",
                 text = {
-                    "当此卡牌被{C:attention}摧毁{}时",
-                    "{C:attention}固定{C:green}#1#%{}几率",
-                    "复制此卡牌",
+                    "包含{C:attention}不止一种{}附魔",
                 },
             },
-            ench_akyrs_effeciency = {
-                name = "效率",
+            ench_akyrs_unbreaking = {
+                name = "耐久#1#",
                 text = {
                     "当此卡牌被{C:attention}摧毁{}时",
-                    "{C:attention}固定{C:green}#1#%{}几率",
-                    "复制此卡牌",
+                    "有{C:attention}固定{C:green}#2#%{}几率",
+                    "复制一张不带附魔的此卡牌",
+                },
+            },
+            ench_akyrs_efficiency = {
+                name = "效率#1#",
+                text = {
+                    "有{C:attention}固定{C:green}#2#%{}几率",
+                    "复制{C:attention}左侧卡牌{}的能力",
+                    "{B:1,C:white} #3# {}",
+                },
+            },
+            ench_akyrs_mending = {
+                name = "经验修补",
+                text = {
+                    "{C:attention}重新触发{}1次",
+                },
+            },
+            ench_akyrs_fire_aspect = {
+                name = "火焰附加#1#",
+                text = {
+                    "触发时{C:purple}+#2#%{}分数",
+                },
+            },
+            ench_akyrs_fortune = {
+                name = "时运#1#",
+                text = {
+                    "此卡牌的{C:green}概率+#2#%{}",
+                },
+            },
+            ench_akyrs_greed = {
+                name = "贪婪#1#",
+                text = {
+                    "售出卡牌时将其售价的{C:money}+#2#%{}",
+                    "添加到{C:attention}此卡牌{}的售价中",
+                },
+            },
+            ench_akyrs_silk_touch = {
+                name = "精准采集#1#",
+                text = {
+                    "弃掉时移除{C:attention}增强效果{}",
+                    "并为此卡牌添加{C:white,X:mult} X#2# {}倍率",
+                },
+            },
+            ench_akyrs_cornucopia = {
+                name = "丰饶之角",
+                text = {
+                    "打出时复制{C:attention}此卡牌{}并加入出牌",
+                    "移除复制牌的{C:attention}附魔{}",
                 },
             },
         },
         Enhanced = {
+            m_bld_the_choice = {
+                name = "选择",
+                text = {
+                    "{X:dark_edition,C:white}褪色{}",
+                    "{X:red,C:white}X#1#{}倍率",
+                    "出牌必须包含{B:1}#2#{}盲注",
+                },
+            },
+            m_bld_the_reject = {
+                name = "拒绝",
+                text = {
+                    "{X:dark_edition,C:white}褪色{}",
+                    "{X:blue,C:white}X#1#{}筹码",
+                    "出牌不得包含{B:1}#2#{}盲注",
+                },
+            },
+            m_bld_the_redo = {
+                name = "重来",
+                text = {
+                    "{X:dark_edition,C:white}黄色{}",
+                    "打出时{C:attention}重新触发{}1次",
+                    "留在手牌中的效果",
+                },
+            },
             m_akyrs_brick_card = {
                 name = "砖块牌",
                 text = {
@@ -1122,6 +1327,7 @@ local localization = {
                 name = "灰烬牌",
                 text = {
                     "{C:blue}+#1#{}筹码",
+                    "没有点数和花色",
                     "有{C:green}#2#/#3#{}几率",
                     "在回合结束时",
                     "化为乌有",
@@ -1131,6 +1337,7 @@ local localization = {
                 name = "灰烬牌",
                 text = {
                     "{C:purple,X:edition} ^#1# {}筹码",
+                    "没有点数和花色",
                     "在回合结束时",
                     "{C:attention}必定{}化为乌有",
                 },
@@ -1138,22 +1345,32 @@ local localization = {
             m_akyrs_hatena = {
                 name = "？牌",
                 text = {
-                    "计分时有{C:green}#1#/#2#{}几率获得{C:money}$#3#",
-                    "有{C:green}#4#/#5#{}几率获得{C:money}$#6#",
-                    "有{C:green}#7#/#8#{}几率给予{C:mult}+#9#{}倍率",
-                    "首次计分时和重新触发时{X:mult,C:white} X#10# {}",
-                    "没有点数 没有花色 总是计分",
+                    {
+                        "计分时有{C:green}#1#/#2#{}几率获得{C:money}$#3#",
+                        "有{C:green}#4#/#5#{}几率获得{C:money}$#6#",
+                        "有{C:green}#7#/#8#{}几率给予{C:mult}+#9#{}倍率",
+                        "首次计分时和重新触发时{X:mult,C:white} X#10# {}",
+                    },
+                    {
+                        "没有点数和花色 总是计分",
+                    },
                 },
             },
             m_akyrs_item_box = {
                 name = "道具盒牌",
                 text = {
-                    "计分时生成一张{C:attention}随机{}",
-                    "{C:tarot}消耗牌{}",
-                    "{C:inactive}（必须有空位）",
-                    "{C:red,E:1}自毁{}并在回合结束时",
-                    "如果成功触发",
-                    "没有点数 没有花色 总是计分",
+                    {
+                        "计分时生成一张{C:attention}随机{}",
+                        "{C:tarot}消耗牌{}",
+                        "{C:inactive}（必须有空位）",
+                    },
+                    {
+                        "如果成功触发",
+                        "则在回合结束时{C:red,E:1}自毁{}",
+                    },
+                    {
+                        "没有点数和花色 总是计分",
+                    },
                 },
             },
             m_akyrs_insolate_card = {
@@ -1167,22 +1384,22 @@ local localization = {
             m_akyrs_canopy_card = {
                 name = "华盖牌",
                 text = {
-                    "如果计分后{C:attention}留在手牌中{}",
-                    "此牌点数{C:attention}-1{}",
+                    "每次出牌可{C:attention}双击{}此牌1次",
+                    "使其点数{C:attention}-1{}",
+                    "{B:1,V:2}#1#{}",
                 },
             },
             m_akyrs_thai_tea_card = {
                 name = "泰式奶茶牌",
                 text = {
                     "{X:mult,C:white} X#1# {}倍率",
-                    "{C:inactive,s:0.8}仅凭它那{s:0.8}夸张{C:inactive,s:0.8}的香气",
-                    "{C:inactive,s:0.8}就足以让任何{s:0.8}嘴巴{C:inactive,s:0.8}流口水",
                 },
             },
             m_akyrs_matcha_card = {
                 name = "抹茶牌",
                 text = {
-                    "{X:chips,C:white} X#1# {}筹码",
+                    "{X:purple,C:white} X#1# {}分数",
+                    "{X:blind,C:white} X#1# {}盲注要求分数",
                 },
             },
             m_akyrs_earl_grey_tea_card = {
@@ -1204,10 +1421,14 @@ local localization = {
             m_akyrs_net_card = {
                 name = "网牌",
                 text = {
-                    "{C:white,X:mult}X#1#{}倍率",
-                    "当留在手牌中时",
-                    "回合结束时获得{C:money}#2#{}",
-                    "当留在手牌中时",
+                    {
+                        "留在手牌中时",
+                        "{C:white,X:mult}X#1#{}倍率",
+                    },
+                    {
+                        "回合结束时如果留在手牌中",
+                        "获得{C:money}#2#{}",
+                    },
                 },
             },
             m_akyrs_droplet_card = {
@@ -1242,8 +1463,124 @@ local localization = {
             m_akyrs_wafer_card = {
                 name = "威化牌",
                 text = {
-                    "在本回合{C:attention}第一次出牌{}时",
+                    "在本回合{C:attention}最后一次出牌{}时",
                     "获得{C:white,X:purple}X#1#{}分数",
+                },
+            },
+            m_akyrs_shore_card = {
+                name = "海岸牌",
+                text = {
+                    "{C:white,X:mult}X#1#{}倍率",
+                    "计分时有{C:green}#3#/#4#{}几率被摧毁",
+                    "有{C:green}#5#/#6#{}几率扩散到",
+                    "随机一张留在手牌中的牌",
+                    "并额外获得{C:white,X:mult}X#2#{}倍率",
+                },
+            },
+            m_akyrs_cloud_card = {
+                name = "云朵牌",
+                text = {
+                    "回合结束时",
+                    "牌组中每有1张此牌获得{C:money}#1#{}",
+                },
+            },
+            m_akyrs_nightshade_card = {
+                name = "夜影牌",
+                text = {
+                    "{C:white,X:chips}X#1#{}筹码",
+                    "如果抽到后没有{C:attention}立即打出{}",
+                    "则{C:attention}削弱自身{}",
+                },
+            },
+            m_akyrs_tap_card = {
+                name = "轻触牌",
+                text = {
+                    {
+                        "{C:white,X:blind}X#1#{}盲注要求分数",
+                        "没有点数和花色 总是计分",
+                    },
+                },
+            },
+            m_akyrs_tap_card_life = {
+                name = "轻触牌",
+                text = {
+                    {
+                        "{C:white,X:blind}X#1#{}盲注要求分数",
+                        "没有点数和花色 总是计分",
+                    },
+                    {
+                        "损失的{C:green}生命{}",
+                        "是通常情况的{C:attention}一半{}",
+                    },
+                },
+            },
+        },
+        FakeCenter = {
+            fc_akyrs_eggymari_hatena_art = {
+                name = "隐藏卡牌图像",
+                text = {
+                    "会与{C:attention}隐藏贴纸{}一同出现",
+                    "也会出现在部分{C:attention}挑战{}中",
+                },
+            },
+            fc_akyrs_toga_charmap = {
+                name = "字符映射表",
+                text = {
+                    "安装{C:attention}TOGA's Stuff{}后即可揭晓",
+                },
+            },
+            fc_akyrs_toga_winword = {
+                name = "微软 Word",
+                text = {
+                    "安装{C:attention}TOGA's Stuff{}后即可揭晓",
+                },
+            },
+            fc_akyrs_paperback_pure_star = {
+                name = "纯净星星牌",
+                text = {
+                    "安装{C:attention}Paperback{}以启用{C:attention}星星{}花色",
+                },
+            },
+            fc_akyrs_paperback_pure_crown = {
+                name = "纯净王冠牌",
+                text = {
+                    "安装{C:attention}Paperback{}以启用{C:attention}王冠{}花色",
+                },
+            },
+            fc_akyrs_paperback_pure_apostle = {
+                name = "纯净使徒牌",
+                text = {
+                    "安装{C:attention}Paperback{}以启用{C:attention}使徒{}花色",
+                },
+            },
+            fc_akyrs_judgement_miss = {
+                name = "失误",
+                text = {
+                    "用于{C:green}生命{}机制",
+                },
+            },
+            fc_akyrs_judgement_good = {
+                name = "良好",
+                text = {
+                    "用于{C:green}生命{}机制",
+                },
+            },
+            fc_akyrs_judgement_great = {
+                name = "优秀",
+                text = {
+                    "用于{C:green}生命{}机制",
+                },
+            },
+            fc_akyrs_judgement_perfect = {
+                name = "完美",
+                text = {
+                    "用于{C:green}生命{}机制",
+                },
+            },
+            fc_akyrs_judgement_cperfect = {
+                name = "极致完美",
+                text = {
+                    "用于{C:green}生命{}机制",
                 },
             },
         },
@@ -1284,7 +1621,7 @@ local localization = {
             j_akyrs_observer = {
                 name = "观察者",
                 text = {
-                    "每次卡牌被触发",
+                    "每当观察者以外的卡牌{C:attention}晃动{}",
                     "达到{C:attention}#4#{}次{C:inactive}（#3#）{}",
                     "此小丑牌获得{C:mult}+#1#{}倍率",
                     "{s:0.8}每次此小丑牌获得{C:mult}倍率{}",
@@ -1445,29 +1782,53 @@ local localization = {
             j_akyrs_tldr_joker = {
                 name = "太长懒得看小丑",
                 text = {
-                    "{C:inactive}译者注：没有乱写，请自行从文本中找到这张小丑牌的效果{}",
-                    "在沉浸式策略游戏{C:attention,E:1,s:1}Balatro{}的世界里",
-                    "这张特殊小丑牌扮演着独特角色，拥有名为'{C:mult}+#1#{}倍率'的强大能力",
-                    "该能力在特定条件下大幅提升玩家分数，主要围绕手牌中出现任何{C:attention}高牌{}",
-                    "包括但不限于传统{C:attention}高点数牌{}，如{C:attention}A、K、Q、J{}",
-                    "即便如此，此牌的能力还不止于此，但在深入了解之前，我们不要操之过急",
-                    "{C:attention,E:1,s:1}Balatro{}扩展了计分的定义",
-                    "将提升游戏影响的关键策略牌纳入其中",
-                    "这个变革性的{C:mult}倍率{}不仅是优势，更是{C:attention,E:1,s:1}Balatro{}战略规划的核心",
-                    "它迫使玩家仔细考虑手牌构成，力求纳入{C:attention}高牌{}并最大化收益",
-                    "追溯赌博历史",
-                    "纸牌游戏几个世纪以来都是游戏文化的{C:tarot}基石{}",
-                    "通过{C:attention}为手牌和打出的每张牌激活{}",
-                    "此能力确保你仅需打出{C:attention}高牌{}就能获得高分",
-                    "从{C:white,X:red,f:4}中国人{}在{C:attention}9世纪{}发明纸牌",
-                    "到{C:chips}中世纪{}纸牌游戏传遍欧洲",
-                    "赌博已演变成复杂的娱乐和策略形式",
-                    "{C:mult}倍率{}的概念",
-                    "如{C:attention,E:1,s:1}Balatro{}中的'{C:mult}+#1#{}倍率'呼应了赌博史上概率与风险承担的创新，玩家在那里磨练技能以应对{C:green}机遇的不确定性{}",
-                    "这些机遇与策略元素创造了丰富的游戏画卷，玩家运用直觉和分析能力",
-                    "'{C:mult}+#1#{}倍率'的存在加深了{C:attention,E:1,s:1}Balatro{}的复杂性，营造出战术决策至关重要的深度参与环境",
-                    "玩家通过运用{C:mult}倍率{}动态改变游戏平衡，将潜在的{C:chips}赤字{}转变为{C:dark_edition,E:1}主导优势{}",
-                    "因此'{C:mult}+#1#{}倍率'不仅是规则，更是关键战略工具和激动人心的元素",
+                    {
+                        "仅当下列{C:attention}全部{}条件",
+                        "在本赛局中至少完成1次时",
+                        "获得{C:white,X:mult} X#1# {}倍率",
+                        "否则每张牌{C:mult}+#2#{}倍率",
+                    },
+                    {
+                        "太平藏邪教 正邪之间有{C:red}倍率{} 待数字尽染蓝色 十条线索须全解",
+                        "其一不可少 乘{C:red}疾风{}胜盲注 烈焰灼灼 一次出牌定胜负",
+                        "其二商店诱人 此牌必须{C:attention}售出1次{} 方可继续持有",
+                        "其三轮到{C:purple}魔术{} 有些模组会卡顿 但务必取得{C:purple}魔术标签{}",
+                        "其四打破高墙 有言道{C:akyrs_replicant_o}仿生牌{}非黄金 故须{C:attention}使用{}",
+                        "其五并不难 {C:attention}优惠券{}并非免费 务必{C:attention}兑换{}1张",
+                        "其六须筹谋 {C:attention}售出{}同伴一员 此员须为{C:red}稀有{} 方显无贪",
+                        "其七途中有壕沟 使用{C:akyrs_umbral_p,X:akyrs_umbral_y}侵入性思维{}赢下回合 莫待运气消磨",
+                        "其八重整布局 用{C:attention}小丑牌{}将槽位{C:attention}填满{} 次序无妨",
+                        "其九看似荒唐 同一回合既打出{C:attention}顺子{} 又打出{C:attention}同花{}",
+                        "其十并非单牌 拥有{C:attention}两张{}{C:hearts}红桃8{} 十项俱成 倍率归你",
+                    },
+                },
+            },
+            j_akyrs_tldr_joker_2 = {
+                name = "太长懒得看小丑2",
+                text = {
+                    "在{C:attention,E:1,s:1.1}Balatro{}的广阔世界中 一位神祇降临 只有如此天才之人",
+                    "才能理解这位神祇 如此优雅而神圣的身影最多只会赐下寥寥数语",
+                    "神祇说道 坚持不懈是通往终极真理的关键 这是生命的事实",
+                    "这可不止寥寥数语 不是吗 这位神祇所说的终极真理究竟是什么",
+                    "当有人想出在所有地方坚持到底的绝妙点子时 此事才受到关注",
+                    "一名年近30的男子问道 只有这样的天才才能抵达终极真理吗",
+                    "他会打破史上最不聪明样本的纪录 排名甚至低于海绵动物",
+                    "标题并未说谎 他确实不太聪明 但他尝试了 他一直想回到",
+                    "小学补回一个正常成年人在现代社会生存所需的知识",
+                    "他在NASA当清洁工的薪水足够支付某所高端职业学校的课程",
+                    "他的坚持 或者说固执 使他一生中做出了许多错误决定",
+                    "小时候他认为{C:purple}巨石阵{}由外星人建造 还认为世界{C:attention}7大奇迹{}只是自然造物",
+                    "经历一切后 他知道自己已准备好再次面对神祇 这场{C:attention}仪式{}他早已烂熟于心",
+                    "他吟诵道 主啊 请救我脱离现实这片燃烧的地狱 一道宛如全息影像的图像出现在眼前",
+                    "全息影像宣告 蓝zoozh设备已准备配对 他难以置信 神祇竟如此高科技",
+                    "居然使用蓝牙这种先进的人类技术 他掏出Phone 17 Pro Max Ultra Ultimate & Knuckles 连接名为神祇传送门的设备",
+                    "全息影像喊道 蓝zoozh设备已呃成功连接 你有一个卡尔",
+                    "他误听之后驾车冲下全息影像最初出现的悬崖 看来他终究还是",
+                    "疯了 当全身每一寸都烧成灰烬时 车载屏幕显示{C:white,X:mult} X#1# {}倍率",
+                    "这就是他需要知道的一切 他终于接受那个该死的神祇毫无用处",
+                    "神祇突然出现在他几近烧焦的身体前 原来从初次见面起便谋划着他的毁灭",
+                    "你已经在世间坚持了个遍 现在该安详离开这个世界了",
+                    "话音落下 一切沉入黑暗 只留下成为更好自我的愿望",
                 },
             },
             j_akyrs_tldr_joker_absurd = {
@@ -1613,12 +1974,14 @@ local localization = {
             j_akyrs_neurosama = {
                 name = "Neuro Sama",
                 text = {
-                    "每张计分的{C:hearts}红桃{}牌",
-                    "使此小丑牌获得{X:mult,C:white} X#2# {}倍率",
-                    "如果存在{T:j_akyrs_evilneuro,C:red}Evil Neuro{}",
-                    "每张计分的{C:spades}黑桃{}牌",
-                    "也使此小丑牌获得{X:mult,C:white} X#2# {}倍率",
-                    "{C:inactive}（当前{X:mult,C:white} X#1# {C:inactive}倍率）",
+                    {
+                        "如果出牌同时包含{C:hearts}红桃{}和{C:spades}黑桃{}",
+                        "每张计分的{C:hearts}红桃{}和{C:spades}黑桃{}",
+                        "使此小丑牌获得{X:mult,C:white} X#2# {}倍率",
+                    },
+                    {
+                        "{C:inactive}（当前{X:mult,C:white} X#1# {C:inactive}倍率）",
+                    },
                 },
             },
             j_akyrs_neurosama_absurd = {
@@ -1635,12 +1998,14 @@ local localization = {
             j_akyrs_evilneuro = {
                 name = "Evil Neuro",
                 text = {
-                    "每张计分的{C:clubs}梅花{}牌",
-                    "使此小丑牌获得{X:chips,C:white} X#2# {}筹码",
-                    "如果存在{T:j_akyrs_neurosama,C:red}Neuro Sama{}",
-                    "每张计分的{C:diamonds}方片{}牌",
-                    "也使此小丑牌获得{X:chips,C:white} X#2# {}筹码",
-                    "{C:inactive}（当前{X:chips,C:white} X#1# {C:inactive}筹码）",
+                    {
+                        "如果出牌同时包含{C:clubs}梅花{}和{C:diamonds}方片{}",
+                        "每张计分的{C:clubs}梅花{}和{C:diamonds}方片{}",
+                        "使此小丑牌获得{X:chips,C:white} X#2# {}筹码",
+                    },
+                    {
+                        "{C:inactive}（当前{X:chips,C:white} X#1# {C:inactive}筹码）",
+                    },
                 },
             },
             j_akyrs_evilneuro_absurd = {
@@ -1748,19 +2113,17 @@ local localization = {
             j_akyrs_chicken_jockey = {
                 name = "小鸡骑士",
                 text = {
-                    "{C:attention}每张{}食物小丑牌被{C:attention}购买{}时变为{C:red}爆米花{}",
-                    "在此小丑牌存在时获得的每张{C:red}爆米花{}",
-                    "改为每回合减少{C:red}-#3#{}倍率",
-                    "每吃掉一张{C:red}爆米花{}获得{X:mult,C:white}X#1#{}倍率",
-                    "{C:inactive}（当前{X:mult,C:white} X#2# {C:inactive}倍率）",
-                    "{s:0.7,C:inactive}绝对影院",
+                    {
+                        "购买非小丑牌时{C:attention}获得{}一张{C:red}爆米花{}",
+                        "{C:inactive}（必须有空位）{}",
+                        "{s:0.7,C:inactive}绝对影院{}",
+                    },
                 },
             },
             j_akyrs_tetoris = {
                 name = "Tetoris",
                 text = {
-                    "如果打出任意{C:attention}L{}、{C:attention}S{}{C:inactive}（黑桃）、{C:attention}O{}、{C:attention}Z{}、{C:attention}J{C:inactive}（J）、{C:attention}I{}或{C:attention}T{}{C:inactive}（10）",
-                    "获得{X:chips,C:white}X#2#{}筹码",
+                    "打出的牌会按{C:attention}相反顺序{}再次计分",
                     "{s:0.9,C:inactive,f:5}テテテテト テト テテテテトリス!{}",
                 },
             },
@@ -1804,11 +2167,16 @@ local localization = {
             j_akyrs_emerald = {
                 name = "翡翠",
                 text = {
-                    "此小丑牌售出价格为{X:money,C:black}X#1#{}其",
-                    "购买成本加上你拥有的翡翠数量（{C:money}$#2#{} + {C:money}$#3#{}）",
-                    "{C:inactive}（未来的更新会加入更多功能 请相信）",
-                    "{C:inactive}持有此小丑牌会增加",
-                    "{C:inactive}找到相同小丑牌的几率",
+                    {
+                        "此小丑牌的售价为其购买价格",
+                        "加上拥有的翡翠数量之和的{X:money,C:black}X#1#{}",
+                        "（{C:money}$#2#{} + {C:money}$#3#{}）",
+                        "{C:inactive}（未来的更新会加入更多功能 请相信）",
+                    },
+                    {
+                        "{C:inactive}持有此小丑牌时",
+                        "{C:inactive}更容易找到另一张翡翠",
+                    },
                 },
             },
             j_akyrs_emerald_absurd = {
@@ -1833,15 +2201,12 @@ local localization = {
             j_akyrs_space_elevator = {
                 name = "太空电梯",
                 text = {
-                    "{s:1.3,C:attention}阶段{s:1.3,C:blue}#3#",
-                    "打出{C:attention}#1#次{C:blue}#2#{}{C:inactive}（#4#）{}",
-                    "以进入下一个{C:attention}阶段",
-                    "完成每个{C:attention}阶段",
-                    "给予你一张{C:dark_edition}负片幻灵牌",
-                    "完成阶段{C:blue}5",
-                    "给予你一张{C:dark_edition}负片灵魂牌",
-                    "并重置至阶段{C:blue}1",
-                    "每个{C:attention}阶段{}后点数会变化",
+                    {
+                        "打出{C:attention}#1#次{C:blue}#2#{}{C:inactive}（#4#）{}",
+                        "以进入下一{C:attention}阶段{}{C:inactive}（#3#/6）{}",
+                        "完成一个阶段时获得一张",
+                        "{C:dark_edition}负片{}{C:spectral}幻灵牌{}",
+                    },
                 },
             },
             j_akyrs_turret = {
@@ -1889,12 +2254,8 @@ local localization = {
             j_akyrs_liar_dancer = {
                 name = "谎言舞者",
                 text = {
-                    "如果出牌不包含{C:attention}顺子{}",
-                    "将其等级{C:attention}降低{C:red}-#1#{}",
-                    "并将{C:attention}顺子{}和",
-                    "{C:attention}同花顺{}等级提升{C:blue}#2#{}",
-                    "{C:inactive}（手牌等级不能降至1以下）{}",
-                    "{C:inactive,f:5}（踊れ 踊れ 嘘に踊れ）{}",
+                    "{C:attention}所有打出的牌{}的点数",
+                    "视为同一位置{C:attention}留在手牌中{}的牌",
                 },
             },
             j_akyrs_liar_dancer_absurd = {
@@ -1938,13 +2299,35 @@ local localization = {
             j_akyrs_story_of_undertale = {
                 name = "传说之下故事",
                 text = {
-                    "{C:attention}击败{}盲注时",
-                    "摧毁最右侧{C:attention}可摧毁的{}",
-                    "{C:attention}非骷髅先生{}小丑牌并生成",
-                    "一张{C:dark_edition}负片{C:attention}骷髅先生{}",
-                    "{C:inactive}（中间必须有空位...？）",
-                    "骷髅先生{E:akyrs_snaking,C:red}不需要{}",
-                    "分数要求即可激活",
+                    "在{C:attention}底注4{}及之后出现",
+                    "你的行动会带来{C:attention}后果{}",
+                    "{C:inactive}（屠杀路线：至少摧毁10张游戏牌）{}",
+                    "{C:inactive}（中立路线：至少修改或摧毁1张游戏牌）{}",
+                    "{C:inactive}（和平路线：不修改或摧毁游戏牌）{}",
+                },
+            },
+            j_akyrs_story_of_undertale_neutral = {
+                name = "传说之下故事（中立）",
+                text = {
+                    "回合结束时生成一张{C:red}稀有{}小丑牌",
+                    "并{C:red}自毁{}",
+                    "{C:inactive}（中立路线：至少修改或摧毁1张游戏牌）{}",
+                },
+            },
+            j_akyrs_story_of_undertale_genocide = {
+                name = "传说之下故事（屠杀）",
+                text = {
+                    "{X:mult,C:white} X#1# {}倍率",
+                    "始终为{C:purple}永恒卡{}",
+                    "{C:inactive}（屠杀路线：至少摧毁10张游戏牌）{}",
+                },
+            },
+            j_akyrs_story_of_undertale_pacifist = {
+                name = "传说之下故事（和平）",
+                text = {
+                    "回合结束时生成一张{C:red}传奇{}小丑牌",
+                    "并{C:red}自毁{}",
+                    "{C:inactive}（和平路线：不修改或摧毁游戏牌）{}",
                 },
             },
             j_akyrs_no_hints_here = {
@@ -1964,12 +2347,11 @@ local localization = {
             j_akyrs_brushing_clothes_pattern = {
                 name = "面条",
                 text = {
-                    "如果打出的牌包含{C:attention}同花{}",
-                    "且其中至少有一张是{C:attention}万能牌{}",
-                    "所有打出的{C:attention}万能牌{}",
-                    "点数提高1",
+                    "将{C:attention}第一张留在手牌中的牌{}",
+                    "加入出牌中",
+                    "{C:inactive}（该牌会位于最左侧）",
                     "{C:inactive}面条是音游中的一种键型，玩家需要长时间按压判定键{}",
-                    "{C:inactive}原文这里是指这种操作，这里把它译成一种键型名称更容易理解{}"
+                    "{C:inactive}原文这里是指这种操作，这里把它译成一种键型名称更容易理解{}",
                 },
             },
             j_akyrs_brushing_clothes_pattern_absurd = {
@@ -2070,10 +2452,10 @@ local localization = {
                     "{s:0.7}Gotoh Hitori",
                 },
                 text = {
-                    "如果打出的牌包含{C:attention}一张{C:spades}黑桃{}",
-                    "每持有一张{C:attention}結束バンド{}小丑牌",
-                    "此小丑牌获得{C:white,X:mult} X#1# {}倍率",
-                    "{C:inactive}（当前{C:white,X:mult} X#2# {C:inactive}倍率）",
+                    {
+                        "出牌时每持有一张{C:attention}結束バンド{}小丑牌",
+                        "向手牌中添加一张带增强效果和蜡封的{C:spades}黑桃{}牌",
+                    },
                 },
             },
             j_akyrs_bocchi_absurd = {
@@ -2094,10 +2476,12 @@ local localization = {
                     "{s:0.7}Kita Ikuyo",
                 },
                 text = {
-                    "如果出牌包含{C:attention}同花{}",
-                    "且有一张{C:hearts}红桃{}花色的牌",
-                    "生成{C:tarot}恋人{}",
-                    "{C:inactive}（必须有空位）{}",
+                    {
+                        "如果出牌包含{C:attention}同花{}",
+                        "且有一张{C:hearts}红桃{}花色的牌",
+                        "生成{C:tarot}恋人{}",
+                        "{C:inactive}（必须有空位）{}",
+                    },
                 },
             },
             j_akyrs_kita_absurd = {
@@ -2116,9 +2500,11 @@ local localization = {
                     "{s:0.7}Yamada Ryou",
                 },
                 text = {
-                    "如果出牌包含一对{C:clubs}梅花{}的{C:attention}对子{}",
-                    "负债上限提高至{C:red}-$#1#{}",
-                    "负债限额{C:red}-$#2#{}",
+                    {
+                        "每回合可{C:attention}使用{}此牌1次",
+                        "立即获得{C:money}#1#{}",
+                        "{C:inactive}（剩余{C:money}#2#{C:inactive} 本回合#3#）",
+                    },
                 },
             },
             j_akyrs_ryou_absurd = {
@@ -2138,10 +2524,12 @@ local localization = {
                     "{s:0.7}Ijichi Nijika",
                 },
                 text = {
-                    "如果{C:attention}出牌{}包含{C:attention}顺子{}",
-                    "且有一张{C:diamonds}方片{}花色",
-                    "生成一张你最常出的牌型",
-                    "对应的{C:dark_edition}负片{C:planet}星球牌{}",
+                    {
+                        "如果{C:attention}出牌{}包含{C:attention}顺子{}",
+                        "且有一张{C:diamonds}方片{}花色的牌",
+                        "生成一张对应最常用牌型的",
+                        "{C:dark_edition}负片{}{C:planet}星球牌{}",
+                    },
                 },
             },
             j_akyrs_nijika_absurd = {
@@ -2159,16 +2547,20 @@ local localization = {
             j_akyrs_blue_portal = {
                 name = "蓝色传送门",
                 text = {
-                    "{C:white,X:chips} X#1# {}筹码",
-                    "购买需要{C:attention}2{}个免费小丑牌槽位",
-                    "购买时生成对应的",
-                    "{C:attention}橙色传送门{}",
+                    {
+                        "{C:white,X:chips} X#1# {}筹码",
+                        "购买需要{C:attention}2{}个空闲小丑牌槽位",
+                        "购买时生成对应的",
+                        "{C:attention}橙色传送门{}",
+                    },
                 },
             },
             j_akyrs_orange_portal = {
                 name = "橙色传送门",
                 text = {
-                    "{C:white,X:mult} X#1# {}倍率",
+                    {
+                        "{C:white,X:mult} X#1# {}倍率",
+                    },
                 },
             },
             j_akyrs_g = {
@@ -2233,7 +2625,7 @@ local localization = {
                 },
                 text = {
                     "此小丑牌的{C:attention}售出价值{}等于",
-                    "概率的{C:green}分子与分母之和{}",
+                    "概率的{C:green}分子与分母之积{}",
                     "基础几率为{C:attention}2/2",
                     "{C:inactive}（当前{C:green}#1#/#2#{C:inactive}）",
                 },
@@ -2336,7 +2728,7 @@ local localization = {
                 },
             },
             j_akyrs_so_close = {
-                name = "近在咫尺",
+                name = { "近在咫尺" },
                 text = {
                     "如果打出的牌包含{C:attention}两对{}",
                     "每张留在手牌中的牌",
@@ -2346,7 +2738,169 @@ local localization = {
             j_akyrs_snow_pea = {
                 name = { "寒冰射手" },
                 text = {
+                    "如果出牌中{C:attention}没有非{C:clubs}梅花{}牌",
                     "{C:white,X:purple}X#1#{}分数",
+                },
+            },
+            j_akyrs_konton_boogie = {
+                name = {
+                    "{f:5}混沌ブギ",
+                    "混沌布吉",
+                },
+                text = {
+                    {
+                        "每张未计分牌使此小丑牌",
+                        "获得{C:white,X:mult} X#1# {}倍率",
+                    },
+                    {
+                        "如果出牌中没有未计分牌",
+                        "此小丑牌失去{C:white,X:mult} X#2# {}倍率",
+                    },
+                    {
+                        "{C:inactive}（当前{C:white,X:mult} X#3# {C:inactive}倍率）",
+                    },
+                },
+            },
+            j_akyrs_yamada_perfect = {
+                name = {
+                    "{f:5}山田PERFECT",
+                    "Yamada Perfect",
+                },
+                text = {
+                    {
+                        "如果出牌包含{C:attention}同花{}",
+                        "每张计分牌使此小丑牌获得{C:white,X:chips} X#1# {}筹码",
+                    },
+                    {
+                        "每打出1张{V:1}#4#{}牌",
+                        "此小丑牌改为失去{C:white,X:chips} X#2# {}筹码",
+                        "{C:inactive}花色每次出牌后改变",
+                    },
+                    {
+                        "{C:inactive}（当前{C:white,X:chips} X#3# {C:inactive}筹码）",
+                    },
+                },
+            },
+            j_akyrs_trend_angelina = {
+                name = {
+                    "{f:5}流行アンジェリーナ",
+                    "流行安吉丽娜",
+                },
+                text = {
+                    {
+                        "如果出牌包含{C:attention}顺子{}",
+                        "此小丑牌获得{C:white,X:purple} X#1# {}分数",
+                    },
+                    {
+                        "计分牌型中每有1个{C:attention}重复点数{}",
+                        "此小丑牌失去{C:white,X:purple} X#2# {}分数",
+                    },
+                    {
+                        "{C:inactive}（当前{C:white,X:purple} X#3# {C:inactive}分数）",
+                    },
+                },
+            },
+            j_akyrs_gappie = {
+                name = { "加比" },
+                text = {
+                    {
+                        "如果剩余{C:blue}1{}次出牌和{C:red}0{}次弃牌",
+                        "{C:attention}抽取{}牌组中所有剩余卡牌",
+                        "并使此小丑牌获得{C:white,X:mult} X#2# {}倍率",
+                        "{C:inactive}（当前{C:white,X:mult} X#1# {C:inactive}倍率）",
+                    },
+                },
+            },
+            j_akyrs_xaleidoscopix = {
+                name = {
+                    "{f:5}Xaleid◆scopiX{}",
+                    "{s:0.7}xi{}",
+                },
+                text = {
+                    {
+                        "每张打出的{C:diamonds}方片{}给予{X:chips,C:white} X#1# {}筹码",
+                        "每打出#2#张{C:inactive}（#3#）{}{C:diamonds}方片{}",
+                        "此小丑牌获得{X:chips,C:white} X#4# {}筹码",
+                    },
+                },
+            },
+            j_akyrs_butcher_vanity = {
+                name = {
+                    "BUTCHER VANITY",
+                    "{s:0.7}FLAVOR FOLEY{}",
+                },
+                text = {
+                    {
+                        "打出的{C:attention}人头牌{}会分裂为",
+                        "{C:attention}纯净点数{}牌和{C:attention}纯净花色{}牌",
+                        "留在手牌中的纯净{C:attention}人头牌{}",
+                        "给予{X:mult,C:white} X#1# {}倍率",
+                    },
+                },
+            },
+            j_akyrs_deck_shovel = {
+                name = { "牌组铲" },
+                text = {
+                    {
+                        "抽到{C:attention}新牌{}时自动弃掉",
+                        "本次出牌中已经弃过的{C:attention}点数{}",
+                        "和{C:attention}花色{}且不消耗弃牌次数",
+                    },
+                },
+            },
+            j_akyrs_mikudashi = {
+                name = {
+                    "{f:5}ミクだし",
+                    "{s:0.7}[Under My Heel (MIKU dashi)] by hya",
+                },
+                text = {
+                    {
+                        "每张计分的{C:hearts}红桃{}给予{X:chips,C:white} X#1# {}筹码",
+                        "{C:hearts}红桃{}无法被{C:red}弃掉{}",
+                    },
+                },
+            },
+            j_akyrs_companion_cube = {
+                name = { "伙伴方块" },
+                text = {
+                    {
+                        "{C:hearts}红桃{}牌变为{C:attention}灰烬牌{}",
+                        "{C:attention}灰烬牌{}给予{C:mult}+#1#{}倍率",
+                    },
+                },
+            },
+            j_akyrs_edge = {
+                name = { "EDGE Extended" },
+                text = {
+                    {
+                        "每次抽牌时为1张{C:attention}随机卡牌{}",
+                        "添加{C:dark_edition}多彩{}版本",
+                        "前提是手牌中没有{C:dark_edition}多彩{}卡牌",
+                    },
+                },
+            },
+            j_akyrs_7wonders = {
+                name = {
+                    "7大奇迹",
+                    "{s:0.8}Sakuzyo",
+                },
+                text = {
+                    {
+                        "本回合牌组中其他所有{C:attention}7{}都计分后",
+                        "最后1张计分的{C:attention}7{}给予{X:purple,C:white} X#1# {}分数",
+                    },
+                },
+            },
+            j_akyrs_sulfur_cube = {
+                name = { "硫磺方块" },
+                text = {
+                    {
+                        "复制收藏中1张{C:attention}随机小丑牌{}的能力",
+                        "能力在{C:attention}回合结束时{}改变",
+                    },
+                    {
+                        "可花费{C:money}#1#{}重掷此能力",
+                    },
                 },
             },
             j_akyrs_aether_portal = {
@@ -2372,6 +2926,122 @@ local localization = {
                     "生成一张{C:red}爆米花{}",
                     "{C:inactive}（必须有空位）",
                     "{s:0.7,C:inactive}这才叫电影！",
+                },
+            },
+        },
+        Judgement = {
+            judgement_akyrs_none_none = {
+                name = "无",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_none_normal = {
+                name = "无",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_none_kaleidoscope = {
+                name = "无",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_miss_none = {
+                name = "失误",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_miss_normal = {
+                name = "失误",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_miss_kaleidoscope = {
+                name = "失误",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_good_none = {
+                name = "良好",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_good_normal = {
+                name = "良好",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_good_kaleidoscope = {
+                name = "良好",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_great_none = {
+                name = "优秀",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_great_normal = {
+                name = "优秀",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_great_kaleidoscope = {
+                name = "优秀",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_perfect_none = {
+                name = "完美",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_perfect_normal = {
+                name = "完美",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_perfect_kaleidoscope = {
+                name = "完美",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_critical_perfect_none = {
+                name = "极致完美",
+                text = {
+                    "游戏牌拥有{C:white,X:green}#1#{}点生命",
+                    "小丑牌拥有{C:white,X:green}#2#{}点生命",
+                },
+            },
+            judgement_akyrs_critical_perfect_normal = {
+                name = "极致完美",
+                text = {
+                    "{C:white,X:green}#1#{}点生命",
+                },
+            },
+            judgement_akyrs_critical_perfect_kaleidoscope = {
+                name = "极致完美",
+                text = {
+                    "{C:white,X:blue}#1#{}点生命",
                 },
             },
         },
@@ -2528,8 +3198,7 @@ local localization = {
             akyrs_sale = {
                 name = "九折",
                 text = {
-                    "回合结束时",
-                    "损失{C:money}$#1#{}",
+                    "售价无法改变",
                 },
             },
             akyrs_carmine_seal = {
@@ -2542,10 +3211,8 @@ local localization = {
             akyrs_neon_seal = {
                 name = "霓虹蜡封",
                 text = {
-                    "打出时每张带有{C:attention}霓虹蜡封{}的牌",
-                    "根据{C:attention}留在手牌中或打出的{}数量",
+                    "如果此牌被打出但{C:attention}未计分{}",
                     "生成一张{C:akyrs_umbral_p,X:akyrs_umbral_y}暗影{}牌",
-                    "{C:attention}取较小值{}",
                     "{C:inactive}（必须有空位）",
                 },
             },
@@ -2628,6 +3295,14 @@ local localization = {
                     "其效果",
                 },
             },
+            undiscovered_bet = {
+                name = "未发现",
+                text = {
+                    "在非预设局中",
+                    "兑换此卡牌以了解",
+                    "其效果",
+                },
+            },
             undiscovered_replicant = {
                 name = "未发现",
                 text = {
@@ -2635,6 +3310,22 @@ local localization = {
                     "购买或使用",
                     "此卡牌以了解",
                     "其效果",
+                },
+            },
+            undiscovered_enchantment = {
+                name = "未发现",
+                text = {
+                    "在非预设局中获得附魔书",
+                    "或使用此附魔为卡牌附魔",
+                    "以了解其效果",
+                },
+            },
+            undiscovered_scenario = {
+                name = "未发现",
+                text = {
+                    "在非预设局中持有",
+                    "或开始此情境",
+                    "以了解其效果",
                 },
             },
             pinned_left = {
@@ -2982,6 +3673,111 @@ local localization = {
                 },
             },
         },
+        Scenario = {
+            sc_akyrs_genesis = {
+                name = "创世",
+                text = {
+                    "清除{C:akyrs_scenario_dark_yellow}浅黄{}情境",
+                },
+            },
+            sc_akyrs_day = {
+                name = "白昼",
+                text = {
+                    "{C:mult}+#1#{}倍率",
+                },
+            },
+            sc_akyrs_night = {
+                name = "黑夜",
+                text = {
+                    "{C:chips}+#1#{}筹码",
+                },
+            },
+            sc_akyrs_sunrise = {
+                name = "日出",
+                text = {
+                    "{X:mult,C:white}X#1#{}倍率",
+                },
+            },
+            sc_akyrs_sunset = {
+                name = "日落",
+                text = {
+                    "每次出牌获得{C:money}#1#{}",
+                },
+            },
+            sc_akyrs_high_noon = {
+                name = "正午",
+                text = {
+                    "选择盲注时生成一张{C:attention}小丑牌{}",
+                    "{C:inactive}（必须有空位）",
+                },
+            },
+            sc_akyrs_eclipse = {
+                name = "日食",
+                text = {
+                    "{X:blind,C:white}X#1#{}盲注要求分数",
+                },
+            },
+            sc_akyrs_yellow_hatena = {
+                name = "随机黄色",
+                text = {
+                    "随机选取一个{X:akyrs_scenario_yellow}黄色{}情境",
+                },
+            },
+            sc_akyrs_clear = {
+                name = "放晴",
+                text = {
+                    "清除{X:akyrs_scenario_dark_yellow,C:akyrs_scenario_yellow}深黄色{}情境",
+                },
+            },
+            sc_akyrs_cloudy = {
+                name = "多云",
+                text = {
+                    "每次出牌获得{C:money}#1#{}",
+                },
+            },
+            sc_akyrs_rain = {
+                name = "降雨",
+                text = {
+                    "出牌后{C:red}#1#{}次弃牌",
+                    "且手牌上限{C:attention}#2#{} 直至回合结束",
+                },
+            },
+            sc_akyrs_snow = {
+                name = "降雪",
+                text = {
+                    "{X:chips,C:white}X#1#{}筹码",
+                    "出牌后{C:blue}#2#{}次出牌",
+                    "直至回合结束",
+                },
+            },
+            sc_akyrs_hail = {
+                name = "冰雹",
+                text = {
+                    "每张计分牌给予{C:chips}#1#{}筹码",
+                    "和{X:chips,C:white} X#2#{}筹码",
+                },
+            },
+            sc_akyrs_thunder = {
+                name = "雷暴",
+                text = {
+                    "手牌中1张随机卡牌变为",
+                    "{C:dark_edition}充能{}{C:attention}闪电牌{}",
+                },
+            },
+            sc_akyrs_tornado = {
+                name = "龙卷风",
+                text = {
+                    "弃牌时弃掉手牌中的{C:red}所有{}卡牌",
+                    "选择盲注时{C:blue}#1#{}次出牌",
+                },
+            },
+            sc_akyrs_void = {
+                name = "创世",
+                text = {
+                    "清除{C:akyrs_scenario_dark_pink}浅粉{}情境",
+                },
+            },
+        },
         Spectral = {},
         Stake = {
             stake_akyrs_copper = {
@@ -3117,12 +3913,70 @@ local localization = {
                     "{C:akyrs_umbral_p}超级暗影包",
                 },
             },
+            tag_akyrs_replicant_tag = {
+                name = "仿生标签",
+                text = {
+                    "给予一个免费的",
+                    "{C:akyrs_replicant_o}仿生包",
+                },
+            },
         },
         Tarot = {
             c_akyrs_wof_nopes = {
                 name = "命运之轮（修改版）",
                 text = {
                     "没有任何效果",
+                },
+            },
+        },
+        Bet = {
+            bet_akyrs_expert_play = {
+                name = "专家玩法！",
+                text = {
+                    "可能出现{C:attention}专家{}及更高难度的Boss盲注",
+                    "{C:dark_edition}+#1#{}个消耗牌槽位",
+                },
+            },
+            bet_akyrs_raise_the_stake = {
+                name = "提高赌注！",
+                text = {
+                    "应用一个随机{C:attention}赌注{}效果{C:inactive}（如果可用）",
+                    "为一张小丑牌添加随机{C:dark_edition}版本{}",
+                },
+            },
+            bet_akyrs_a_lock_and_a_hard_place = {
+                name = "进退维谷！",
+                text = {
+                    "商店中1件{C:attention}随机{}商品始终被{C:attention}锁定{}",
+                    "必须{C:attention}购买{}后才会消失",
+                },
+            },
+            bet_akyrs_flames_of_desires = {
+                name = "欲望之焰！",
+                text = {
+                    "从牌组中{C:attention}摧毁{}所有",
+                    "属于1种{C:attention}随机{}花色的卡牌",
+                },
+            },
+            bet_akyrs_resonance_of_chaos = {
+                name = "混沌共鸣！",
+                text = {
+                    "牌组中所有卡牌的增强效果",
+                    "被{C:attention}锁定{}为任意一种{C:attention}音符牌{}",
+                },
+            },
+            bet_akyrs_ghastly_limelight = {
+                name = "惨白聚光灯！",
+                text = {
+                    "牌组中所有卡牌的增强效果",
+                    "被{C:attention}锁定{}为任意一种{C:attention}音符牌{}",
+                },
+            },
+            bet_akyrs_kaleidoscope = {
+                name = "万花筒！",
+                text = {
+                    "牌组中所有卡牌的增强效果",
+                    "被{C:attention}锁定{}为任意一种{C:attention}音符牌{}",
                 },
             },
         },
@@ -3155,6 +4009,35 @@ local localization = {
                 text = {
                     "{C:akyrs_playable}+#1#{}选择上限",
                     "{C:blue}+#1#{}手牌上限",
+                },
+            },
+            v_akyrs_i_owe_you = {
+                name = "欠你一次",
+                text = {
+                    "{C:inactive}金宝现在手头不太宽裕",
+                    "{C:inactive}如果你愿意给他资金 确实能帮上忙",
+                    "{C:inactive}或许以后他会报答你",
+                },
+            },
+            v_akyrs_premium_free_joker = {
+                name = "高级免费小丑",
+                text = {
+                    "金宝的概率把戏中可进行",
+                    "{C:attention}3{}次{C:blue}普通{}小丑牌重掷",
+                },
+            },
+            v_akyrs_super_premium_free_joker = {
+                name = "超级高级免费小丑",
+                text = {
+                    "金宝的概率把戏中每回合可进行",
+                    "{C:attention}1{}次必定为{C:green}罕见{}的重掷",
+                },
+            },
+            v_akyrs_ultra_premium_free_joker = {
+                name = "终极高级免费小丑",
+                text = {
+                    "金宝的概率把戏中每底注可进行",
+                    "{C:attention}1{}次必定为{C:red}稀有{}的重掷",
                 },
             },
         },
@@ -3281,6 +4164,12 @@ local localization = {
                     "卡牌选择被{C:attention}反转",
                 },
             },
+            sleeve_akyrs_inversion_double_inverted = {
+                name = "双重反转牌套",
+                text = {
+                    "卡牌选择被{E:akyrs_snaking,C:dark_edition}双重{C:attention}反转{}",
+                },
+            },
         },
         Umbral = {
             c_akyrs_umbral_graduate = {
@@ -3364,11 +4253,14 @@ local localization = {
             c_akyrs_umbral_misfortune = {
                 name = "不幸",
                 text = {
-                    "将{C:attention}#1#",
-                    "张选定牌增强为",
-                    "{C:attention}？牌{}",
-                    "如果该牌已经是{C:attention}？牌{}",
-                    "则改为增强为{C:attention}道具盒牌{}",
+                    {
+                        "将{C:attention}#1#张选定牌",
+                        "增强为{C:attention}？牌{}",
+                    },
+                    {
+                        "如果该牌已经是{C:attention}？牌{}",
+                        "则改为增强为{C:attention}道具盒牌{}",
+                    },
                 },
             },
             c_akyrs_umbral_book_smart = {
@@ -3398,9 +4290,13 @@ local localization = {
             c_akyrs_umbral_intrusive_thoughts = {
                 name = "侵入性思维",
                 text = {
-                    "{X:money,C:black}$X#1#{}但有{C:green}固定#2#%几率{}",
-                    "{E:1,C:red}将资金设为#3#{}",
-                    "{C:attention}售出{}此牌可查看{C:attention}是否会损失资金{}",
+                    {
+                        "{X:money,C:black}$X#1#{}但有{C:green}固定#2#%几率{}",
+                        "{E:1,C:red}将资金设为#3#{}",
+                    },
+                    {
+                        "{C:attention}售出{}此牌可查看{C:attention}是否会损失资金{}",
+                    },
                 },
             },
             c_akyrs_umbral_intrusive_thoughts_absurd = {
@@ -3568,6 +4464,7 @@ local localization = {
                 text = {
                     "最多选择{C:attention}#1#{}张随机牌",
                     "将其{C:attention}返回{}牌组",
+                    "每弃掉#3#张牌",
                     "临时获得{C:red}+#2#{}次弃牌",
                 },
             },
@@ -3655,22 +4552,36 @@ local localization = {
                 text = {
                     "舍弃{C:red}#1#{}次出牌次数",
                     "换取永久{C:dark_edition}+#2#{}个小丑牌槽位",
+                    "和{C:dark_edition}+#2#{}个消耗牌槽位",
                 },
             },
             c_akyrs_replicant_third_party_cookies = {
                 name = "第三方Cookie",
                 text = {
-                    "用{C:purple}晶格化{}食物小丑牌",
-                    "填满你的小丑牌槽位",
+                    "用食物小丑牌填满你的小丑牌槽位",
+                    "每张有{C:green}#1#/#2#{}几率",
+                    "带有{C:purple}晶格化{}贴纸",
                 },
             },
             c_akyrs_replicant_silicon_fabrication = {
                 name = "硅制造",
                 text = {
-                    "手牌中一张随机牌",
+                    "手牌中两张随机牌",
                     "转换为{C:attention}威化牌{}",
-                    "手牌中另一张随机牌将",
-                    "获得{C:dark_edition}染色{}效果",
+                    "手牌中另外两张随机牌将",
+                    "获得{C:dark_edition}充能{}效果",
+                },
+            },
+            c_akyrs_replicant_get_rich_quick = {
+                name = "快速致富",
+                text = {
+                    {
+                        "{X:akyrs_money_x,C:akyrs_money_c}$^#1#{}但有{C:green}固定#2#%几率{}",
+                        "{E:1,C:red}立即输掉赛局{}",
+                    },
+                    {
+                        "{C:attention}售出{}此牌可查看{C:attention}是否会输掉{}",
+                    },
                 },
             },
         },
@@ -3732,19 +4643,26 @@ local localization = {
             hc_akyrs_bomb_galore = "持续拼写无人爆炸",
             hc_akyrs_hatena_jokers = "????????",
             hc_akyrs_hatena_everything = "???????????????",
+            hc_akyrs_bonfire_lit = "篝火已点燃",
         },
         collabs = {},
         dictionary = {
             b_umbral_cards = "暗影牌",
             b_replicant_cards = "仿生牌",
+            b_scenario_cards = "情境牌",
             k_umbral = "暗影",
             k_replicant = "仿生",
+            k_scenario = "情境",
+            k_bet = "赌注卡",
+            k_enchantment = "附魔",
 
             b_alphabet_cards = "字母牌",
             k_alphabet = "字母",
             b_akyrs_alphabets = "字母牌",
             k_aikoyoriextrabases = "额外基底",
             k_akyrs_alphabets = "字母",
+            k_akyrs_bet = "赌注卡",
+            k_akyrs_enchantment = "附魔",
             k_akyrs_current_req = "当前",
             k_akyrs_alphabets_pack = "字母包",
             k_alphabets = "字母包",
@@ -3801,6 +4719,7 @@ local localization = {
             k_akyrs_yee = "咿耶！",
             k_akyrs_pissandshittium = "https://pissandshittium.org/",
             k_akyrs_pandora_give_tag = "Re:MASTER 15",
+            k_akyrs_pandora_hit = "Critical！",
             k_akyrs_downgrade_ex = "降级！",
             k_akyrs_woah_undertale = "哇",
             k_akyrs_story_of_undertale = "传说之下",
@@ -3809,7 +4728,11 @@ local localization = {
             k_akyrs_gain_discard = "<溅射>",
 
             k_akyrs_use_from_drag = "使用",
-            k_akyrs_use_from_drag_2 = "[伦理上]",
+            k_akyrs_use_from_drag_apply = "应用",
+            k_akyrs_use_from_drag_voucher = "（兑换）",
+            k_akyrs_use_from_drag_consumable = "（消耗牌）",
+            k_akyrs_use_from_drag_joker = "（初始效果）",
+            k_akyrs_use_from_drag_pcard = "（加入牌组）",
             b_akyrs_normal_jokers = "普通小丑牌",
             b_akyrs_letter_jokers = "字母小丑牌",
             k_akyrs_ate_up = "吃光了！",
@@ -3823,8 +4746,10 @@ local localization = {
 
             k_akyrs_random_letter = "随机选择的字母",
             k_akyrs_tsunagi_absurd_wheel_nope = "1次Miss！",
-            k_akyrs_umbral_intrusive_would_die = "安全！",
-            k_akyrs_umbral_intrusive_would_win = "未命中！",
+            k_akyrs_umbral_intrusive_would_die = "幸运！",
+            k_akyrs_umbral_intrusive_would_win = "真可惜！",
+            k_akyrs_replicant_get_rich_quick_would_die = "幸运！",
+            k_akyrs_replicant_get_rich_quick_would_win = "真可惜！",
             k_akyrs_solitaire = "空当接龙",
 
             k_akyrs_cannot_be_disabled = "无法被禁用",
@@ -3871,6 +4796,7 @@ local localization = {
             k_akyrs_plus_alphabet = "+1字母",
             k_akyrs_plus_umbral = "+1暗影牌",
             k_akyrs_plus_replicant = "+1仿生牌",
+            k_akyrs_plus_scenario = "+1情境牌",
 
             k_akyrs_solitaire_redeal = "重新发牌",
 
@@ -3892,6 +4818,7 @@ local localization = {
             k_akyrs_scrape_ex = "刮除！",
             k_akyrs_round_singular = "回合",
             k_akyrs_round_plural = "回合",
+            k_consumable_type = "消耗牌类型",
 
             k_akyrs_balance_dialog_intro_next = "下一步",
             k_akyrs_balance_dialog_cryptid_accept = "听起来不错（结束）",
@@ -3938,12 +4865,62 @@ local localization = {
             k_akyrs_restart_required = "* = 需要重启",
             k_akyrs_toggle_full_dictionary = "启用完整词典*",
             k_akyrs_toggle_experimental_feature = "启用实验性功能*",
+            k_akyrs_toggle_colourblind_ui = "高对比度界面",
             k_akyrs_emerald = "翡翠",
             k_akyrs_supercommon = "超普通",
             k_akyrs_unique = "唯一",
             k_akyrs_alphabet_pack = "字母",
             k_akyrs_umbral_pack = "暗影包",
             k_akyrs_replica_pack = "仿生包",
+
+            b_bet = "赌注卡",
+            b_judgement = "判定",
+            b_enchantment = "附魔",
+            b_scenario = "情境",
+
+            k_akyrs_shoveled_ex = "铲好了！",
+            k_akyrs_canopy_downable_yes = "可用！",
+            k_akyrs_canopy_downable_no = "已使用",
+            k_akyrs_cloud_card_tally = "云朵牌",
+            k_akyrs_cloud_card_tally_buffed = "多云天气",
+
+            k_akyrs_not_used = "未使用",
+            k_akyrs_used = "已使用",
+
+            k_akyrs_shop_close = "关闭",
+
+            k_akyrs_chicanery_round = "本回合",
+            k_akyrs_chicanery_ante = "本底注",
+            k_akyrs_chicanery_rolls_common = "普通",
+            k_akyrs_chicanery_rolls_uncommon = "罕见",
+            k_akyrs_chicanery_rolls_rare = "稀有",
+            k_akyrs_chicanery_rolls_common_arrows = "▲",
+            k_akyrs_chicanery_rolls_uncommon_arrows = "",
+            k_akyrs_chicanery_rolls_rare_arrows = "",
+            k_akyrs_chicanery_rolls_left = "剩余重掷",
+            k_akyrs_chicanery_buy = "购买",
+            k_akyrs_chicanery_btn = "J",
+
+            k_akyrs_enchantment_none = "允许添加多种能力",
+            k_akyrs_enchantment_none_blank = "无 :(",
+            k_akyrs_edge_prism = "<棱镜>",
+
+            f_akyrs_localize_enchantment_level = function(level)
+                if math.abs(level) > 3999 then
+                    return level > 0 and "+INF" or "-INF"
+                end
+                if level == 0 then return "0" end
+                local strout = level > 0 and "" or "-"
+                local ones = { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" }
+                local tenths = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" }
+                local hundredths = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" }
+                local thousandths = { "", "M", "MM", "MMM", "M?", "?", "?M", "?MM", "?MMM", "M?" }
+                local places = { thousandths, hundredths, tenths, ones }
+                for i, v in ipairs({ 1000, 100, 10, 1 }) do
+                    strout = strout .. places[i][math.floor(math.fmod(math.abs(level), v * 10) / v) + 1]
+                end
+                return strout
+            end,
         },
         high_scores = {},
         labels = {
@@ -3966,13 +4943,24 @@ local localization = {
             akyrs_noire = "霓虹黑",
             akyrs_sliced = "切片",
             akyrs_burnt = "烧焦",
-            akyrs_dyed = "染色",
+            akyrs_charged = "充能",
             akyrs_enchanted = "附魔",
             k_akyrs_emerald = "翡翠",
             k_akyrs_supercommon = "超普通",
             k_akyrs_unique = "唯一",
+            k_fakecenter = "???",
             umbral = "暗影",
-            replicant = "仿生"
+            replicant = "仿生",
+            scenario = "情境",
+            enchantment = "附魔",
+            bet = "赌注卡",
+        },
+        akyrs_colour = {
+            yellow = "黄色",
+            pink = "粉色",
+            blue = "蓝色",
+            dark = "深色",
+            light = "浅色",
         },
         quips = {},
         ranks = {
@@ -4003,6 +4991,120 @@ local localization = {
             k_akyrs_score_minus = "-#1#分数",
             k_akyrs_word_check_valid = "#1#是有效单词",
             k_akyrs_word_check_invalid = "#1#不是有效单词",
+            k_akyrs_click_for_credits_of = "点击查看#1#的制作人员",
+            k_akyrs_chicanery_rolls_left = "剩余#1#/#2#次重掷",
+            k_akyrs_enchantment_lvl = "#1# 等级#2#",
+            k_akyrs_enchantment_lvl_single_level = "#1#",
+        },
+        akyrs_misc = {
+            mod_label = {
+                { "Aikoyori的", "恶作剧" },
+                { "Aikoyori的", "死神大人" },
+                { "Aikoshen" },
+                { "Aikoyori的恶作剧" },
+                { "恶作剧先生的Aikoyori" },
+                { "Aikoyori的小丑牌" },
+                { "AKYRS" },
+                { "Aikomod" },
+                { "新超级", "Aikoyori恶作剧" },
+                { "一个Aikoyori模组" },
+                { "Shenaiko" },
+                { "Aikoslop", "Shenslop" },
+                { "恶作剧", "Aikoyori的" },
+                { "偷走", "Aikoshen" },
+                { "Aikoyori大电影", "游戏 模组" },
+                { "iroyokia的", "真Playbook" },
+                { "aish" },
+                { "Aikoyori世界中的", "古怪奇妙", "恶作剧" },
+                { "Solitaireyori", "Wordlenanigans" },
+                { "{f:5}アイコヨリ", "{f:5}しぇなにがんす" },
+                { "aiko？" },
+            },
+            flavour_text = {
+                { "如今别名多了1000%！" },
+                { "如今自由多了100%！" },
+                { "请不要游玩硬核挑战" },
+                { "获得localthunk认可" },
+                { "我的妻子离开了我..." },
+                { "路易吉不会这么做" },
+                { "也请使用Pissandshittium" },
+                { "也请使用MyPayIndia" },
+                { "9+10等于多少？" },
+                { "也试试Phanta" },
+                { "也试试Finity" },
+                { "也试试Hot Potato" },
+                { "也试试Stocking Stuffer" },
+                { "也试试Feli's Jokeria" },
+                { "别试Cold Beans...？" },
+                { "也试试Paya's Terrible Additions" },
+                { "也试试Entropy" },
+                { "也试试Revo's Vault" },
+                { "也试试Oblivion" },
+                { "你已被用光" },
+                { "{f:5}为什么会落到这种地步 步 步" },
+                { "{f:5}挣扎到极限的人生", "{f:5}似乎比想象中更加疯狂" },
+                { "{f:5}比超级偶像的笑容更加" },
+                { "{f:5}比那个8月的午后更加" },
+                { "{f:5}致比105℃更加闪耀的你" },
+                { "无意谈论政治 但是", "燕麦粥到底他妈是什么" },
+                { "Alpha测试持续了整整1年！" },
+                { "盲注拉满 消耗牌入脑" },
+                { "今天玩Wordle了吗？" },
+                { "游戏化视频" },
+                { "Cryptid也不过如此" },
+                { "keys cow" },
+                { "你知道我真的可以", "在这里写任何东西吗？" },
+                { "想象一下做完这一切", "然后模组崩溃了 笑死" },
+                { "不要除以0！" },
+                { "大概是个很棒的STEM工具！" },
+                { "打出时乐趣{X:dark_edition,C:white}^2{}" },
+                { "\\#抵制AI垃圾" },
+                { "\\#抵制生成式AI进入Vocaloid" },
+                { "美术由真正的艺术家创作！" },
+                { "& Knuckles" },
+                { "全新FUNKY模式" },
+                { "DMC的但丁特别出演" },
+                { "这事确实发生过" },
+                { "不会出现在Deltarune中" },
+                { "{X:red,C:white}??" },
+                { "\\#BringBackWotakuSnoozeSHIKIver" },
+                { "喝完啤酒立刻开车上路" },
+                { "*自由主题动机*" },
+                { "你找不到自己的出牌次数" },
+                { "你知道这里真的支持", "多行风味文本吗？", "说实话我都惊了！" },
+                { "你是可爱的冒牌货吗？" },
+                { "含有少许英伦风味..." },
+                { "跑吧跑吧赛马娘" },
+                { "包含一些梗！" },
+                { "看看你身后" },
+                { "正如在Twitch TV上看到的那样！" },
+                { "我们还没有退出测试", "我们永远无法按时发布" },
+                { "打起精神向前冲！" },
+                { "猫娘天下第一", "{s:0.6}这是ivy说的 不是我" },
+                { "Re:Re:MASTER 15+" },
+                { "史蒂夫·乔布斯死于ligma真让人难过", "谁是史蒂夫·乔布斯？", "Ligma Balls" },
+                { "为你的死亡次数感到骄傲！" },
+                { "放肆作恶 大胆去爱" },
+                { "*海军入侵警报*" },
+                { "x = (-b[+/-]sqrt((b^2)-4ac))/2a" },
+                { "释放蒙娜克隆体！" },
+                { "来玩synthv" },
+                { "{f:akyrs_MochiyPopOne}「[疑]ロキ」简单w" },
+                { "\\#打倒冒牌货" },
+                { "说真的Family Guy里的那个人", "为什么长得像Peter Griffin" },
+                { "他才20岁" },
+                { "靠 这个模组花了太多钱 我完蛋了" },
+                { "我的一个朋友叫我迈克尔·乔丹" },
+                { "去看《超时空辉夜姬》！" },
+                { "百合>耽美 说真的" },
+                { "Spotify太邪恶了" },
+                { "收集我的页面" },
+                { "与原版完全相反的", "模组该叫什么？" },
+                { "搞什么鬼 aiko 这已经是你第6次重新设计了" },
+                { "*笑到喘不过气*" },
+                { "... ___ ...（悲伤脸）" },
+                { "说真的这破事让我很火大" },
+            },
         },
         v_text = {
             ch_c_sliced_space = {
@@ -4061,6 +5163,15 @@ local localization = {
             },
             ch_c_akyrs_hatena_everything = {
                 "{C:attention}所有卡牌{}都是{C:red}隐匿的",
+            },
+            ch_c_akyrs_always_skip_shops = {
+                "{C:attention}商店{}会被{C:red}跳过{}",
+            },
+            ch_c_akyrs_shops_after_boss = {
+                "{C:attention}商店{}仅在{C:red}Boss盲注{}后出现",
+            },
+            ch_c_akyrs_obtain_every_round = {
+                "每回合{C:attention}获得{}一个{C:attention}#1#{}",
             },
         },
         poker_hand_descriptions = poker_hand_desc,
