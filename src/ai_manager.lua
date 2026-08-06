@@ -411,13 +411,13 @@ local function load_ai_card_cache(mod_id)
                 -- 创建目录
                 local cache_dir = TEO.path .. 'impl/ai/' .. mod_id .. '/'
                 if not NFS.getInfo(cache_dir) then
-                    pcall(NFS.createDirectory, cache_dir)
+                    TEO_fs_call(NFS.createDirectory, cache_dir)
                 end
 
                 -- 保存为lua格式
                 local lua_content = 'return ' ..
                     (TEO_table_to_lua and TEO_table_to_lua(migrated_data, '') or json.encode(migrated_data)) .. '\n'
-                local ok = pcall(NFS.write, cache_file, lua_content)
+                local ok = TEO_fs_call(NFS.write, cache_file, lua_content)
 
                 if ok and TEO_dbg_print then
                     TEO_dbg_print("[TEO AI Cache] 已迁移旧缓存:", mod_id, "to", cache_file)
@@ -453,10 +453,18 @@ local function persist_ai_card_cache(mod_id, log_set_key, log_card_key)
 
     -- 创建目录结构
     if not NFS.getInfo(TEO.path .. 'impl/ai/') then
-        pcall(NFS.createDirectory, TEO.path .. 'impl/ai/')
+        local ok, err = TEO_fs_call(NFS.createDirectory, TEO.path .. 'impl/ai/')
+        if not ok then
+            print('[TEOcean AI Cache] 创建缓存目录失败:', err)
+            return false
+        end
     end
     if not NFS.getInfo(cache_dir) then
-        pcall(NFS.createDirectory, cache_dir)
+        local ok, err = TEO_fs_call(NFS.createDirectory, cache_dir)
+        if not ok then
+            print('[TEOcean AI Cache] 创建缓存目录失败:', err)
+            return false
+        end
     end
 
     -- 构建完整的缓存数据结构
@@ -476,7 +484,7 @@ local function persist_ai_card_cache(mod_id, log_set_key, log_card_key)
     -- 序列化并保存为lua格式
     local lua_content = 'return ' ..
         (TEO_table_to_lua and TEO_table_to_lua(cache_data, '') or json.encode(cache_data)) .. '\n'
-    local ok, err = pcall(NFS.write, cache_file, lua_content)
+    local ok, err = TEO_fs_call(NFS.write, cache_file, lua_content)
 
     if ok then
         if TEO_dbg_print then
@@ -1129,7 +1137,7 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
         TEO_dbg_print("[TEOcean AI Manager] 发起 API 请求:", card_id, request_spec.provider, request_spec.url)
     end
 
-    https.asyncRequest(
+    local request_started, request_err = pcall(https.asyncRequest,
         request_spec.url,
         { method = "POST", headers = request_spec.headers, data = json.encode(request_spec.body) },
         function(code, body, resp_headers)
@@ -1182,6 +1190,11 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
             end
         end
     )
+    if not request_started then
+        PENDING_CARD_REQUESTS[card_id] = nil
+        print('[TEOcean AI] 请求发起失败:', tostring(request_err), 'Card:', card_id)
+        return false
+    end
     return true
 end
 
@@ -1264,7 +1277,7 @@ function TEO_clear_ai_cache_for_mod(mod_id)
 
     -- 删除磁盘缓存文件
     if NFS.getInfo(cache_file) then
-        local ok, err = pcall(NFS.remove, cache_file)
+        local ok, err = TEO_fs_call(NFS.remove, cache_file)
         if ok then
             print('[TEOcean AI Cache] 已清除Mod缓存:', mod_id)
             return true
@@ -1303,7 +1316,7 @@ function TEO_clear_all_ai_cache()
             local cache_file = mod_path .. '/' .. lang .. '.lua'
 
             if NFS.getInfo(cache_file) then
-                local ok, err = pcall(NFS.remove, cache_file)
+                local ok, err = TEO_fs_call(NFS.remove, cache_file)
                 if ok then
                     cleared_count = cleared_count + 1
                 else

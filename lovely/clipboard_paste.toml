@@ -23,7 +23,7 @@ payload = '''
         is_ctrl = G.CONTROLLER.held_keys['lctrl'] or G.CONTROLLER.held_keys['rctrl'] or
             G.CONTROLLER.held_keys['lgui'] or G.CONTROLLER.held_keys['rgui']
     end
-    if not is_ctrl and love.keyboard then
+    if not is_ctrl and love.keyboard and type(love.keyboard.isDown) == 'function' then
         is_ctrl = love.keyboard.isDown('lctrl', 'rctrl', 'lgui', 'rgui')
     end
     if args and (args.key == 'v' or args.key == 'V') and is_ctrl then
@@ -31,11 +31,14 @@ payload = '''
         if type(clipboard) == 'string' and clipboard ~= "" and G.CONTROLLER.text_input_hook then
             -- Set flag to prevent infinite recursion if hooks call each other
             G.CONTROLLER.pasting_clipboard = true
-            for i = 1, #clipboard do
-                local c = clipboard:sub(i, i)
-                G.FUNCS.text_input_key({ key = c })
-            end
+            local ok, err = pcall(function()
+                for i = 1, #clipboard do
+                    local c = clipboard:sub(i, i)
+                    G.FUNCS.text_input_key({ key = c })
+                end
+            end)
             G.CONTROLLER.pasting_clipboard = false
+            if not ok then print('[TEOcean] Clipboard paste failed:', tostring(err)) end
             return
         end
     end

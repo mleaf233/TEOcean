@@ -1,1 +1,1 @@
-SMODS.load_file('src/teocean.lua')()
+assert(SMODS.load_file('src/teocean.lua'))()

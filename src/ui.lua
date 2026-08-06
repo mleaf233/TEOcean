@@ -602,24 +602,24 @@ local function createClickableModBox(modInfo, scale)
                                                         -- 运行时模式：内存中覆盖
                                                         TEO_dbg_print(('[TEOcean Runtime] 为 %s 应用内存覆盖'):format(modInfo
                                                             .id))
-                                                        local ok, err = pcall(TEO_apply_runtime_localization, modInfo.id)
-                                                        if ok then
+                                                        local ok, applied = pcall(TEO_apply_runtime_localization, modInfo.id)
+                                                        if ok and applied then
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖完成'):format(modInfo
                                                                 .id))
                                                         else
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖失败: %s'):format(
-                                                                modInfo.id, tostring(err)))
+                                                                modInfo.id, tostring(applied)))
                                                         end
                                                     else
                                                         -- 磁盘模式：写入文件
                                                         print(('[TEOcean] 开始为 %s 执行本地化合并'):format(modInfo.id))
-                                                        local ok, err = pcall(merge_impl_mod_localizations_for_mod,
+                                                        local ok, merged, err = pcall(merge_impl_mod_localizations_for_mod,
                                                             modInfo)
-                                                        if ok then
+                                                        if ok and merged then
                                                             print(('[TEOcean] %s 本地化合并完成'):format(modInfo.id))
                                                         else
                                                             print(('[TEOcean] %s 本地化合并失败: %s'):format(modInfo.id,
-                                                                tostring(err)))
+                                                                tostring(err or merged)))
                                                         end
                                                     end
                                                 else
@@ -628,14 +628,14 @@ local function createClickableModBox(modInfo, scale)
                                                         -- 运行时模式：移除内存覆盖
                                                         TEO_dbg_print(('[TEOcean Runtime] 为 %s 移除内存覆盖'):format(modInfo
                                                             .id))
-                                                        local ok, err = pcall(TEO_remove_runtime_localization, modInfo
+                                                        local ok, removed = pcall(TEO_remove_runtime_localization, modInfo
                                                             .id)
-                                                        if ok then
+                                                        if ok and removed then
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 内存覆盖已移除'):format(
                                                                 modInfo.id))
                                                         else
                                                             TEO_dbg_print(('[TEOcean Runtime] %s 移除失败: %s'):format(
-                                                                modInfo.id, tostring(err)))
+                                                                modInfo.id, tostring(removed)))
                                                         end
                                                     else
                                                         -- 磁盘模式：恢复原始本地化

@@ -20,6 +20,16 @@ function TEO_ensure_slash(path)
     return path
 end
 
+-- nativefs reports many failures as nil/false return values rather than errors.
+function TEO_fs_call(fn, ...)
+    local ok, result, detail = pcall(fn, ...)
+    if not ok then return false, result end
+    if result == nil or result == false then
+        return false, detail or 'filesystem operation failed'
+    end
+    return true, result, detail
+end
+
 function TEO_trim_string(s)
     if type(s) ~= "string" then return "" end
     return s:match("^%s*(.-)%s*$") or ""
@@ -81,9 +91,10 @@ function TEO_insert_unique_first(t, v)
 end
 
 -- 检测是否为安卓平台（带安全检查）
-local TEO_is_android = (pcall(function()
-    return love and love.system and love.system.getOS() == 'Android'
-end) and (love and love.system and love.system.getOS() == 'Android')) or false
+local TEO_os_ok, TEO_os_name = pcall(function()
+    return love and love.system and love.system.getOS()
+end)
+local TEO_is_android = TEO_os_ok and TEO_os_name == 'Android'
 
 local TEO_debug_log_path = nil
 
@@ -425,7 +436,7 @@ function TEO_read_loc_file(path)
         }
         return nil
     end
-    local ok_read, content = pcall(NFS.read, path)
+    local ok_read, content = TEO_fs_call(NFS.read, path)
     if not ok_read then
         TEO_set_loc_read_error(path, 'read', content)
         return nil
@@ -526,7 +537,18 @@ function TEO_table_to_lua(tbl, indent, visited)
         end
     else
         -- map
-        for k, v in pairs(tbl) do
+        local keys = {}
+        for k in pairs(tbl) do keys[#keys + 1] = k end
+        table.sort(keys, function(a, b)
+            if type(a) == type(b) then
+                if type(a) == 'number' then return a < b end
+                return tostring(a) < tostring(b)
+            end
+            return type(a) < type(b)
+        end)
+
+        for _, k in ipairs(keys) do
+            local v = tbl[k]
             local key
             if type(k) == 'string' and k:match('^[%a_][%w_]*$') then -- 允许下划线开头
                 key = k
@@ -587,8 +609,6 @@ function TEO_quick_reload_lang(e)
     end
 end
 
-local initialized = false
-
 function TEO_init_UI_configs()
     local mod = TEO_get_mod()
     -- if initialized == true then
@@ -615,9 +635,12 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.disable_edge_sidebar == nil then
         mod.config.disable_edge_sidebar = false
     end
-    -- 初始化"启用运行时覆盖"配置项
-    if mod and mod.config and mod.config.runtime_override == nil then
-        mod.config.runtime_override = true
+    -- 统一使用 UI 和业务逻辑实际读取的配置键；磁盘模式是默认行为。
+    if mod and mod.config and mod.config.use_runtime_override == nil then
+        mod.config.use_runtime_override = false
+    end
+    if mod and mod.config then
+        mod.config.runtime_override = nil
     end
     -- 初始化"启用DEBUG模式"配置项
     if mod and mod.config and mod.config.enable_debug == nil then
@@ -637,8 +660,6 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.api_format == nil then
         mod.config.api_format = "auto"
     end
-
-    initialized = true
 end
 
 -- 初始化配置，从当前mod的配置中加载
@@ -665,9 +686,15 @@ function TEO_save_configs()
 
     -- 保存当前mod的配置
     if mod then
-        SMODS.save_mod_config(mod)
+        local ok = SMODS.save_mod_config(mod)
+        if ok == false then
+            print('[TEOcean] 配置保存失败')
+            return false
+        end
         TEO_dbg_print('[TEOcean] 配置已保存到SMODS配置系统')
+        return true
     end
+    return false
 end
 
 -- 获取已适配mod列表的译者，在每个本地化文件的 translator表中

@@ -43,7 +43,7 @@ end
 
 local function TEO_safe_create_dir(path, scene)
     if NFS.getInfo(path) then return true end
-    local ok, err = pcall(NFS.createDirectory, path)
+    local ok, err = TEO_fs_call(NFS.createDirectory, path)
     if not ok then
         print(('[TEOcean Language Packs] 创建目录失败[%s]: %s (%s)'):format(tostring(scene), tostring(path), tostring(err)))
         return false
@@ -107,31 +107,16 @@ function merge_impl_mod_localizations(in_memory)
     end
 end
 
-local function recurse(target, ref_table, force)
-    if type(target) ~= 'table' then return end
-    for k, v in pairs(target) do
-        print("当前key=", k)
-        if (not ref_table[k] and type(k) ~= 'number') or (force and ((type(v) ~= 'table') or type(v[1]) == 'string')) then
-            ref_table[k] = v
-        else
-            recurse(v, ref_table[k], force)
-        end
-    end
-end
-
 -- 为单个mod执行本地化合并的辅助函数
 function merge_single_mod_localization(target_mod, mod)
     if not mod or not mod.path then return end
     TEO_dbg_print(('[TEOcean] 开始为 %s 执行本地化操作'):format(target_mod.id))
 
     local langs = {} -- 默认处理的语言
-    local cur_lang = G.SETTINGS.language
-
     if G and G.SETTINGS and G.SETTINGS.language then
         TEO_insert_unique_first(langs, G.SETTINGS.language)
     end
     if G and G.SETTINGS and G.SETTINGS.real_language then
-        cur_lang = G.SETTINGS.real_language
         TEO_insert_unique_first(langs, G.SETTINGS.real_language)
     end
 
@@ -260,7 +245,7 @@ function merge_single_mod_localization(target_mod, mod)
                 local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
                 local content = 'return ' .. TEO_table_to_lua(missing, '') .. '\n'
                 TEO_dbg_print('missing table for', target_mod.id, lang, 'top_keys=', TEO_tbl_count(missing))
-                local okw, errw = pcall(NFS.write, out_path, content)
+                local okw, errw = TEO_fs_call(NFS.write, out_path, content)
                 if okw then
                     print(('[TEOcean Language Packs] 生成缺失翻译: %s -> %s'):format(target_mod.id, out_path))
                 else
@@ -297,35 +282,44 @@ function merge_single_mod_localization(target_mod, mod)
         local content = 'return ' .. TEO_table_to_lua(tbl, '') .. '\n'
 
         if type(tbl) == 'table' then
+            local existing_content = nil
+            if NFS.getInfo(out_path) then
+                local ok_read, raw = TEO_fs_call(NFS.read, out_path)
+                if ok_read then existing_content = raw end
+            end
+
+            if existing_content and TEO_normalize_str(existing_content) == TEO_normalize_str(content) then
+                TEO_dbg_print('[TEOcean Language Packs] 本地化内容未变化，跳过写入:', out_path)
+                goto continue_write
+            end
+
+            local backup_ready = true
             -- 先检查是否已有备份，如果没有则创建备份
             if not NFS.getInfo(backup_path) then
                 -- 尝试读取原始文件进行备份
                 if NFS.getInfo(orig_path) then
-                    local okr, raw = pcall(NFS.read, orig_path)
-                    if okr and raw and raw ~= "" then
+                    local okr, raw = TEO_fs_call(NFS.read, orig_path)
+                    if okr and raw ~= nil then
                         -- 成功读取原始文件，写入备份
-                        local okw, errw = pcall(NFS.write, backup_path, raw)
+                        local okw, errw = TEO_fs_call(NFS.write, backup_path, raw)
                         if okw then
                             print(('[TEOcean Language Packs] 备份原始本地化: %s -> %s'):format(orig_path, backup_path))
                         else
+                            backup_ready = false
                             print(('[TEOcean Language Packs] 备份写入失败: %s (%s)'):format(backup_path, tostring(errw)))
                         end
                     else
-                        -- 原始文件不存在或读取失败，创建空备份
-                        local ok_empty, err_empty = pcall(NFS.write, backup_path, "return {}")
-                        if ok_empty then
-                            print(('[TEOcean Language Packs] 原始文件不存在或为空，创建空备份: %s'):format(backup_path))
-                        else
-                            print(('[TEOcean Language Packs] 创建空备份失败: %s (%s)'):format(backup_path,
-                                tostring(err_empty)))
-                        end
+                        backup_ready = false
+                        print(('[TEOcean Language Packs] 读取原始文件失败，已取消覆盖: %s'):format(orig_path))
                     end
                 else
                     -- 原始文件不存在，创建空备份
-                    local ok_empty, err_empty = pcall(NFS.write, backup_path, "return {}")
+                    local ok_empty, err_empty = TEO_fs_call(NFS.write, backup_path,
+                        "-- TEOCEAN_ORIGINAL_FILE_MISSING\nreturn {}\n")
                     if ok_empty then
                         print(('[TEOcean Language Packs] 原始文件不存在，创建空备份: %s'):format(backup_path))
                     else
+                        backup_ready = false
                         print(('[TEOcean Language Packs] 创建空备份失败: %s (%s)'):format(backup_path,
                             tostring(err_empty)))
                     end
@@ -334,14 +328,20 @@ function merge_single_mod_localization(target_mod, mod)
                 print(('[TEOcean Language Packs] 备份已存在，跳过: %s'):format(backup_path))
             end
 
+            if not backup_ready then
+                print(('[TEOcean Language Packs] 未能安全备份，跳过写入: %s'):format(out_path))
+                goto continue_write
+            end
+
             -- 写入合并后的内容
-            local okw, errw = pcall(NFS.write, out_path, content)
+            local okw, errw = TEO_fs_call(NFS.write, out_path, content)
             if okw then
                 print(('[TEOcean Language Packs] 写入合并本地化: %s -> %s'):format(target_mod.id, out_path))
             else
                 print(('[TEOcean Language Packs] 写入失败: %s -> %s (%s)'):format(target_mod.id, out_path, tostring(errw)))
             end
         end
+        ::continue_write::
     end
 end
 
@@ -352,12 +352,10 @@ function restore_original_localization_for_mod(target_mod)
 
     -- languages to process
     local langs = {}
-    local cur_lang = G.SETTINGS.language
     if G and G.SETTINGS and G.SETTINGS.language then
         TEO_insert_unique_first(langs, G.SETTINGS.language)
     end
     if G and G.SETTINGS and G.SETTINGS.real_language then
-        cur_lang = G.SETTINGS.real_language
         TEO_insert_unique_first(langs, G.SETTINGS.real_language)
     end
 
@@ -384,25 +382,26 @@ function restore_original_localization_for_mod(target_mod)
     for _, lang in ipairs(langs) do
         local backup_lua = backup_loc_dir .. lang .. '.lua'
         local out_path = out_dir .. lang .. '.lua'
-        -- 先删除之前合并的
-        if NFS.getInfo(out_path) then
-            -- lang == en-us / default 不执行， 防止删除默认语言
-            local ok_delete, err = pcall(NFS.remove, out_path)
-            if ok_delete then
-                print(('[TEOcean Language Packs] 删除合并本地化: %s'):format(out_path))
-            else
-                print(('[TEOcean Language Packs] 删除失败: %s (%s)'):format(out_path, tostring(err)))
-            end
-        end
         if NFS.getInfo(backup_lua) then
-            -- 读取备份的lua文件并写入目标目录
-            local ok_read, content = pcall(NFS.read, backup_lua)
+            local ok_read, content = TEO_fs_call(NFS.read, backup_lua)
             if ok_read and content then
-                local ok_write, err = pcall(NFS.write, out_path, content)
-                if ok_write then
-                    print(('[TEOcean Language Packs] 恢复原始本地化: %s -> %s'):format(backup_lua, out_path))
+                if content:find('TEOCEAN_ORIGINAL_FILE_MISSING', 1, true) then
+                    if NFS.getInfo(out_path) then
+                        local ok_delete, err = TEO_fs_call(NFS.remove, out_path)
+                        if not ok_delete then
+                            print(('[TEOcean Language Packs] 删除生成文件失败: %s (%s)'):format(out_path, tostring(err)))
+                        else
+                            print(('[TEOcean Language Packs] 已删除原本不存在的本地化文件: %s'):format(out_path))
+                        end
+                    end
                 else
-                    print(('[TEOcean Language Packs] 恢复失败: %s -> %s (%s)'):format(backup_lua, out_path, tostring(err)))
+                    local ok_write, err = TEO_fs_call(NFS.write, out_path, content)
+                    if ok_write then
+                        print(('[TEOcean Language Packs] 恢复原始本地化: %s -> %s'):format(backup_lua, out_path))
+                    else
+                        print(('[TEOcean Language Packs] 恢复失败: %s -> %s (%s)'):format(backup_lua, out_path,
+                            tostring(err)))
+                    end
                 end
             else
                 print(('[TEOcean Language Packs] 读取备份文件失败: %s'):format(backup_lua))
@@ -419,7 +418,9 @@ function merge_impl_mod_localizations_for_mod(target_mod)
     if not ok then
         local mod_id = target_mod and target_mod.id or 'unknown'
         print(('[TEOcean Language Packs] 单模组合并异常: %s (%s)'):format(tostring(mod_id), tostring(err)))
+        return false, err
     end
+    return true
 end
 
 -- ========================================================================================
@@ -432,91 +433,67 @@ TEO_localization_backup = TEO_localization_backup or {}
 -- 记录当前已应用合并的 mod 列表
 TEO_active_overrides = TEO_active_overrides or {}
 
--- 深拷贝函数（避免引用污染）
-local function deep_copy(obj, seen)
-    if type(obj) ~= 'table' then return obj end
-    if seen and seen[obj] then return seen[obj] end
-
-    local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
-    s[obj] = res
-
-    for k, v in pairs(obj) do
-        res[deep_copy(k, s)] = deep_copy(v, s)
-    end
-    return res
-end
-
--- 深度合并表（target 被 source 覆盖）
-local function deep_merge(target, source)
+local function runtime_deep_merge(target, source)
     if type(target) ~= 'table' or type(source) ~= 'table' then
-        return source
+        return TEO_deep_copy(source)
     end
 
     for k, v in pairs(source) do
-        if type(v) == 'table' and type(target[k]) == 'table' then
-            target[k] = deep_merge(target[k], v)
+        if type(v) == 'table' and type(target[k]) == 'table' and not TEO_is_sequence_table(v) then
+            target[k] = runtime_deep_merge(target[k], v)
         else
-            target[k] = deep_copy(v)
+            target[k] = TEO_deep_copy(v)
         end
     end
 
     return target
 end
 
--- 识别某个 key 是否属于指定 mod
-local function is_key_belongs_to_mod(key, mod_id)
-    if not key or not mod_id then return false end
-
-    -- 检查 SMODS.Centers
-    if SMODS.Centers and SMODS.Centers[key] then
-        local center = SMODS.Centers[key]
-        if center.mod and center.mod.id == mod_id then
-            return true
+local function build_runtime_payload(data)
+    local payload = {}
+    for key, value in pairs(data or {}) do
+        if key ~= 'translator' then
+            payload[key] = TEO_deep_copy(value)
         end
     end
-
-    -- 检查 G.P_CENTERS
-    if G.P_CENTERS and G.P_CENTERS[key] then
-        local center = G.P_CENTERS[key]
-        if center.mod and center.mod.id == mod_id then
-            return true
-        end
-    end
-
-    return false
+    return payload
 end
 
--- 备份指定 mod 的原始本地化数据
-local function backup_mod_localization(mod_id)
-    if TEO_localization_backup[mod_id] then
-        TEO_dbg_print('[TEOcean Runtime] 备份已存在，跳过:', mod_id)
-        return
-    end
+local function capture_runtime_patch(target, patch)
+    local snapshot = {}
+    target = type(target) == 'table' and target or {}
 
-    TEO_dbg_print('[TEOcean Runtime] 开始备份 mod 本地化:', mod_id)
-
-    local backup = {
-        descriptions = {}
-    }
-
-    -- 备份 G.localization.descriptions 中属于该 mod 的所有条目
-    if G.localization and G.localization.descriptions then
-        for set_name, set_table in pairs(G.localization.descriptions) do
-            if type(set_table) == 'table' then
-                for key, data in pairs(set_table) do
-                    if is_key_belongs_to_mod(key, mod_id) then
-                        backup.descriptions[set_name] = backup.descriptions[set_name] or {}
-                        backup.descriptions[set_name][key] = deep_copy(data)
-                        -- TEO_dbg_print('[TEOcean Runtime] 备份:', set_name, key)
-                    end
-                end
-            end
+    for key, patch_value in pairs(patch) do
+        local current_value = target[key]
+        if type(patch_value) == 'table' and type(current_value) == 'table' and
+            not TEO_is_sequence_table(patch_value) then
+            snapshot[key] = {
+                kind = 'tree',
+                value = capture_runtime_patch(current_value, patch_value)
+            }
+        else
+            snapshot[key] = {
+                kind = 'value',
+                existed = current_value ~= nil,
+                value = TEO_deep_copy(current_value)
+            }
         end
     end
 
-    TEO_localization_backup[mod_id] = backup
-    TEO_dbg_print('[TEOcean Runtime] 备份完成:', mod_id)
+    return snapshot
+end
+
+local function restore_runtime_patch(target, snapshot)
+    for key, entry in pairs(snapshot or {}) do
+        if entry.kind == 'tree' then
+            if type(target[key]) ~= 'table' then target[key] = {} end
+            restore_runtime_patch(target[key], entry.value)
+        elseif entry.existed then
+            target[key] = TEO_deep_copy(entry.value)
+        else
+            target[key] = nil
+        end
+    end
 end
 
 -- 应用运行时本地化合并（单个 mod）
@@ -557,9 +534,6 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
         return false
     end
 
-    -- 首次应用时创建备份
-    backup_mod_localization(mod_id)
-
     -- 读取数据
     local override_data = TEO_read_loc_file(impl_file)
     if not override_data or type(override_data) ~= 'table' then
@@ -569,17 +543,20 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
         return false
     end
 
+    local payload = build_runtime_payload(override_data)
+    if not next(payload) then
+        TEO_dbg_print('[TEOcean Runtime] impl 文件没有可应用的本地化内容:', impl_file)
+        return false
+    end
+
     TEO_dbg_print('[TEOcean Runtime] 开始进行合并操作:', mod_id, '语言:', lang)
+    G.localization = G.localization or {}
 
-    -- 深度合并到 G.localization
-    if not G.localization then
-        G.localization = {}
+    if not TEO_localization_backup[mod_id] then
+        TEO_localization_backup[mod_id] = capture_runtime_patch(G.localization, payload)
     end
 
-    if override_data.descriptions then
-        G.localization.descriptions = G.localization.descriptions or {}
-        deep_merge(G.localization.descriptions, override_data.descriptions)
-    end
+    runtime_deep_merge(G.localization, payload)
 
     -- 标记为已应用
     TEO_active_overrides[mod_id] = true
@@ -594,7 +571,7 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
 end
 
 -- 移除运行时本地化覆盖（单个 mod）
-function TEO_remove_runtime_localization(mod_id)
+function TEO_remove_runtime_localization(mod_id, skip_init)
     if not mod_id then return false end
 
     local backup = TEO_localization_backup[mod_id]
@@ -605,22 +582,15 @@ function TEO_remove_runtime_localization(mod_id)
 
     TEO_dbg_print('[TEOcean Runtime] 开始恢复原始本地化:', mod_id)
 
-    -- 从备份中恢复
-    if backup.descriptions and G.localization and G.localization.descriptions then
-        for set_name, set_data in pairs(backup.descriptions) do
-            if G.localization.descriptions[set_name] then
-                for key, data in pairs(set_data) do
-                    G.localization.descriptions[set_name][key] = deep_copy(data)
-                end
-            end
-        end
-    end
+    G.localization = G.localization or {}
+    restore_runtime_patch(G.localization, backup)
 
     -- 移除合并覆盖标记
     TEO_active_overrides[mod_id] = nil
+    TEO_localization_backup[mod_id] = nil
 
     -- 重新解析本地化文本
-    if init_localization then
+    if not skip_init and init_localization then
         pcall(init_localization)
     end
 
@@ -629,24 +599,36 @@ function TEO_remove_runtime_localization(mod_id)
 end
 
 -- 批量应用运行时本地化合并操作
-function TEO_apply_all_runtime_localizations()
+function TEO_apply_all_runtime_localizations(skip_init)
     local TEO_mod = TEO_get_mod()
     if not TEO_mod or not TEO_mod.config then return end
 
     local clicked_list = TEO_mod.config.clicked_list or {}
     local count = 0
+    local changed = false
+
+    local active_ids = {}
+    for mod_id in pairs(TEO_active_overrides) do
+        active_ids[#active_ids + 1] = mod_id
+    end
+    for _, mod_id in ipairs(active_ids) do
+        if clicked_list[mod_id] ~= true and TEO_remove_runtime_localization(mod_id, true) then
+            changed = true
+        end
+    end
 
     -- 批量应用时跳过每个 mod 的 init_localization
     for mod_id, is_checked in pairs(clicked_list) do
         if is_checked == true then
             if TEO_apply_runtime_localization(mod_id, true) then -- skip_init = true
                 count = count + 1
+                changed = true
             end
         end
     end
 
     -- 所有 mod 应用完成后，统一调用一次 init_localization
-    if count > 0 and init_localization then
+    if changed and not skip_init and init_localization then
         TEO_dbg_print('[TEOcean Runtime] 批量应用完成，重新初始化本地化')
         pcall(init_localization)
     end
@@ -658,10 +640,18 @@ end
 function TEO_restore_all_runtime_localizations()
     local count = 0
 
-    for mod_id, _ in pairs(TEO_active_overrides) do
-        if TEO_remove_runtime_localization(mod_id) then
+    local active_ids = {}
+    for mod_id in pairs(TEO_active_overrides) do
+        active_ids[#active_ids + 1] = mod_id
+    end
+    for _, mod_id in ipairs(active_ids) do
+        if TEO_remove_runtime_localization(mod_id, true) then
             count = count + 1
         end
+    end
+
+    if count > 0 and init_localization then
+        pcall(init_localization)
     end
 
     print(('[TEOcean Runtime] 批量恢复完成，已恢复 %d 个 mod'):format(count))
