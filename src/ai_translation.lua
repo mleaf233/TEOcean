@@ -58,25 +58,6 @@ local function TEO_append_debug_loc_text(debug_text, label, value)
     end
 end
 
-local function TEO_resolve_card_translation_key(mod_id, center)
-    local base_key = center.key
-
-    -- SMODS 允许 loc_vars 在渲染时替换 Center 的本地化键，但本 Hook 在该步骤之前执行。
-    -- 不能为自动探测而提前调用任意 Mod 的 loc_vars，否则重复调用可能产生副作用。
-    -- 已知 Mod 的特殊显示键适配统一放在此函数中，并保持条件和影响范围尽可能明确。
-    if mod_id == 'Menthol' then
-        local flavor_key = base_key .. '_flavor'
-        local descriptions = G and G.localization and G.localization.descriptions
-        local set_descriptions = descriptions and descriptions[center.set]
-        if MINTY and MINTY.config and MINTY.config.flavor_text and
-            set_descriptions and set_descriptions[flavor_key] then
-            return flavor_key
-        end
-    end
-
-    return base_key
-end
-
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
     -- 跳过非卡牌对象 - 在调用原函数之前检查
     if not _c or type(_c) ~= 'table' or not _c.key or not _c.set then
@@ -111,16 +92,27 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         mod_id = G.P_CENTERS[_c.key].mod.id
     end
 
-    local translation_key = TEO_resolve_card_translation_key(mod_id, _c)
+    local localization_target = {
+        mod_id = mod_id,
+        set_key = _c.set,
+        loc_key = _c.key,
+    }
+    if TEO_resolve_localization_compat then
+        localization_target = TEO_resolve_localization_compat(_c, localization_target)
+    end
+
+    mod_id = localization_target.mod_id
+    local translation_set = localization_target.set_key
+    local translation_key = localization_target.loc_key
 
     if mod_id and mod_id ~= 'base' and TEO_set_last_hovered_translation_target then
-        TEO_set_last_hovered_translation_target(mod_id, _c.set, translation_key, _c.name or translation_key)
+        TEO_set_last_hovered_translation_target(mod_id, translation_set, translation_key, _c.name or translation_key)
     end
 
     -- 在原函数调用之前触发 AI 翻译，确保 G.localization 已更新
     if ai_enabled and mod_id and mod_id ~= 'base' and not TEO_suspend_ai_resolve then
         if TEO_resolve_card_localization then
-            TEO_resolve_card_localization(mod_id, _c.set, translation_key)
+            TEO_resolve_card_localization(mod_id, translation_set, translation_key)
         end
     end
 
@@ -130,8 +122,8 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
     -- Debug: 输出当前显示的翻译文本
     if TEO_DEBUG == true and G.localization and G.localization.descriptions then
-        local loc_data = G.localization.descriptions[_c.set] and
-            G.localization.descriptions[_c.set][translation_key]
+        local loc_data = G.localization.descriptions[translation_set] and
+            G.localization.descriptions[translation_set][translation_key]
         if loc_data then
             local debug_text = {}
             if loc_data.name then
@@ -141,7 +133,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
                 TEO_append_debug_loc_text(debug_text, "Text", loc_data.text)
             end
             TEO_dbg_print(string.format("[TEOcean AI Debug] Card hover: %s.%s.%s\n%s",
-                mod_id or 'unknown', _c.set, translation_key, table.concat(debug_text, "\n")))
+                mod_id or 'unknown', translation_set, translation_key, table.concat(debug_text, "\n")))
         end
     end
 

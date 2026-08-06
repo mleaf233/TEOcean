@@ -21,6 +21,7 @@ end
 load_module('utils')
 TEO_init_configs()
 
+load_module('localization_compat')
 load_module('localization')
 load_module('ai_provider_adapter')
 load_module('ui')
