@@ -4,14 +4,14 @@
                  "aikoyorisshenanigans":  {
                                               "repo":  "https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans.git",
                                               "baselineRef":  "HEAD",
-                                              "baselineCommit":  "3efcccac4a5b6f095378e0ceeae12114f3df73dc",
+                                              "baselineCommit":  "aaa40eb7775186de17c378ac815f9c4c6efe4b32",
                                               "resolvedPaths":  [
                                                                     "localization/en-us.lua"
                                                                 ],
                                               "hashes":  {
-                                                             "localization/en-us.lua":  "sha256:e774b72d347220a8f50bfc4148d4a0d5f680a880fb7865c81fa04be29b0370e1"
+                                                             "localization/en-us.lua":  "sha256:4a4ab13832064e3595f80e7ac059f39c3461e29fae9432bbacb485eedf45a26c"
                                                          },
-                                              "updatedAt":  "2026-06-23T08:38:25Z"
+                                              "updatedAt":  "2026-08-06T06:29:05Z"
                                           },
                  "allinjest":  {
                                    "repo":  "https://github.com/survovoaneend/All-In-Jest.git",
@@ -193,7 +193,9 @@
                                        "resolvedPaths":  [
                                                              "localization/en-us.lua"
                                                          ],
-                                       "hashes":  {},
+                                       "hashes":  {
+
+                                                  },
                                        "updatedAt":  "2026-06-23T08:51:52Z"
                                    },
                  "LuckyRabbit":  {
