@@ -1,3 +1,5 @@
+-- mleaf233译者注：有一些小丑是有现实作品原型但我没找到或者不熟悉，如果你看到这行字，敬请留意
+
 local poker_hand_desc = {}
 local poker_hands_name = {}
 for i = 3, 45 do
@@ -3062,7 +3064,7 @@ local localization = {
             akyrs_balance_dialog_intro = {
                 name = "",
                 text = {
-                    "你好！感谢并欢迎来到{E:akyrs_rainbow_wiggle}Aikoyori的恶作剧{}",
+                    "你好！感谢并欢迎来到{E:akyrs_rainbow_wiggle}Aikoyori的整活日常{}",
                     "我是{E:2,C:dark_edition}Aikoyori{} 我将引导你完成",
                     "一些必要的设置 让我们开始吧",
                 },
@@ -3071,7 +3073,7 @@ local localization = {
                 name = "",
                 text = {
                     "又见面了！由于你之前的",
-                    "{E:akyrs_rainbow_wiggle}Aikoyori的恶作剧{}游玩",
+                    "{E:akyrs_rainbow_wiggle}Aikoyori的整活日常{}游玩",
                     "我检测到一些需要处理的{E:1,C:attention}更改{}",
                     "让我们把它解决掉吧",
                 },
@@ -3772,7 +3774,7 @@ local localization = {
                 },
             },
             sc_akyrs_void = {
-                name = "创世",
+                name = "虚无",  -- 虽然英文原文对应是创世，但从翻译字段和实际效果来看，翻译成虚无比较合适，原文比较像mod作者的拼写错误
                 text = {
                     "清除{C:akyrs_scenario_dark_pink}浅粉{}情境",
                 },
@@ -3966,7 +3968,7 @@ local localization = {
                 },
             },
             bet_akyrs_ghastly_limelight = {
-                name = "惨白聚光灯！",
+                name = "骇人焦点！",
                 text = {
                     "牌组中所有卡牌的增强效果",
                     "被{C:attention}锁定{}为任意一种{C:attention}音符牌{}",
@@ -4005,7 +4007,7 @@ local localization = {
                 },
             },
             v_akyrs_worlds_end = {
-                name = "世界尽头",
+                name = "终焉",
                 text = {
                     "{C:akyrs_playable}+#1#{}选择上限",
                     "{C:blue}+#1#{}手牌上限",
@@ -4543,16 +4545,16 @@ local localization = {
             c_akyrs_replicant_digital_art = {
                 name = "数字艺术",
                 text = {
-                    "舍弃{C:red}#1#{}次弃牌次数",
-                    "换取永久{C:attention}+#2#{}手牌上限",
+                    "{C:red}#1#{}弃牌次数",
+                    "{C:attention}+#2#{}手牌上限",
                 },
             },
             c_akyrs_replicant_common_scam = {
                 name = "常见骗局",
                 text = {
-                    "舍弃{C:red}#1#{}次出牌次数",
-                    "换取永久{C:dark_edition}+#2#{}个小丑牌槽位",
-                    "和{C:dark_edition}+#2#{}个消耗牌槽位",
+                    "{C:red}#1#{}出牌次数",
+                    "{C:dark_edition}+#2#{}小丑牌槽位",
+                    "{C:dark_edition}+#2#{}消耗牌槽位",
                 },
             },
             c_akyrs_replicant_third_party_cookies = {
@@ -4573,7 +4575,7 @@ local localization = {
                 },
             },
             c_akyrs_replicant_get_rich_quick = {
-                name = "快速致富",
+                name = "暴富",
                 text = {
                     {
                         "{X:akyrs_money_x,C:akyrs_money_c}$^#1#{}但有{C:green}固定#2#%几率{}",
@@ -4762,7 +4764,7 @@ local localization = {
             k_akyrs_confrontation_has_face_in_hand_warning = "手牌中不能留有人头牌",
             k_akyrs_crystalised_warning = "结晶化卡牌会使出牌不得分",
 
-            k_akyrs_title = "aikoyori的恶作剧",
+            k_akyrs_title = "aikoyori的整活日常",
             k_akyrs_join_akyrs_discord = "Discord（漏洞与反馈）",
 
             k_akyrs_hardcore_challenge_mode = "硬核挑战模式",
@@ -4998,24 +5000,24 @@ local localization = {
         },
         akyrs_misc = {
             mod_label = {
-                { "Aikoyori的", "恶作剧" },
+                { "Aikoyori的", "整活日常" },
                 { "Aikoyori的", "死神大人" },
                 { "Aikoshen" },
-                { "Aikoyori的恶作剧" },
+                { "Aikoyori的整活日常" },
                 { "恶作剧先生的Aikoyori" },
                 { "Aikoyori的小丑牌" },
                 { "AKYRS" },
                 { "Aikomod" },
-                { "新超级", "Aikoyori恶作剧" },
+                { "新超级", "Aikoyori整活日常" },
                 { "一个Aikoyori模组" },
                 { "Shenaiko" },
                 { "Aikoslop", "Shenslop" },
-                { "恶作剧", "Aikoyori的" },
+                { "整活日常", "Aikoyori的" },
                 { "偷走", "Aikoshen" },
                 { "Aikoyori大电影", "游戏 模组" },
                 { "iroyokia的", "真Playbook" },
                 { "aish" },
-                { "Aikoyori世界中的", "古怪奇妙", "恶作剧" },
+                { "Aikoyori世界中的", "古怪奇妙", "整活日常" },
                 { "Solitaireyori", "Wordlenanigans" },
                 { "{f:5}アイコヨリ", "{f:5}しぇなにがんす" },
                 { "aiko？" },
