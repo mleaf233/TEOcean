@@ -154,9 +154,9 @@ impl/todo/<modid>/upstream_changed.md
 ## 如何通过此框架汉化一个mod
 
 1. 下载源码或者通过git克隆此仓库
-2. 选择你要汉化的mod，找到其modid，modid可以在目标mod的 <mod名称>.json / mod主函数入口中找到
-3. 在 impl/mod/ 下创建一个文件夹，文件夹以modid命名，即: ./impl/mod/<modid>
-4. 创建 ./impl/mod/<modid>/localization/ 文件夹
+2. 选择你要汉化的mod，找到其modid，modid可以在目标mod的 \<mod名称\>.json / mod主函数入口中找到
+3. 在 impl/mod/ 下创建一个文件夹，文件夹以modid命名，即: ./impl/mod/\<modid\>
+4. 创建 ./impl/mod/\<modid\>/localization/ 文件夹
 5. 新建空的 zh_CN.lua 文件：
 
 ```lua
@@ -168,7 +168,7 @@ return {
 }
 ```
 6. 将此mod安装到游戏，并启动游戏
-7. 启动后会自动在：./impl/todo/<modid>/ 下生成对应语言的翻译缺失项
+7. 启动后会自动在：./impl/todo/\<modid\>/ 下生成对应语言的翻译缺失项
 8. 按照缺失项进行翻译填充即可
 9. 如果你看到某些项有若干行的nil，那些是因为中文和英文的翻译行数不一致导致的，可以忽略或者让其行数一致
 10. 可选：为条目添加 Lua 注释作为“故事”，开启“显示故事”后，悬停卡牌时会在详情中显示该注释（详见下文“故事注释”）
