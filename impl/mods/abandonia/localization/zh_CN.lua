@@ -1,0 +1,6 @@
+﻿return {
+  translator = {
+    "TODO",
+  },
+}
+
