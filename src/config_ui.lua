@@ -83,6 +83,7 @@ function TEO_build_config_tab(mod)
     local options = {
         { label_key = 'teo_show_original', fallback = '显示原版翻译', ref_value = 'show_original_translation' },
         { label_key = 'teo_show_original_blind', fallback = '显示盲注原版翻译', ref_value = 'show_original_blind_translation' },
+        { label_key = 'teo_story', fallback = '显示故事', ref_value = 'show_story' },
         {
             label_key = 'teo_runtime_override',
             fallback = '运行时覆盖',

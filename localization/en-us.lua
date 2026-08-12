@@ -17,6 +17,14 @@ return {
                     "For translation quality comparison"
                 }
             },
+            teo_story = {
+                name = "Show Story",
+                text = {
+                    "Show comments (background story)",
+                    "written in the impl localization",
+                    "entries on card hover popup"
+                }
+            },
             teo_runtime_override = {
                 name = "Runtime Override (In-Memory)",
                 text = {
@@ -67,6 +75,8 @@ return {
             teo_show_original = "Show Original Translation",
             teo_show_original_blind = "Show Original Blind Translation",
             teo_original_tooltip = "Original Translation",
+            teo_story = "Show Story",
+            teo_story_tooltip = "Story",
             teo_actions = "Actions",
             teo_optional_config = "Optional Config",
             teo_runtime_override = "Runtime Override (In-Memory)",

@@ -17,6 +17,14 @@ return {
                     "用于对照翻译质量"
                 }
             },
+            teo_story = {
+                name = "显示故事",
+                text = {
+                    "在卡牌悬停详情中显示",
+                    "impl本地化条目里的注释",
+                    "（译者写的背景故事）"
+                }
+            },
             teo_runtime_override = {
                 name = "在内存中动态翻译",
                 text = {
@@ -66,6 +74,8 @@ return {
             teo_show_original = "显示原版翻译",
             teo_show_original_blind = "显示盲注原版翻译",
             teo_original_tooltip = "原版翻译",
+            teo_story = "显示故事",
+            teo_story_tooltip = "故事",
             teo_actions = "操作",
             teo_optional_config = "可选配置",
             teo_runtime_override = "在内存中动态翻译",

@@ -34,6 +34,7 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Hot reload**: Supports execution when clicking the "Manual Reload" button in the mod configuration menu in-game
 - **AI Translation** (experimental): Supports automatic translation via DeepSeek API with persistent caching
 - **Original text display**: Optionally show original text alongside translations for cards and blinds
+- **Story display**: Optionally show translator-written comments (background story) from localization entries in the card hover popup; supports both leading comment blocks and inline comments
 
 ## How to Use
 
@@ -59,8 +60,35 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Runtime Override Mode**: When enabled, applies translations in-memory without writing to disk
 - **Show Original Translation**: Display original text alongside translated text for cards
 - **Show Original Blind Translation**: Display original text for Blind challenges
+- **Show Story**: Display comments (background story) from localization entries in the card hover popup
 - **Enable AI Translation**: Enable automatic AI translation via DeepSeek API
 - **API Key**: Your DeepSeek API key for AI translation (get one at [deepseek](https://platform.deepseek.com/api_keys))
+
+### Story Comments
+
+Comments attached to a localization entry (e.g. `c_abn_hyperborea`) are extracted as its **story** and shown in the card hover popup (requires the **Show Story** config option). Two comment styles are supported:
+
+1. **Leading comment block**: consecutive `--` lines right before `key = {`
+
+```lua
+c_abn_lemuria = {
+    -- Lemuria is a hypothetical lost continent from 19th-century science,
+    -- later popularized as a legendary sunken land rivaling Atlantis.
+    name = "Lemuria",
+    text = { ... },
+},
+```
+
+2. **Inline comment**: any `--` comment inside the entry, e.g. on the `name` line
+
+```lua
+c_abn_hyperborea = {
+    name = "Hyperborea",  -- A legendary land beyond the north wind in Greek mythology
+    text = { ... },
+},
+```
+
+Both styles can be combined and are displayed in file order. Overlong comments wrap automatically at 25 visible characters, and `{C:xxx}` colour marks in comments are rendered as well.
 
 ## Development
 
