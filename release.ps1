@@ -63,7 +63,7 @@ try {
 
         # 合并后的正则表达式
         (-not $IsExcludedRelativePath) -and
-        ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv|\.git|\.idea)[\\/]?|release\.ps1$)")
+        ($_.FullName -inotmatch "[\\/]((Libs|smods|game|\.venv|\.git|\.idea|\.reasonix|\.agents)[\\/]?|release\.ps1$|copy_log\.txt$)")
     }
 
     foreach ($Item in $Items) {
@@ -84,7 +84,7 @@ try {
         }
     }
 
-    Write-Log "✅ 复制完成（已排除 Libs、smods、game、.venv、.git、.idea、impl/upstream、impl/backup、impl/todo 和 release.ps1）"
+    Write-Log "✅ 复制完成（已排除 Libs、smods、game、.venv、.git、.idea、.reasonix、.agents、impl/upstream、impl/backup、impl/todo、release.ps1 和 copy_log.txt）"
 }
 catch {
     Write-Log "❌ 复制失败: $($_.Exception.Message)"
