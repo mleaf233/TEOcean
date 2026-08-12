@@ -197,6 +197,9 @@ end
 -- 条目名查找缓存：path -> { [loc_key] = entry_name | false }
 local entry_cache = {}
 
+-- 本地化表缓存：path -> table | false（避免重复 load 执行整个本地化文件）
+local loc_tbl_cache = {}
+
 -- 在已加载的本地化表中查找与 loc_key 匹配的条目名
 local function find_entry_name(loc_tbl, loc_key)
     if type(loc_tbl) ~= 'table' then return nil end
@@ -219,6 +222,55 @@ local function find_entry_name(loc_tbl, loc_key)
         end
     end
     return nil
+end
+
+-- 目录形式本地化文件列表缓存：dir -> { path, ... }
+local dir_cache = {}
+
+-- 递归收集目录下所有 .lua 文件（支持 localization/<lang>/ 多文件结构）
+local function collect_loc_files(dir, out)
+    out = out or {}
+    local items = NFS.getDirectoryItems(dir)
+    if not items then return out end
+    for _, name in ipairs(items) do
+        local p = dir .. '/' .. name
+        local info = NFS.getInfo(p)
+        if info and info.type == 'directory' then
+            collect_loc_files(p, out)
+        elseif name:lower():match('%.lua$') then
+            out[#out + 1] = p
+        end
+    end
+    return out
+end
+
+-- 从单个本地化文件中提取指定条目的故事（带缓存）
+local function story_from_file(path, loc_key)
+    -- 条目名查找（缓存本地化表，避免重复 load）
+    local ec = entry_cache[path]
+    if not ec then
+        ec = {}
+        entry_cache[path] = ec
+    end
+    local entry_name = nil
+    if ec[loc_key] ~= nil then
+        entry_name = ec[loc_key] or nil
+    else
+        local loc_tbl = nil
+        if loc_tbl_cache[path] ~= nil then
+            loc_tbl = loc_tbl_cache[path] or nil
+        else
+            loc_tbl = TEO_read_loc_file(path)
+            loc_tbl_cache[path] = loc_tbl or false
+        end
+        entry_name = loc_tbl and find_entry_name(loc_tbl, loc_key) or nil
+        ec[loc_key] = entry_name or false
+    end
+    -- 注释提取（带解析缓存，避免重复读文件）
+    if not entry_name then return nil end
+    local parsed = get_parsed(path)
+    if not parsed then return nil end
+    return extract_story(parsed, entry_name)
 end
 
 -- ============ 对外接口 ============
@@ -247,30 +299,25 @@ function TEO_get_story_text(mod_id, loc_key)
     local langs_try = { lang }
     if lang ~= 'zh_CN' then table.insert(langs_try, 'zh_CN') end
     for _, l in ipairs(langs_try) do
+        -- 1) 单文件 localization/<lang>.lua
         local path = impl_base .. l .. '.lua'
         if NFS.getInfo(path) then
-            -- 条目名查找（带缓存，避免重复 load 执行整个本地化文件）
-            local ec = entry_cache[path]
-            if not ec then
-                ec = {}
-                entry_cache[path] = ec
+            story = story_from_file(path, loc_key)
+            if story then break end
+        end
+        -- 2) 目录形式 localization/<lang>/（多文件，可含子目录，如 JoyousSpring）
+        local dir = impl_base .. l .. '/'
+        if NFS.getInfo(dir) then
+            local files = dir_cache[dir]
+            if not files then
+                files = collect_loc_files(dir)
+                dir_cache[dir] = files
             end
-            local entry_name = nil
-            if ec[loc_key] ~= nil then
-                entry_name = ec[loc_key] or nil
-            else
-                local loc_tbl = TEO_read_loc_file(path)
-                entry_name = loc_tbl and find_entry_name(loc_tbl, loc_key) or nil
-                ec[loc_key] = entry_name or false
+            for _, fp in ipairs(files) do
+                story = story_from_file(fp, loc_key)
+                if story then break end
             end
-            -- 注释提取（带解析缓存，避免重复读文件）
-            if entry_name then
-                local parsed = get_parsed(path)
-                if parsed then
-                    story = extract_story(parsed, entry_name)
-                    if story then break end
-                end
-            end
+            if story then break end
         end
     end
 

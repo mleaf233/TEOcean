@@ -90,6 +90,8 @@ c_abn_hyperborea = {
 
 Both styles can be combined and are displayed in file order. Overlong comments wrap automatically at 25 visible characters, and `{C:xxx}` colour marks in comments are rendered as well.
 
+Localization files may use either a single `localization/<lang>.lua` file or a multi-file layout under a `localization/<lang>/` directory (including subdirectories), e.g. JoyousSpring — both layouts are scanned.
+
 ## Development
 
 - The merge logic is implemented in `src/localization.lua`, with functions:
