@@ -1,6 +1,18 @@
 ﻿{
     "version":  1,
     "mods":  {
+                 "abandonia":  {
+                                   "repo":  "https://github.com/cloudzXIII/Abandonia",
+                                   "baselineRef":  "HEAD",
+                                   "baselineCommit":  "60b4e574615eef6341242145c2db7fa3728ecf98",
+                                   "resolvedPaths":  [
+                                                         "localization/en-us.lua"
+                                                     ],
+                                   "hashes":  {
+                                                  "localization/en-us.lua":  "sha256:7946f3548616b12625cbdc240e906fa5ce8b5e6f37e65bdd67f4cb3cf148cf1b"
+                                              },
+                                   "updatedAt":  "2026-08-12T08:25:43Z"
+                               },
                  "aikoyorisshenanigans":  {
                                               "repo":  "https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans.git",
                                               "baselineRef":  "HEAD",
@@ -54,14 +66,14 @@
                  "Cryptid":  {
                                  "repo":  "https://github.com/SpectralPack/Cryptid.git",
                                  "baselineRef":  "HEAD",
-                                 "baselineCommit":  "5191ad6dab017f978206100ca83142da4a4d38fc",
+                                 "baselineCommit":  "22fb1b1295591e8dd3091e37f3371367bb8f0a01",
                                  "resolvedPaths":  [
                                                        "localization/en-us.lua"
                                                    ],
                                  "hashes":  {
-                                                "localization/en-us.lua":  "sha256:98e54d8e4f3c9dedad8f5cf83873301215f83aefc64d5592380fbc19e6a41c23"
+                                                "localization/en-us.lua":  "sha256:d302d82cf96c1148df75aedb57aabca41415db0303b4228c648fd5c6c3ae85e3"
                                             },
-                                 "updatedAt":  "2026-06-23T08:38:52Z"
+                                 "updatedAt":  "2026-08-12T08:39:30Z"
                              },
                  "CryptidMoreMarioJokers":  {
                                                 "repo":  "https://github.com/smg9000/Cryptid-MoreMarioJokers.git",

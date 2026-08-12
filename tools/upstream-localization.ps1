@@ -614,6 +614,17 @@ function Update-Baseline {
 
     Save-LockEntries $LockEntries
     Write-Host "[$ModId] baseline set to $latestCommit"
+
+    $todoDir = Join-Path $ImplTodoDir $ModId
+    $reportPath = Join-Path $todoDir "upstream_changed.md"
+    if (Test-Path -LiteralPath $reportPath) {
+        Remove-Item -LiteralPath $reportPath -Force
+        $remaining = @(Get-ChildItem -LiteralPath $todoDir -Force -ErrorAction SilentlyContinue)
+        if ($remaining.Count -eq 0) {
+            Remove-Item -LiteralPath $todoDir -Force
+        }
+        Write-Host "[$ModId] removed stale change report."
+    }
 }
 
 function Get-LockBaseline {
