@@ -631,9 +631,9 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.show_original_blind_translation == nil then
         mod.config.show_original_blind_translation = false
     end
-    -- 初始化"显示故事"配置项
+    -- 初始化"显示故事"配置项（默认启用）
     if mod and mod.config and mod.config.show_story == nil then
-        mod.config.show_story = false
+        mod.config.show_story = true
     end
     -- 初始化"关闭侧边栏"配置项
     if mod and mod.config and mod.config.disable_edge_sidebar == nil then
