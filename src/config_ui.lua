@@ -131,6 +131,31 @@ function TEO_build_config_tab(mod)
         option_nodes[#option_nodes + 1] = option_row(mod, option)
     end
 
+    -- 选项分成两列，避免单列过长太挤
+    -- 注意：列不能设 maxw，否则内容超宽会被 Balatro 按比例压缩（字体变小）
+    local option_rows = {}
+    for i = 1, #option_nodes, 2 do
+        local cols = {
+            {
+                n = G.UIT.C,
+                config = { align = 'cm', minw = 4, padding = 0.05 },
+                nodes = { option_nodes[i] }
+            }
+        }
+        if option_nodes[i + 1] then
+            cols[#cols + 1] = {
+                n = G.UIT.C,
+                config = { align = 'cm', minw = 4, padding = 0.05 },
+                nodes = { option_nodes[i + 1] }
+            }
+        end
+        option_rows[#option_rows + 1] = {
+            n = G.UIT.R,
+            config = { align = 'cm', padding = 0.05 },
+            nodes = cols
+        }
+    end
+
     return {
         n = G.UIT.ROOT,
         config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = G.C.BLACK, minw = 10 },
@@ -159,8 +184,8 @@ function TEO_build_config_tab(mod)
                     },
                     {
                         n = G.UIT.R,
-                        config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 6 },
-                        nodes = option_nodes
+                        config = { align = 'cm', padding = 0.05, emboss = 0.05, r = 0.1, colour = HEX('586E82'), minw = 8.5 },
+                        nodes = option_rows
                     }
                 }
             }
