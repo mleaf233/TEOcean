@@ -342,7 +342,9 @@ end
 
 -- ============ 自动换行 ============
 
--- 单行最大可见字符数，超过则强制分行（避免长句把字挤出屏幕）
+-- 单行最大显示宽度单位，超过则强制分行。
+-- 单位按字形宽度计：半角（ASCII）=1，全角（中文等）=2，
+-- 这样中英文混排时行宽与弹窗描述一致，避免撑宽弹窗挡住 info_queue 浮层。
 local STORY_LINE_MAX = 25
 
 -- 断行时优先选用的标点（向前就近查找）
@@ -374,6 +376,20 @@ local function utf8_chars(s)
     return chars
 end
 
+-- 字符的显示宽度单位：半角=1，全角=2
+local function char_width(ch)
+    local b = ch:byte()
+    if not b or b < 0x80 then return 1 end
+    return 2
+end
+
+-- 计算字符数组 [a..b] 段的显示宽度
+local function seg_width(chars, a, b)
+    local w = 0
+    for k = a, b do w = w + char_width(chars[k]) end
+    return w
+end
+
 -- 将一行按可见字符数限制自动换行，返回行数组
 -- 按 UTF-8 字符切分，保证不切断多字节字符；
 -- 优先在断点前 8 个字符内最近的标点处断行，找不到则硬切；
@@ -383,7 +399,7 @@ local function wrap_story_line(line, max_chars)
     if not line or line == '' then return { line } end
 
     local chars = utf8_chars(line)
-    if #chars <= max_chars then return { line } end
+    if seg_width(chars, 1, #chars) <= max_chars then return { line } end
 
     local out = {}
     local cur = {}
@@ -411,7 +427,7 @@ local function wrap_story_line(line, max_chars)
             else
                 -- 无闭合的 {，按普通字符处理
                 cur[#cur + 1] = '{'
-                cur_len = cur_len + 1
+                cur_len = cur_len + char_width(ch)
                 i = i + 1
                 if cur_len >= max_chars then flush() end
             end
@@ -420,12 +436,30 @@ local function wrap_story_line(line, max_chars)
             local next_brace = i
             while next_brace <= n and chars[next_brace] ~= '{' do next_brace = next_brace + 1 end
             local limit = math.min(n, next_brace - 1) -- 段内最后一个可消费的字符
-            local take = math.max(0, max_chars - cur_len)
+            local take = math.max(0, max_chars - cur_len) -- 剩余可用宽度单位
             if take == 0 then
                 flush()
                 take = max_chars
             end
-            local j = math.min(limit, i + take - 1)
+            -- 从 i 起按显示宽度累积，取宽度不超过 take 的最大段
+            local j = i
+            local acc = 0
+            -- 当前行剩余宽度不足一个字符时，先换行再切
+            if i <= limit then
+                local first_w = char_width(chars[i])
+                if first_w > take then
+                    flush()
+                    take = max_chars
+                end
+            end
+            while j <= limit do
+                local w = char_width(chars[j])
+                if acc + w > take then break end
+                acc = acc + w
+                j = j + 1
+            end
+            j = j - 1
+            if j < i then j = i end -- 单个字符宽度就超过 take 时，至少放一个
             if j < limit then
                 -- 段内还有剩余：优先在 [i..j] 尾部 8 个字符内最近的标点处断行
                 local cut = j
@@ -437,14 +471,14 @@ local function wrap_story_line(line, max_chars)
                     end
                 end
                 cur[#cur + 1] = table.concat(chars, '', i, cut)
-                cur_len = cur_len + (cut - i + 1)
+                cur_len = cur_len + seg_width(chars, i, cut)
                 i = cut + 1
                 -- 切出的段已结束：立即换行（标点断行时标点留在行尾）
                 flush()
             else
-                -- 消费到段尾（可能因 take 满，也可能段本身较短）
+                -- 消费到段尾（可能因宽度满，也可能段本身较短）
                 cur[#cur + 1] = table.concat(chars, '', i, j)
-                cur_len = cur_len + (j - i + 1)
+                cur_len = cur_len + acc
                 i = j + 1
                 if cur_len >= max_chars then flush() end
             end
@@ -476,7 +510,7 @@ function TEO_build_story_ui(story_lines)
 
     return {
         n = G.UIT.R,
-        config = { align = 'cm', minw = 2.2, padding = 0.04, emboss = 0.08, r = 0.1, colour = HEX('23242E') },
+        config = { align = 'cm', minw = 2.0, padding = 0.04, emboss = 0.08, r = 0.1, colour = HEX('23242E') },
         nodes = {
             -- 标题栏
             {
