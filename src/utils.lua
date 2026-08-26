@@ -639,9 +639,9 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.disable_edge_sidebar == nil then
         mod.config.disable_edge_sidebar = false
     end
-    -- 统一使用 UI 和业务逻辑实际读取的配置键；磁盘模式是默认行为。
+    -- 统一使用 UI 和业务逻辑实际读取的配置键；运行时（内存）模式默认启用。
     if mod and mod.config and mod.config.use_runtime_override == nil then
-        mod.config.use_runtime_override = false
+        mod.config.use_runtime_override = true
     end
     if mod and mod.config then
         mod.config.runtime_override = nil
