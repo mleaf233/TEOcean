@@ -530,6 +530,78 @@ function TEO_build_story_ui(story_lines)
     }
 end
 
+
+-- ============ 按 H 隐藏故事框 ============
+
+-- 重建当前悬停弹窗
+local function rebuild_hover_popup(target)
+    if not target or target.REMOVED then return end
+    TEO_suspend_ai_resolve = true
+    local ok, err = pcall(function()
+        if target.generate_UIBox_ability_table then
+            target.ability_UIBox_table = target:generate_UIBox_ability_table()
+        end
+        if target.config then
+            target.config.h_popup = G.UIDEF.card_h_popup(target)
+            if target.align_h_popup then
+                target.config.h_popup_config = target:align_h_popup()
+            end
+        end
+        if target.children and target.children.h_popup then
+            target.children.h_popup:remove()
+            target.children.h_popup = nil
+        end
+        Node.hover(target)
+    end)
+    TEO_suspend_ai_resolve = false
+    if not ok then
+        print('[TEOcean Story] 弹窗重建异常:', tostring(err))
+    end
+end
+
+-- 每帧处理：按 H 临时隐藏故事框（重新悬停卡牌后恢复显示）
+local function story_update(dt)
+    local controller = G and G.CONTROLLER
+    local target = controller and controller.hovering and controller.hovering.target
+
+    -- 悬停目标变化（含移开鼠标）→ 清除隐藏状态，下次悬停恢复显示
+    if TEO._story_last_hover_target ~= target then
+        TEO._story_last_hover_target = target
+        TEO._story_hidden = false
+    end
+
+    if not target or TEO._story_hidden then return end
+
+    -- 按 H：临时隐藏故事框（重建弹窗移除它）
+    local pressed = controller.pressed_keys and controller.pressed_keys['h']
+    if pressed then
+        TEO._story_hidden = true
+        rebuild_hover_popup(target)
+    end
+end
+
+-- 确保 Game.update 已被包装。
+-- 延迟到运行时（首次悬停）再激活，兼容加载时 Game 尚未就绪的情况。
+local function ensure_story_update_hook()
+    if Game and Game.update and not TEO._story_update_hooked then
+        TEO._story_update_hooked = true
+        local story_update_ref = Game.update
+        Game.update = function(self, dt)
+            local ok, err = pcall(story_update, dt)
+            if not ok then
+                print('[TEOcean Story] 更新异常:', tostring(err))
+            end
+            return story_update_ref(self, dt)
+        end
+        print('[TEOcean Story] 更新钩子已激活')
+    end
+end
+
+-- 挂到 Game.update（链式，幂等；edge_widget 等其它模块的包装不会受影响）。
+-- 若加载时 Game 不可用，将在首次悬停（ensure_story_update_hook）时补挂。
+ensure_story_update_hook()
+
+
 -- ============ 挂载：卡牌悬停弹窗 ============
 -- 只 hook G.UIDEF.card_h_popup（所有悬停弹窗的必经之路），
 -- 避免与 generate_card_ui 的 info_queue 路径重复显示。
@@ -565,14 +637,22 @@ if not G.UIDEF.card_h_popup_teo_story_ref then
         local story_lines = TEO_get_story_text(mod_id, _c.key)
         if not story_lines then return ret_val end
 
+        -- 按 H 键可临时隐藏故事框（当前悬停期间），重新悬停卡牌后恢复
+        if TEO._story_hidden then
+            return ret_val
+        end
+
         if ret_val and ret_val.nodes then
             -- 与弹窗内容之间留一点间距
             table.insert(ret_val.nodes, { n = G.UIT.R, config = { minh = 0.05 } })
             table.insert(ret_val.nodes, TEO_build_story_ui(story_lines))
+            -- 确保标题滚动/H 隐藏的更新钩子已激活（首次悬停时补挂）
+            ensure_story_update_hook()
         end
 
         return ret_val
     end
 end
+
 
 print('[TEOcean] 故事模块加载 (Hooked: card_h_popup)')

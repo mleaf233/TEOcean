@@ -22,7 +22,8 @@ return {
                 text = {
                     "Show comments (background story)",
                     "written in the impl localization",
-                    "entries on card hover popup"
+                    "entries on card hover popup",
+                    "Press H while hovering a card to hide it temporarily"
                 }
             },
             teo_runtime_override = {
