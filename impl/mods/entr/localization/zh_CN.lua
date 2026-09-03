@@ -48,7 +48,7 @@ return {
 			m_entr_radiant = {
 				name = "日耀牌",
 				text = {
-					"{C:gold}+#1#{}升阶强度"
+					"{C:gold}+#1#{}晋升强度"
 				}
 			},
 			m_entr_ethereal = {
@@ -68,6 +68,92 @@ return {
 					"{C:inactive}(当前:{X:blue,C:white}X#1#{C:inactive})"
 				}
 			},
+			m_entr_disavowed_gfb = {
+				name = "宣誓牌",
+				text = {
+					"可以更改增强类型"
+				}
+			},
+			m_entr_scarlet_sun = {
+				name = "猩红太阳",
+				text = {
+					"{X:red,C:white}红色{}",
+					"留在手牌中时，",
+					"每{C:attention}打出{}一个盲注",
+					"给予{C:gold}+#1#{}晋升强度"
+				}
+			},
+			m_entr_burgundy_baracuda = {
+				name = "酒红梭鱼",
+				text = {
+					{
+						"{X:red,C:white}红色{}",
+						"{X:mult,C:white}X#1#{}倍率",
+					},
+					{
+						"重新触发{C:attention}#2#{}次",
+						"打出后重置"
+					},
+					{
+						"留在手牌中时，",
+						"{C:attention}燃烧{}计分手牌中的",
+						"所有盲注，每打出一个",
+						"盲注获得{C:attention}#3#{}次",
+						"重新触发"
+					}
+				}
+			},
+			m_entr_diamond_dawn = {
+				name = "钻石黎明",
+				text = {
+					{
+						"{X:chips,C:white}蓝色{}",
+						"重新触发相邻",
+						"计分盲注{C:attention}#1#{}次"
+					},
+					{
+						"复制相邻盲注的",
+						"{C:attention}色调{}"
+					},
+				}
+			},
+			m_entr_olive_orchard = {
+				name = "橄榄树园",
+				text = {
+					"{X:green,C:white}绿色{}",
+					"此盲注被{C:attention}弃置{}时",
+					"手牌中的所有盲注获得",
+					"{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			m_entr_citrine_comet = {
+				name = "黄玉彗星",
+				text = {
+					"{X:gold,C:white}黄色{}",
+					"当其他盲注{C:attention}燃烧{}时",
+					"获得{C:gold}#2#{}晋升强度",
+					"{C:inactive}(当前{C:gold}#1#{C:inactive}晋升强度){}"
+				}
+			},
+			m_entr_alabaster_anchor = {
+				name = "雪花石膏锚",
+				text = {
+					"{X:dark_edition,C:white}褪色{}",
+					"{C:dark_edition}强制{}升级",
+					"计分手牌中最右侧的盲注",
+					"{C:inactive}(如可行)"
+				}
+			},
+			m_entr_alabaster_anchor_two = {
+				name = "雪花石膏锚",
+				text = {
+					"{X:dark_edition,C:white}褪色{}",
+					"{C:dark_edition}强制{}升级",
+					"计分手牌中最右侧的盲注两次",
+					"{C:inactive}(如可行)"
+				}
+			},
+
 		},
 		["Content Set"] = {
 			set_entr_inversions = {
@@ -160,6 +246,14 @@ return {
 					"需要{C:attention}手动{}激活的{C:attention}小丑牌{}"
 				},
 			},
+			set_entr_void_jokers = {
+				name = "虚空小丑",
+				text = {
+					"由 Entropy 添加的",
+					"{C:entr_void}反转{}{C:attention}小丑牌{}"
+				},
+			},
+
 		},
 		Aesthetic = {
 			c_entr_breakcore = {
@@ -266,7 +360,7 @@ return {
 				text = {
 					"{C:attention}无限制{}手牌选择数量",
 					"升阶公式变为{X:dark_edition,C:white}^(#1#×#2#n){}",
-					"所有卡牌均参与{C:attention}升阶强度{}计算"
+					"所有卡牌均参与{C:attention}晋升强度{}计算"
 				}
 			},
 			j_entr_xekanos = {
@@ -345,7 +439,7 @@ return {
 				text = {
 					"每在Entropy的 #ascended-hands-worship 频道",
 					"出现一次{C:attention}太阳脸🌞{}表情",
-					"获得{X:gold,C:white}X#1#{}升阶强度",
+					"获得{X:gold,C:white}X#1#{}晋升强度",
 					"{C:inactive}(当前为{X:gold,C:white}X#2#{}{C:inactive})",
 					"{C:blue,s:0.7}https://discord.gg/beqqy4Bb7m"
 				}
@@ -354,7 +448,7 @@ return {
 				name = "太阳耀斑",
 				text = {
 					"其他{C:dark_edition}太阳{}卡牌",
-					"各给予{X:gold,C:white}X#1#{}升阶强度"
+					"各给予{X:gold,C:white}X#1#{}晋升强度"
 				}
 			},
 			j_entr_burnt_m = {
@@ -454,14 +548,14 @@ return {
 				name = "阳光博士",
 				text = {
 					"每当一张扑克牌被{C:attention}摧毁{}",
-					"该小丑牌获得{C:gold}+#1#{}升阶强度",
+					"该小丑牌获得{C:gold}+#1#{}晋升强度",
 					"{C:inactive}(当前为{C:gold}+#2#{}{C:inactive})"
 				}
 			},
 			j_entr_sunny_joker = {
 				name = "晴朗小丑",
 				text = {
-					"{C:gold}+#1#{}升阶强度"
+					"{C:gold}+#1#{}晋升强度"
 				}
 			},
 			j_entr_metanoia = {
@@ -483,8 +577,8 @@ return {
 				text = {
 					"选择盲注时，摧毁右侧小丑牌",
 					"并将其售价的十分之一",
-					"永久加至自身的{C:gold}升阶强度{}",
-					"{C:inactive}(当前为{X:gold,C:white}X#1#{}{C:inactive}升阶强度)"
+					"永久加至自身的{C:gold}晋升强度{}",
+					"{C:inactive}(当前为{X:gold,C:white}X#1#{}{C:inactive}晋升强度)"
 				}
 			},
 			j_entr_insatiable_dagger = {
@@ -523,7 +617,7 @@ return {
 				name = "反现实",
 				text = {
 					"每有一个空的小丑牌槽位",
-					"获得{X:gold,C:white}+X#1#{}升阶强度",
+					"获得{X:gold,C:white}+X#1#{}晋升强度",
 					"{s:0.8}包含自身{}",
 					"{C:inactive}(当前为{X:gold,C:white}X#2#{}{C:inactive})"
 				}
@@ -586,7 +680,7 @@ return {
 				name = "魔鬼日",
 				text = {
 					"黄金牌给予",
-					"{C:gold}+#1#{}升阶强度",
+					"{C:gold}+#1#{}晋升强度",
 					"每拥有一张{C:dark_edition}晴朗{}小丑",
 					"再额外给予{C:gold}+#2#{}"
 				}
@@ -595,7 +689,7 @@ return {
 				name = "伊甸园",
 				text = {
 					"其他{C:dark_edition}晴朗{}卡牌",
-					"各给予{C:gold}+#1#{}升阶强度"
+					"各给予{C:gold}+#1#{}晋升强度"
 				}
 			},
 			j_entr_exelixi = {
@@ -698,9 +792,9 @@ return {
 			j_entr_sunny_side_up = {
 				name = "太阳蛋",
 				text = {
-					"{C:gold}+#1#{}升阶强度",
+					"{C:gold}+#1#{}晋升强度",
 					"每打出一手牌",
-					"{C:gold}-#2#{}升阶强度"
+					"{C:gold}-#2#{}晋升强度"
 				}
 			},
 			j_entr_atomikos = {
@@ -797,7 +891,7 @@ return {
 				name = "狗狗巧克力",
 				text = {
 					"合并{C:attention}狗狗标签{}时",
-					"改为生成一张{C:attention}糖果{}小丑",
+					"改为生成一张{C:attention}食物{}小丑",
 					"并{C:red}摧毁{}两张狗狗标签",
 					"{C:attention}狗狗标签{}出现频率提升"
 				}
@@ -901,7 +995,7 @@ return {
 			j_entr_broadcast = {
 				name = "广播",
 				text = {
-					"复制第{C:attention}#1#{}#2#个小丑牌的效果",
+					"复制第{C:attention}#1#{}#2#个小丑牌的能力",
 					"每次出牌，该数字+1",
 					"到达最后一张小丑牌后重置"
 				}
@@ -1149,7 +1243,7 @@ return {
 				name = "棱镜",
 				text = {
 					"触发时随机选择效果",
-					"{X:chips,C:white}???{}筹码，{X:mult,C:white}???{}倍率，{X:money,C:white}???{}升阶强度",
+					"{X:chips,C:white}???{}筹码，{X:mult,C:white}???{}倍率，{X:money,C:white}???{}晋升强度",
 					"{X:money,C:white}???{}金钱，{X:blue,C:white}???{}出牌",
 					"生成{C:attention}2{}张扭曲牌，打出牌获得随机{C:dark_edition}版本{}",
 					"{X:attention,C:white}X0.9{}盲注需求……"
@@ -1306,8 +1400,8 @@ return {
 				name = "沙漠",
 				text = {
 					"仅打出{C:attention}1{}张牌时",
-					"该小丑牌获得{C:gold}+#1#{}升阶强度",
-					"{C:inactive}(当前为{C:gold}#2#{}{C:inactive}升阶强度)"
+					"该小丑牌获得{C:gold}+#1#{}晋升强度",
+					"{C:inactive}(当前为{C:gold}#2#{}{C:inactive}晋升强度)"
 				}
 			},
 			j_entr_rugpull = {
@@ -1369,7 +1463,7 @@ return {
 				name = "星星13",
 				text = {
 					"提供打出牌型{C:purple}等级{}{C:attention}1/4{}",
-					"的{C:gold}升阶强度{}"
+					"的{C:gold}晋升强度{}"
 				}
 			},
 			j_entr_diode_red = {
@@ -1392,7 +1486,7 @@ return {
 					"手牌计分时随机给予",
 					"{C:mult}+#1#{}倍率，",
 					"{C:blue}+#2#{}筹码，或",
-					"{C:gold}+#3#{}升阶强度"
+					"{C:gold}+#3#{}晋升强度"
 				}
 			},
 			j_entr_chameleon = {
@@ -1473,7 +1567,7 @@ return {
 				name = "六重低温·光线魔女",
 				text = {
 					"额外打出的牌给予",
-					"{C:gold}+3{}升阶强度",
+					"{C:gold}+3{}晋升强度",
 					"{C:attention}+3{}选择上限"
 				},
 			},
@@ -1481,7 +1575,7 @@ return {
 				name = "六重低温·思维骑士",
 				text = {
 					"额外打出的牌给予",
-					"升阶强度{X:gold,C:white}X3{}",
+					"晋升强度{X:gold,C:white}X3{}",
 					"{C:attention}+#1#{}选择上限"
 				},
 			},
@@ -1536,7 +1630,7 @@ return {
 					"{C:attention}重新触发{}的卡牌的版本",
 					"将升级到{C:attention}晴朗{}以及{C:attention}太阳{}",
 					"重新触发的{C:attention}太阳{}卡牌获得",
-					"{X:gold,C:white}X#1#{}升阶强度"
+					"{X:gold,C:white}X#1#{}晋升强度"
 				},
 			},
 			j_entr_axeh = {
@@ -1544,7 +1638,7 @@ return {
 				text = {
 					"获得时",
 					"创造一张{C:attention}晴朗小丑{}",
-					"使所有来源的升阶强度",
+					"使所有来源的晋升强度",
 					"获得{X:gold,C:white}X#1#{}",
 				},
 			},
@@ -1572,7 +1666,7 @@ return {
 				name = "黑玫瑰，绿太阳",
 				text = {
 					"手中的{C:spades}黑桃{}和{C:clubs}梅花{}",
-					"给予{C:gold}+#1#{}升阶强度"
+					"给予{C:gold}+#1#{}晋升强度"
 				},
 			},
 
@@ -1647,7 +1741,7 @@ return {
 					"卡牌计分时给予",
 					"{X:mult,C:white}X#1#{}倍率,",
 					"{X:blue,C:white}X#2#{}筹码,",
-					"或{X:gold,C:white}X#3#{}升阶强度"
+					"或{X:gold,C:white}X#3#{}晋升强度"
 				},
 			},
 			j_entr_overpump = {
@@ -1901,6 +1995,1215 @@ return {
 					"{C:inactive}（必须有空位）"
 				}
 			},
+			j_entr_d100_gfb = {
+				name = "D100",
+				text = {
+					"选择盲注时",
+					"随机化{C:red}所有{}其他小丑牌"
+				}
+			},
+			j_entr_deck_enlargement_pills_gfb = {
+				name = "扩牌丸",
+				text = {
+					"{C:green}复制整个牌组。",
+					"{C:red}施加{C:attention}厄运{}"
+				}
+			},
+			j_entr_blind_collectible_pack_gfb = {
+				name = "植物盲注收藏包",
+				text = {
+					"售出此牌以",
+					"生成一个免费的",
+					"{C:attention}植物盲注代币{}",
+					"{C:inactive}(必须有空位)"
+				}
+			},
+			j_entr_chalice_of_blood_gfb = {
+				name = "鲜血{C:red}圣杯{}",
+				text = {
+					"'仅献给{C:entr_zenith}配得上{}它的人'"
+				}
+			},
+			j_entr_elderberries_gfb = {
+				name = "接骨木莓",
+				text = {
+					"售出时强制使用{C:spectral}安卡{}",
+					"有{C:green}0.3%{}概率改用{C:spectral}灵魂{}"
+				}
+			},
+			j_entr_fasciation_gfb = {
+				name = "脸为何这么长？"
+			},
+			j_entr_fork_bomb_gfb = {
+				name = "分叉炸弹",
+				text = {
+					"选择{C:attention}盲注{}时",
+					"生成一张此小丑牌的{C:attention}复制{}",
+				}
+			},
+			j_entr_fourty_benadryls_gfb = {
+				name = "四十粒苯海拉明",
+				text = {
+					"直接进入",
+					"底注{C:red}32{}"
+				}
+			},
+			j_entr_hypnotism_gfb = {
+				name = "催眠术",
+				text = {
+					"{B:entr_freaky,C:white,s:0.8}[因模组审核，内容已被移除]"
+				}
+			},
+			j_entr_insatiable_dagger_gfb = {
+				name = "贪食匕首",
+				text = {
+					"商店结束时，右侧{C:attention}小丑牌",
+					"的数值提升{X:attention,C:white}X#1#{}"
+				}
+			},
+			j_entr_matryoshka_dolls_gfb = {
+				name = "套娃",
+				text = {
+					"{X:blue,C:white}X#1#{}筹码",
+					"选择盲注时",
+					"生成一张此小丑牌的{C:attention}复制{}，",
+					"其X筹码减少{X:blue,C:white}0.5{}",
+					"{C:inactive}(必须有空位)"
+				}
+			},
+			j_entr_menger_sponge_gfb = {
+				name = "门格海绵",
+				text = {
+					"{C:blue}+#1#{}筹码",
+					"回合结束时乘以{X:attention,C:white}(sin(#1#)+1)X#2#{}",
+				}
+			},
+			j_entr_polaroid_gfb = {
+				name = "宝丽来",
+				text = {
+					{
+						"使用此小丑牌生成",
+						"一张{C:attention}照片{}",
+						"{C:inactive}(必须有空位)"
+					},
+					{
+						"击败盲注时",
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_polaroid_gfbn = {
+				name = "负片",
+				text = {
+					{
+						"使用此小丑牌生成",
+						"一张{C:attention}照片{}",
+						"{C:inactive}(必须有空位)"
+					},
+					{
+						"击败盲注时",
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_recursive_joker_gfb = {
+				name = "递归小丑",
+				text = {
+					"{CANVAS:DESC_CANVAS} {}"
+				}
+			},
+			j_entr_searing_joke_gfb = {
+				name = "负脉冲",
+				text = {
+					{
+						"使用此小丑牌使手牌中",
+						"所有卡牌的点数",
+						"降低{C:attention}2{}",
+						"{C:inactive}(2和3会被摧毁)"
+					},
+					{
+						"击败Boss盲注时",
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_tesseract_gfb = {
+				name = "超立方体",
+				text = {
+					{
+						"倍率逆时针旋转{X:dark_edition,C:white}#1#{}",
+						"度，筹码顺时针旋转",
+						"{X:dark_edition,C:white}#1#{}度"
+					},
+					{
+						"若打出的牌型恰好有",
+						"{C:attention}4{}张牌，此小丑牌获得",
+						"{X:dark_edition,C:white}+#2#{}度"
+					}
+				}
+			},
+			j_entr_ybur_gfb = {
+				name = "红宝石至尊",
+				text = {
+					"我能{C:red}扛住{}{C:entr_zenith}任何{}攻击"
+				}
+			},
+			j_baron_gfb = {
+				name = "男爵",
+				text = {
+					"手牌中每张{C:attention}国王{}",
+					"给予{X:blue,C:white}X#1#{}筹码"
+				}
+			},
+			j_blueprint_gfb = {
+				name = "绯红蓝图",
+				text = {
+					{
+						"复制左侧",
+						"{C:attention}小丑牌{}的能力"
+					},
+					{
+						"{C:red,E:1}反正我一直不喜欢那个{}",
+						"{C:red,E:1}蓝色家伙{}",
+					}
+				}
+			},
+			j_brainstorm_gfb = {
+				name = "绿针",
+				text = {
+					{
+						"复制最右侧{C:attention}小丑牌",
+						"的能力"
+					},
+					{
+						"{C:red,E:1}别靠太近……"
+					}
+				}
+			},
+			j_certificate_gfb = {
+				name = "证书",
+				text = {
+					{
+						"回合开始时，",
+						"向手牌添加一张带随机",
+						"{C:attention}蜡封{}的随机{C:attention}证书{}",
+					},
+				}
+			},
+			j_credit_card_gfb = {
+				name = "信用卡",
+				text = {
+					{
+						"最多可以",
+						"负债{C:red}-$#1#{}",
+					},
+					{
+						"若处于{C:red}负债{}状态",
+						"商店结束时",
+						"金钱乘以{X:money,C:white}X1.25{}"
+					}
+				}
+			},
+			j_diet_cola_gfb = {
+				name = "零糖可乐",
+				text = {
+					"当一个小丑牌被售出时",
+					"生成对应的",
+					"{C:entr_zenith}稀有度{}{C:attention}标签{}"
+				}
+			},
+			j_golden_gfb = {
+				name = "点金手",
+				text = {
+					"商店和补充包中的",
+					"物品均为",
+					"{C:attention}黄金牌{}"
+				}
+			},
+			j_hanging_chad_gfb = {
+				name = "未断选票",
+				text = {
+					{
+						"重新触发第一张计分的",
+						"或手牌中的卡牌",
+						"{C:attention}#1#{}次"
+					},
+					{
+						"{C:red,E:1}这次重做如何，",
+						"{C:red,E:1}手下败将们。"
+					}
+				}
+			},
+			j_joker_gfb = {
+				name = "小丑贾克",
+				text = {
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率，{C:mult}-#1#{}倍率",
+					"{C:mult}+#1#{}倍率",
+				}
+			},
+			j_lusty_joker_gfb = {
+				name = "怪诞小丑",
+				text = {
+					"带{C:hearts}#2#{}花色的",
+					"游戏牌计分时给予",
+					"{X:entr_freaky,C:white}Xlog_#1#(筹码){}筹码"
+				}
+			},
+			j_merry_andy_gfb = {
+				name = "水银安迪",
+				text = {
+					"每回合获得{C:blue}+#1#{}个{C:attention}水银{}，",
+					"{C:red}#2#{}手牌上限"
+				}
+			},
+			j_photograph_gfb = {
+				name = "#2#",
+			},
+			j_seance_gfb = {
+				name = "通灵",
+				text = {
+					"若{C:attention}牌型{}为",
+					"{C:attention}零对{}，生成一张",
+					"随机{C:purple}塔罗{}牌",
+					"{C:inactive}(必须有双倍空位)",
+				}
+			},
+			j_smiley_gfb = {
+				name = "阳光笑脸",
+				text = {
+					"打出的{C:attention}人头{}牌",
+					"计分时给予",
+					"{C:gold}+#1#{}晋升强度"
+				}
+			},
+			j_space_joker_gfb = {
+				name = "太空小丑",
+				text = {
+					"{C:green}#1#/#2#{}概率为",
+					"随机小丑牌添加",
+					"{C:dark_edition}闪箔{}、{C:dark_edition}镭射{}或",
+					"{C:dark_edition}彩虹{}版本"
+				}
+			},
+			j_stone_gfb = {
+				name = "石头小丑",
+				text = {
+					"商店结束时将所有",
+					"游戏牌替换为",
+					"{C:attention}石头牌{}"
+				}
+			},
+
+			j_entr_alabaster_anchor = {
+				name = "雪花石膏锚（盲注）",
+				text = {
+					"当一张牌被{C:red}弃置{}时",
+					"一个随机小丑牌获得{X:attention,C:white}X#1#{}数值",
+					"另一个随机小丑牌获得",
+					"{X:attention,C:white}X#2#{}数值",
+					"{C:inactive}(不包含自身)"
+				}
+			},
+			j_entr_amaryllis = { name = "朱顶红", text = { "" } },
+			j_entr_amaryllis_orange = {
+				name = "橙色朱顶红",
+				text = {
+					{
+						"选择{C:attention}盲注{}时",
+						"获得{C:blue}+#1#{}次出牌"
+					},
+					{
+						"回合结束时",
+						"切换颜色"
+					}
+				}
+			},
+			j_entr_amaryllis_pink = {
+				name = "粉色朱顶红",
+				text = {
+					{
+						"首次{C:attention}抽出的{}手牌中",
+						"随机一张牌",
+						"变为{C:entr_freaky}怪诞{}"
+					},
+					{
+						"回合结束时",
+						"切换颜色"
+					}
+				}
+			},
+			j_entr_amaryllis_purple = {
+				name = "紫色朱顶红",
+				text = {
+					{
+						"手牌中每张{C:attention}人头牌{}",
+						"使{C:blue}筹码{}和{C:red}倍率{}",
+						"保持平衡"
+					},
+					{
+						"回合结束时",
+						"切换颜色"
+					}
+				}
+			},
+			j_entr_amaryllis_red = {
+				name = "红色朱顶红",
+				text = {
+					{
+						"打出的牌",
+						"转换为{C:hearts}红心{}"
+					},
+					{
+						"回合结束时",
+						"切换颜色"
+					}
+				}
+			},
+			j_entr_ancestral_recall = {
+				name = "先祖召回",
+				text = {
+					{
+						"使用此小丑牌抽取{C:attention}三{}张",
+						"额外卡牌，然后对其施加",
+						"{C:attention}标记{}",
+						"并在当前回合剩余时间内",
+						"失去{C:red}#3#{}次出牌"
+					},
+					{
+						"击败盲注时",
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_antiasceticism = {
+				name = "反苦行主义",
+				text = {
+					"每个底注中第一次",
+					"跌至{C:money}$#2#{}以下时",
+					"获得{C:money}$#1#{}"
+				}
+			},
+			j_entr_antimatter_sheath = {
+				name = "反物质剑鞘",
+				text = {
+					{
+						"回合开始时，向手牌添加{C:attention}#1#{}张",
+						"{C:attention}匕首{}的临时复制#<s>1#"
+					},
+					{
+						"当{C:attention}匕首{}被",
+						"计分时，摧毁完整牌组中一张",
+						"{C:attention}随机{}牌并获得",
+						"{X:mult,C:white}X#2#{}倍率和{X:chips,C:white}X#3#{}筹码",
+						"{C:inactive}(当前{X:mult,C:white}X#4#{C:inactive}、{X:chips,C:white}X#5#{C:inactive})"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_apoptosis = {
+				name = "细胞凋亡",
+				text = {
+					{
+						"手牌中的卡牌{C:attention}计分{}",
+						"视同其已被{C:entr_void}打出{}"
+					},
+					{
+						"手牌中未增强的卡牌",
+						"给予{C:gold}+#1#{}晋升强度"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_bag_of_chips = {
+				name = "一袋筹码",
+				text = {
+					"退还接下来{C:attention}#1#",
+					"张购买的卡牌#<s>1#"
+				}
+			},
+			j_entr_big_walk = {
+				name = "大步流星",
+				text = {
+					"重新触发{C:attention}第一张{}",
+					"和{C:attention}最后一张{}计分牌"
+				}
+			},
+			j_entr_bloodletting = {
+				name = "放血",
+				text = {
+					{
+						"选择盲注时",
+						"此小丑牌失去{C:red}#2#{}倍率",
+						"{C:inactive}(当前{C:red}#1#{C:inactive}倍率)"
+					},
+					{
+						"达到{C:red}#3#{}倍率后",
+						"转化为一个随机{C:red}稀有{}小丑牌，",
+						"保留相同的",
+						"负倍率"
+					}
+				}
+			},
+			j_entr_bountiful_harvest = {
+				name = "今年是个丰收年",
+				text = {
+					"所有其他小丑牌获得",
+					'"{C:green}#1#/#2#{}概率在',
+					'{C:attention}小丑牌{}被售出时',
+					'生成一个随机标签"'
+				}
+			},
+			j_entr_broken_god = {
+				name = "破碎之神麦肯",
+				text = {
+					{
+						"选择盲注时",
+						"向{C:attention}手牌{}中添加一张",
+						"此小丑牌的{C:attention}复制{}"
+					},
+					{
+						"作为牌型的一部分",
+						"计分时给予",
+						"{X:mult,C:white}X#1#{}倍率"
+					},
+					{
+						"此卡始终计分"
+					}
+				}
+			},
+			j_entr_broken_record_disc = {
+				name = "破损唱片？",
+				text = {
+					"售出时失去{C:red}$#1#{}"
+				}
+			},
+			j_entr_burgundy_baracuda = {
+				name = "酒红梭鱼（盲注）",
+				text = {
+					"商店结束时",
+					"{C:red}摧毁{}一个随机消耗牌",
+					"并获得{X:mult,C:white}X#2#{}倍率",
+					"{C:inactive}(当前{X:mult,C:white}X#1#{C:inactive}倍率)"
+				}
+			},
+			j_entr_caledscratch = {
+				name = "卡勒德抓痕",
+				text = {
+					{
+						"游戏牌的重新触发被",
+						"阻挡并存储。每有一个",
+						"{C:entr_void}存储{}的重新触发，",
+						"便重新触发最左侧的{C:attention}小丑牌{}一次，",
+						"然后重置"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_carrot_cake = {
+				name = "胡萝卜蛋糕",
+				text = {
+					"接下来{C:attention}#1#{}个",
+					"生成的消耗牌将以",
+					"{C:dark_edition}镀金{}形式出现"
+				}
+			},
+			j_entr_catastrophe = {
+				name = "大灾难",
+				text = {
+					"选择{C:attention}盲注{}时",
+					"摧毁一个随机小丑牌并生成",
+					"一张{C:dark_edition}负片{}{C:purple}星星{}或{C:planet}星球{}牌"
+				}
+			},
+			j_entr_cider = {
+				name = "苹果酒",
+				text = {
+					"{X:mult,C:white}X#1#{}倍率",
+					"打出牌型后降低{X:mult,C:white}X#2#{}，",
+					"每打出一张增强牌",
+					"提升{X:mult,C:white}X#3#{}",
+					"{C:inactive}(上限{X:mult,C:white}X4{C:inactive})"
+				}
+			},
+			j_entr_citrine_comet = {
+				name = "黄玉彗星",
+				text = {
+					{
+						"固定{C:green}50%{}概率",
+						"生成所有抽出的卡牌的",
+						"{C:red}临时{}{C:dark_edition}负片{}复制"
+					},
+					{
+						"{C:dark_edition}负片{}卡牌被选中时",
+						"给予{C:attention}+1{}",
+						"卡牌选择上限"
+					}
+				}
+			},
+			j_entr_complexion = {
+				name = "好气色",
+				text = {
+					"对子、三条和",
+					"四条可分别变为",
+					"同花，基础数值为{C:purple}2X{}、{C:purple}3X{}",
+					"或{C:purple}4X{}"
+				}
+			},
+			j_entr_crooked_penny = {
+				name = "歪硬币",
+				text = {
+					{
+						"本回合每打出一张{C:blue}手牌{}，",
+						"支付额乘以{X:money,C:white}X#1#{}",
+						"{C:inactive}(额外复制体叠加)" 
+					},
+					{
+						"离开商店时",
+						"金钱设为{C:entr_void}$0{}"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_demon_form = {
+				name = "恶魔形态",
+				text = {
+					"每回合第一张打出的",
+					"{C:attention}增强{}牌",
+					"留在手中时获得",
+					"{C:gold}+#1#{}晋升强度"
+				}
+			},
+			j_entr_desiderium = {
+				name = "渴求",
+				text = {
+					{
+						"若一个底注中所有{C:blue}出牌{}",
+						"和{C:red}弃牌{}都用完，",
+						"获得{C:entr_void}+#1#{}个小丑槽位",
+						"{C:inactive}(当前#2#)"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_diamond_dawn = {
+				name = "钻石黎明（盲注）",
+				text = {
+					{
+						"每次出牌时剥离{C:attention}最右侧{}",
+						"计分牌的点数和花色，",
+						"并加入此小丑牌的{C:money}金钱{}"
+					},
+					{
+						"回合结束时获得{C:gold}$#1#{}"
+					}
+				}
+			},
+			j_entr_double_down = {
+				name = "加倍下注",
+				text = {
+					"对计分的{C:attention}幸运{}牌",
+					"施加{C:attention}标记{}"
+				}
+			},
+			j_entr_echo_chamber = {
+				name = "回音室",
+				text = {
+					{
+						"使用此小丑牌摧毁一张选定的",
+						"{C:attention}消耗牌{}，被此小丑牌",
+						"摧毁的最后三张消耗牌",
+						"会在另一张消耗牌被摧毁时",
+						"再次{C:attention}触发{}",
+						"{C:inactive}({V:1}#5#{}, {V:2}#6#{}, {V:3}#7#{C:inactive})",
+						"{C:inactive}(隐藏消耗牌除外)"
+					},
+					{
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"在商店中花费{C:money}$#3#{}后",
+						"{C:inactive}(当前{C:money}$#4#{}, {C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_egocentrism = {
+				name = "自我中心",
+				text = {
+					{
+						"{C:entr_void}强制触发{}最右侧的",
+						"小丑牌。削弱{C:attention}第一张{}",
+						"和{C:attention}最后一张{}打出的牌"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_exhume = {
+				name = "掘墓",
+				text = {
+					{
+						"打出牌型后",
+						"弃置整副手牌"
+					},
+					{
+						"打出牌型后，打出的牌有",
+						"{C:green}#1#/#2#{}概率",
+						"返回手牌"
+					}
+				}
+			},
+			j_entr_famine = {
+				name = "饥荒",
+				text = {
+					"{C:blue}出牌{}次数设为1",
+					"{C:red}弃牌{}次数设为0"
+				}
+			},
+			j_entr_fasciation = {
+				name = "扁化",
+				text = {
+					"每有一张与之{C:attention}花色{}相同的",
+					"{C:attention}先前{}计分牌，",
+					"每张计分牌便额外",
+					"触发一次"
+				}
+			},
+			j_entr_fragment = {
+				name = "碎片化",
+				text = {
+					"当一张未版本化的牌被",
+					"{C:red}摧毁{}时，生成一张{C:dark_edition}闪箔{}",
+					"和一张{C:dark_edition}镭射{}复制"
+				}
+			},
+			j_entr_fthof = {
+				name = "强推命运之手",
+				text = {
+					"商店中的{C:attention}优惠券{}",
+					"被替换为{C:dark_edition}镀金{}{C:red}稀有{}小丑牌",
+					"从{C:attention}商店{}购买任何其他卡牌时，",
+					"有{C:green}#1#/#2#{}概率{C:red}自毁{}"
+				}
+			},
+			j_entr_generator_meltdown = {
+				name = "发电机熔毁",
+				text = {
+					{
+						"当牌型升级时",
+						"将其{C:blue}筹码{}的{C:entr_void}25%{}",
+						"与{C:red}倍率{}的{C:entr_void}25%{}互换"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_gros_michel_2 = {
+				name = "大麦克 {s:1.5,C:red}2",
+				text = {
+					"{X:slib_emult,C:white}^#1#{}倍率",
+					"此牌有{C:green}#2#/#3#{}概率",
+					"在回合结束时",
+					"被摧毁",
+				}
+			},
+			j_entr_hellfire = {
+				name = "地狱火",
+				text = {
+					"手牌和计分牌中",
+					"所有牌的一{C:red}半{}",
+					"被{C:red}削弱{}。"
+				}
+			},
+			j_entr_hidden_gem = {
+				name = "未掘宝石",
+				text = {
+					"选择盲注时",
+					"向随机一个小丑牌添加",
+					"{C:attention}#1#{}个临时重新触发#<s>1#"
+				}
+			},
+			j_entr_hypnotism = {
+				name = "催眠术",
+				text = {
+					"所有不可使用的小丑牌",
+					"可用于{C:purple}强制触发{}",
+					"然后{C:red}自毁{}"
+				}
+			},
+			j_entr_immanentize = {
+				name = "内在化",
+				text = {
+					"接下来打开的{C:attention}#1#{}个",
+					"{C:attention}补充包{}将包含",
+					"随机类型的卡牌"
+				}
+			},
+			j_entr_infinite_loop = {
+				name = "无限循环",
+				text = {
+					"{C:red}+#1#{}倍率",
+					"当其他卡牌被",
+					"重新触发时，",
+					"此牌也重新触发。"
+				}
+			},
+			j_entr_lycanthropy = {
+				name = "狼化",
+				text = {
+					"计分的{C:attention}倍率{}牌",
+					"给予{X:mult,C:white}X#1#{}倍率"
+				}
+			},
+			j_entr_midnight = {
+				name = "午夜",
+				text = {
+					"计分的{C:spades}黑桃{}和",
+					"{C:diamonds}方片{}给予",
+					"{C:gold}+#1#{}晋升强度"
+				}
+			},
+			j_entr_milk = {
+				name = "牛奶盒",
+				text = {
+					"用多于{C:attention}一{}手牌",
+					"赢得回合时，此小丑牌获得",
+					"{C:blue}+#2#{}筹码",
+					"达到{C:blue}#3#{}筹码后",
+					"变为{C:attention}酸奶{}",
+					"{C:inactive}(当前{C:blue}+#1#{C:inactive}筹码)"
+				}
+			},
+			j_entr_milk_gfb = {
+				name = "草莓牛奶",
+				text = {
+					"用多于{C:attention}一{}手牌",
+					"赢得回合时，此小丑牌获得",
+					"{C:red}+#2#{}倍率",
+					"达到{C:red}#3#{}倍率后",
+					"变为{C:attention}草莓酸奶{}",
+					"{C:inactive}(当前{C:red}+#1#{C:inactive}倍率)"
+				}
+			},
+			j_entr_mutagenesis = {
+				name = "诱变",
+				text = {
+					{
+						"{C:attention}游戏牌{}的效果",
+						"添加到此小丑牌上",
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_nadir = {
+				name = "天底",
+				text = {
+					{
+						"使用此小丑牌{C:entr_void}存储{}",
+						"并摧毁所有其他小丑牌"
+					},
+					{
+						"当其他小丑牌触发时，",
+						"{C:entr_void}强制触发{}一张随机存储的小丑牌"
+					},
+					{
+						"{s:0} "
+					}
+				}
+			},
+			j_entr_nyx = {
+				name = "虚空之主倪克斯",
+				text = {
+					{
+						"选择{C:attention}盲注{}时",
+						"为每张其他非反转小丑牌",
+						"生成{C:attention}1{}张{C:dark_edition}负片{}{C:attention}临时{} ",
+						"{C:entr_void}反转{}小丑牌"
+					},
+					{
+						"使用此小丑牌，花费{X:money,C:white}X#1#{}倍的",
+						"此小丑牌价格与高亮卡牌价格，",
+						"可从所有选定卡牌上移除",
+						"{C:entr_void}临时{}",
+						"{C:inactive}(当前{C:money}$#2#{C:inactive})"
+					},
+					{
+						"{s:0} "
+					}
+				}
+			},
+			j_entr_olive_orchard = {
+				name = "橄榄树园",
+				text = {
+					{
+						"选择盲注时有{C:green}#1#/#2#{}概率",
+						"生成一个随机小丑牌的",
+						"{C:dark_edition}负片{}{C:attention}易腐{}",
+						"复制",
+						"{C:inactive}(不包含自身)"
+					},
+					{
+						"当一张牌{C:red}腐坏{}时",
+						"此小丑牌获得{X:mult,C:white}X#4#{}倍率",
+						"{C:inactive}(当前{X:mult,C:white}X#3#{C:inactive}倍率)"
+					}
+				}
+			},
+			j_entr_paranoia = {
+				name = "偏执",
+				text = {
+					"选择盲注时",
+					"生成{C:attention}#1#{}张{C:entr_void}临时{}",
+					"小丑牌",
+					"{C:inactive}(可能溢出)"
+				}
+			},
+			j_entr_phoenix_a = {
+				name = "凤凰A*",
+				text = {
+					{
+						"此小丑牌作为手牌的{C:entr_void}最后{}",
+						"一张牌打出，并在计分前",
+						"从末尾开始摧毁所有与它",
+						"{C:entr_void}连续{}点数相同的牌"
+					},
+					{
+						"每当有牌被它摧毁，",
+						"此小丑牌获得{X:mult,C:white}X#1#{}倍率",
+						"和{X:blue,C:white}X#2#{}筹码",
+						"{C:inactive}(当前{X:mult,C:white}X#3#{C:inactive}{X:blue,C:white}X#4#{C:inactive})"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_photonegative = {
+				name = "照片负片",
+				text = {
+					{
+						"使用此小丑牌进入/离开",
+						"{C:purple}翻转面{}",
+						"并{C:attention}重掷{}所有盲注"
+					},
+					{
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#，",
+						"每弃置{C:attention}#3#{}{C:inactive}[#4#]{}张牌#<s>3#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_planetarium = {
+				name = "天文馆",
+				text = {
+					"根据最后使用的手牌专属",
+					"{C:planet}星球{}或{C:purple}星星{}牌",
+					"改变{C:entr_ascended}效果{}"
+				}
+			},
+			j_entr_pluripotent_larvae = {
+				name = "多能幼虫",
+				text = {
+					{
+						"售出此小丑牌以{C:entr_void}反转{}",
+						"所有可{C:entr_void}反转{}的小丑牌，",
+						"然后用{C:entr_void}反转{}小丑牌",
+						"填满空余的小丑槽位"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_plushy = {
+				name = "毛绒玩具",
+				text = {
+					"当一张游戏牌被修改时",
+					"获得{C:gold}$#1#{}"
+				}
+			},
+			j_entr_pound_of_flesh = {
+				name = "一磅血肉",
+				text = {
+					"所有{C:attention}补充包{}改为花费",
+					"{C:attention}完整牌组{}中的{C:attention}1{}张随机牌",
+					"所有{C:attention}优惠券{}改为花费{C:attention}3{}张",
+					"{C:attention}完整牌组{}中的随机牌"
+				}
+			},
+			j_entr_projesterone = {
+				name = "孕酮",
+				text = {
+					{
+						"向下一张计分牌添加{C:gold}#2#{}",
+						"晋升强度，然后",
+						"重置此数值"
+					},
+					{
+						"计分的{C:attention}皇后{}改为",
+						"使此数值提升{C:gold}+#1#{}"
+					}
+				}
+			},
+			j_entr_prototype = {
+				name = "原型",
+				text = {
+					"每回合复制",
+					"{C:attention}首个{}触发的小丑牌",
+					"的能力，",
+					"直到选择盲注"
+				}
+			},
+			j_entr_quadrants = {
+				name = "四象限",
+				text = {
+					"若计分手牌至少包含{C:attention}2{}种花色",
+					"计分的{C:hearts}红心{}给予{C:red}+#1#{}倍率",
+					"计分的{C:diamonds}方片{}给予{C:gold}+$#2#{}",
+					"计分的{C:spades}黑桃{}给予{C:blue}+#3#{}筹码",
+					"计分的{C:clubs}梅花{}给予{C:gold}+#4#{}晋升强度",
+				}
+			},
+			j_entr_record_disc = {
+				name = "唱片",
+				text = {
+					"防止底注变化",
+					"花费或获得金钱{C:attention}5{}次{C:inactive}(#1#){}后",
+					"破裂"
+				}
+			},
+			j_entr_redacted = {
+				name = "{X:white,C:entr_transparent}______{}小丑",
+				text = {
+					"选择盲注时翻转",
+					"一个随机小丑牌并施加",
+					"{C:attention}租用{}",
+					"{C:attention}租用{}小丑牌给予",
+					"{C:mult}+#1#{}倍率"
+				}
+			},
+			j_entr_rivulet = {
+				name = "小溪",
+				text = {
+					{
+						"{element:1}",
+						"达到{C:attention}利息上限{}时",
+						"{C:attention}业力{}提升1",
+						"在商店中重掷{C:attention}3{}次后",
+						"{C:attention}业力{}降低1",
+						"{C:inactive}(当前#2#/#3#{C:attention}业力{C:inactive})"
+					},
+					{
+						"手牌中的卡牌在{C:attention}业力{}",
+						"高于{C:attention}1{}时，每级",
+						"给予{X:blue,C:white}X#4#{}筹码",
+						"{C:inactive}(当前{X:blue,C:white}X#1#{C:inactive}筹码)"
+					}
+				}
+			},
+			j_entr_rot = {
+				name = "腐烂",
+				text = {
+					"你最右侧的小丑牌",
+					"被{C:red}削弱{}。"
+				}
+			},
+			j_entr_rotisserie_chicken = {
+				name = "旋转烤鸡",
+				text = {
+					"右侧小丑牌拥有{X:attention,C:white}X#1#{}数值",
+					"{s:0.8}此小丑牌被移动时重新计算"
+				}
+			},
+			j_entr_scarlet_sun = {
+				name = "猩红太阳",
+				text = {
+					{
+						"计分的牌给予",
+						"{C:attention}+#1#{}晋升强度",
+					},
+					{
+						"对计分的{C:hearts}红心{}",
+						"施加{C:dark_edition}阳光{}"
+					}
+				}
+			},
+			j_entr_searing_joke = {
+				name = "灼热玩笑",
+				text = {
+					"此小丑牌可被{C:red}反转{}",
+					"被{C:red}反转{}时获得",
+					"{X:mult,C:white}X#2#{}倍率",
+					"{C:inactive}(当前{X:mult,C:white}X#1#{C:inactive}倍率)"
+				}
+			},
+			j_entr_slime_joker = {
+				name = "史莱姆小丑",
+				text = {
+					"手牌中的卡牌获得",
+					"{C:blue}+#1#{}留手筹码",
+					"弃置的卡牌失去{C:blue}#1#{}",
+					"留手筹码"
+				}
+			},
+			j_entr_snakebite = {
+				name = "蛇咬",
+				text = {
+					"若恰好弃置{C:attention}1{}张牌，",
+					"盲注规模降低",
+					"{C:attention}#1#%{}"
+				}
+			},
+			j_entr_survivorship_bias = {
+				name = "幸存者偏差",
+				text = {
+					{
+						"当一个小丑牌被{C:attention}售出{}时，",
+						"此小丑牌获得{C:chips}+#2#{}筹码",
+						"{C:inactive}(当前{C:chips}+#1#{C:inactive}筹码)"
+					},
+					{
+						"当一个小丑牌被摧毁时，",
+						"它被{C:red}放逐{}"
+					}
+				}
+			},
+			j_entr_twisted_pair = {
+				name = "双绞线",
+				text = {
+					"重新触发所有打出的牌",
+					"所有被重新触发的牌计分时",
+					"临时获得{X:attention,C:white}X#1#{}",
+					"卡牌数值"
+				}
+			},
+			j_entr_unstable_rift = {
+				name = "不稳定裂隙",
+				text = {
+					{
+						" "
+					},
+					{
+						"当{C:red}倍率{}或{C:blue}筹码{}",
+						"变化时，将变化的{C:entr_void}20%{}",
+						"添加至此小丑牌的",
+						"{C:red}倍率{}和{C:blue}筹码{}"
+					},
+					{
+						"回合最后一次出牌时",
+						"改用此小丑牌的",
+						"{C:mult}倍率{}和{C:blue}筹码{}计分，",
+						"然后{C:red}重置{}"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_void_cradle = {
+				name = "虚空摇篮",
+				text = {
+					{
+						"使用此小丑牌{C:red}反转{}",
+						"一张选定的消耗牌",
+						"此消耗牌{C:attention}今后{}的",
+						"所有实例也会",
+						"被{C:red}反转{}"
+					},
+					{
+						"击败Boss盲注时",
+						"此小丑牌获得{C:attention}#2#{}次使用#<s>2#",
+						"{C:inactive}(当前{C:attention}#1#{C:inactive}次使用#<s>1#)"
+					}
+				}
+			},
+			j_entr_voidheart = {
+				name = "虚空之心",
+				text = {
+					{
+						"将底注中的所有盲注",
+						"替换为单一的",
+						"{C:entr_void}深渊{}盲注"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_wormwood = {
+				name = "苦艾",
+				text = {
+					{
+						"游戏牌被计分时",
+						"永久失去{C:red}#1#{}倍率",
+					},
+					{
+						"计分的牌每拥有{C:blue}1{}筹码",
+						"给予{C:gold}+#2#{}",
+						"晋升强度"
+					}
+				}
+			},
+			j_entr_yaldabaoth = {
+				name = "亚大巴奥特",
+				text = {
+					{
+						"对每个补充包中的{C:attention}一张{}随机牌",
+						"施加{C:entr_void}死亡标记{}",
+					},
+					{
+						"当一张{C:entr_void}死亡标记{}牌",
+						"被摧毁时，获得{C:gold}+#1#{}晋升强度",
+						"{C:inactive}(当前{C:gold}+#2#{C:inactive}晋升强度)"
+					},
+					{
+						"{s:0} "
+					},
+				}
+			},
+			j_entr_yogurt = {
+				name = "酸奶",
+				text = {
+					"任何筹码效果被触发时，",
+					"此小丑牌失去{C:blue}#2#{}",
+					"筹码",
+					"{C:inactive}(当前{C:blue}+#1#{C:inactive}筹码)"
+				}
+			},
+			j_entr_yogurt_gfb = {
+				name = "草莓酸奶",
+				text = {
+					"任何倍率效果被触发时，",
+					"此小丑牌失去{C:red}#2#{}",
+					"倍率",
+					"{C:inactive}(当前{C:red}+#1#{C:inactive}倍率)"
+				}
+			},
+
 		},
 		mtx = {
 			c_entr_generousdonation = {
@@ -1970,8 +3273,8 @@ return {
 			bl_entr_scarlet_sun = {
 				name = "猩红太阳",
 				text = {
-					"所有牌增加升阶强度",
-					"-1X 升阶强度"
+					"所有牌增加晋升强度",
+					"-1X 晋升强度"
 				}
 			},
 			bl_entr_burgundy_baracuda = {
@@ -2000,33 +3303,29 @@ return {
 					"摧毁相邻牌"
 				}
 			},
-			bl_entr_endless_entropy_phase_one = {
+			bl_entr_brimstone = {
 				name = "硫火炼狱",
 				text = {
 					"???"
 				}
 			},
-			bl_entr_endless_entropy_phase_two = {
+			bl_entr_decay = {
 				name = "欺骗衰变",
 				text = {
-					"你所知的一切都将崩塌，",
-					"归于尘土。",
-					"(小丑数值随时间衰减)"
+					"暂时移除所有",
+					"小丑牌和牌型等级"
 				}
 			},
-			bl_entr_endless_entropy_phase_three = {
+			bl_entr_nadir = {
 				name = "无名天底",
 				text = {
-					"虚空吞噬你，",
-					"(最左侧小丑槽被削弱，",
-					"你必将输掉此盲注。)"
+					"你必须在本次盲注中落败。"
 				}
 			},
-			bl_entr_endless_entropy_phase_four = {
+			bl_entr_endless = {
 				name = "无尽之熵",
 				text = {
-					"在宇宙面前你不过一粒尘埃。",
-					"(熵永无尽头)"
+					"???"
 				}
 			},
 			bl_entr_alabaster_anchor = {
@@ -2171,7 +3470,7 @@ return {
 				name = "宇普西隆",
 				text = {
 					"计分的牌型",
-					"-0.25 升阶强度"
+					"-0.25 晋升强度"
 				}
 			},
 			bl_entr_phi = {
@@ -2241,13 +3540,111 @@ return {
 					"已选中牌不可取消",
 					"选中一张牌时随机再选中一张"
 				}
-			}
+			},
+			bl_entr_small = {
+				name = "小盲注",
+				text = {
+				}
+			},
+			bl_entr_big = {
+				name = "大盲注",
+				text = {
+				}
+			},
+			bl_entr_ekklisia = {
+				name = "艾克利西亚",
+				text = {
+					"复制翠叶、",
+					"冷酷合唱和",
+					"雪花石膏锚"
+				}
+			},
+			bl_entr_puppet = {
+				name = "穿刺傀儡",
+				text = {
+					"必须先打出#1#、#2#",
+					"和#3#，分数才能",
+					"发生变化"
+				}
+			},
+			bl_entr_erebus = {
+				name = "厄瑞波斯",
+				text = {
+					"复制琥珀橡果、",
+					"悲伤斯提克斯和",
+					"钻石黎明"
+				}
+			},
+			bl_entr_extinction = {
+				name = "灭绝",
+				text = {
+					"复制蔚蓝钟、",
+					"无尽迷宫和",
+					"黄玉彗星"
+				}
+			},
+			bl_entr_euphoria = {
+				name = "欧福里亚",
+				text = {
+					"复制紫罗兰容器、",
+					"纯净潘多拉和",
+					"橄榄树园"
+				}
+			},
+			bl_entr_fracture = {
+				name = "炽烈裂隙",
+				text = {
+					"从3种减益中选择1种，",
+					"在接下来的",
+					"在整个底注内生效"
+				}
+			},
+			bl_entr_feast = {
+				name = "盛宴",
+				text = {
+					"复制绯红之心、",
+					"被诅咒的卡珊德拉和",
+					"酒红梭鱼"
+				}
+			},
+			bl_entr_cleave = {
+				name = "灾厄屠刀",
+				text = {
+					"摧毁所有已打出和",
+					"弃置的卡牌"
+				}
+			},
+			bl_entr_abyss = {
+				name = "深渊",
+				text = {
+					"击败后获得效果并",
+					"提高要求",
+					"连续失败两次时",
+					"底注提升且赛局失败"
+				}
+			},
+			bl_entr_entropic_cultist = {
+				name = "熵化信徒",
+				text = {
+					"复制3个随机对决",
+					"击败后直接进入",
+					"底注32"
+				}
+			},
+			bl_entr_paw = {
+				name = "魔爪",
+				text = {
+					"所有非怪诞版本的",
+					"卡牌被削弱"
+				}
+			},
+
 		},
 		Edition = {
 			e_entr_solar = {
 				name = "太阳",
 				text = {
-					"{X:gold,C:white}X#1#{}升阶强度"
+					"{X:gold,C:white}X#1#{}晋升强度"
 				}
 			},
 			e_entr_fractured = {
@@ -2260,7 +3657,7 @@ return {
 			e_entr_sunny = {
 				name = "晴朗",
 				text = {
-					"{C:gold}+#1#{}升阶强度",
+					"{C:gold}+#1#{}晋升强度",
 					"听说过{X:gold,C:white}升阶{}",
 					"笑话吗伙计？"
 				}
@@ -2304,7 +3701,15 @@ return {
 					"随机重新触发",
 					"该牌所在区域的{C:attention}#1#{}张牌"
 				}
-			}
+			},
+			e_entr_neon_gfb = {
+				name = "霓虹",
+				text = {
+					"被动提供",
+					"{C:attention}+1{}商店槽位"
+				},
+			},
+
 		},
 		Back = {
 			b_entr_twisted = {
@@ -2380,6 +3785,17 @@ return {
 					"将在{C:attention}3{}个选项间循环"
 				}
 			},
+			b_entr_doc_cryptidless = {
+				name = "禁锢牌组",
+				text = {
+					"打出版本/增强牌、隐藏牌型或",
+					"使用消耗牌时获得{X:dark_edition,C:white}熵{}，",
+					"{C:entr_entropic}狂热?{}、{C:cry_exotic}灵魂{}",
+					"和{C:spectral}幻灵补充包{}出现概率提升",
+					"根据{X:dark_edition,C:white}熵{}降低筹码"
+				}
+			},
+
 		},
 		Sleeve = {
 			sleeve_entr_twisted = {
@@ -2447,6 +3863,17 @@ return {
 					"将在{C:attention}2{}个选项间循环"
 				}
 			},
+			sleeve_entr_doc_cryptidless = {
+				name = "异常牌套",
+				text = {
+					"打出版本/增强牌、隐藏牌型或",
+					"使用消耗牌时获得{X:dark_edition,C:white}熵{}，",
+					"{C:entr_entropic}狂热?{}、{C:cry_exotic}灵魂{}",
+					"和{C:spectral}幻灵补充包{}出现概率提升",
+					"根据{X:dark_edition,C:white}熵{}降低筹码"
+				}
+			},
+
 		},
 		Fraud = {
 			c_entr_master = {
@@ -3142,7 +4569,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_hydrae = {
@@ -3150,7 +4577,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_vega = {
@@ -3158,7 +4585,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_polaris = {
@@ -3166,7 +4593,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_cassiopeiae = {
@@ -3174,7 +4601,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_pegasi = {
@@ -3182,7 +4609,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_persei = {
@@ -3190,7 +4617,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_ophiuchi = {
@@ -3198,7 +4625,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_carinae = {
@@ -3206,7 +4633,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_procyon = {
@@ -3214,7 +4641,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_tauri = {
@@ -3222,7 +4649,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_sirius = {
@@ -3230,7 +4657,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_multiverse = {
@@ -3238,7 +4665,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_binarystars = {
@@ -3246,7 +4673,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_deadcore = {
@@ -3254,7 +4681,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_dark_matter = {
@@ -3262,7 +4689,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_dyson_swarm = {
@@ -3270,7 +4697,7 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				}
 			},
 			c_entr_starlua = {
@@ -3279,7 +4706,7 @@ return {
 					"{C:green}#1#/#2#{}概率",
 					"升级所有",
 					"{C:legendary,E:1}扑克牌型{}",
-					"{C:gold}+#3#{}升阶强度"
+					"{C:gold}+#3#{}晋升强度"
 				}
 			},
 			c_entr_strange_star = {
@@ -3289,7 +4716,7 @@ return {
 					"{C:legendary,E:1}牌型{}的等级",
 					"本局中每使用一张",
 					"{C:attention}奇异之星{}",
-					"{C:gold}升阶强度{C:attention}+#2#{}",
+					"{C:gold}晋升强度{C:attention}+#2#{}",
 					"{C:inactive}（当前{C:attention}#1#{C:inactive}）{}"
 				}
 			},
@@ -3310,7 +4737,7 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_jatka = {
@@ -3321,7 +4748,7 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_rouva = {
@@ -3332,7 +4759,7 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_assa = {
@@ -3343,7 +4770,7 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_kivi = {
@@ -3354,7 +4781,7 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_chunk = {
@@ -3365,15 +4792,15 @@ return {
 					"{C:attention}#1#{},",
 					"{C:attention}#2#{},",
 					"与{C:attention}#3#{}",
-					"{C:gold}+#7#{}升阶强度"
+					"{C:gold}+#7#{}晋升强度"
 				},
 			},
 			c_entr_supernova = {
 				name = "坍缩",
 				text = {
-					"移除 #1#{C:gold}升阶强度{}从",
+					"移除 #1#{C:gold}晋升强度{}从",
 					"你的{X:purple,C:white}宿敌{}的",
-					"最高{C:gold}升阶强度{}",
+					"最高{C:gold}晋升强度{}",
 					"{C:legendary,E:1}扑克牌型{}",
 				},
 			},
@@ -3382,22 +4809,22 @@ return {
 				text = {
 					"{S:0.8}({S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}){}升级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{}升阶强度"
+					"{C:gold}+#4#{}晋升强度"
 				},
 			},
 			c_entr_black_dwarf = {
 				name = "黑矮星",
 				text = {
 					"所有扑克牌型等级提升时",
-					"获得{C:gold}升阶强度{}",
-					"每级{C:gold}+#1#{}升阶强度"
+					"获得{C:gold}晋升强度{}",
+					"每级{C:gold}+#1#{}晋升强度"
 				},
 			},
 			c_entr_frozen_star = {
 				name = "冻结之星",
 				text = {
 					"升级你{C:attention}最高等级{}的",
-					"扑克牌型{C:gold}+#1#{}升阶强度"
+					"扑克牌型{C:gold}+#1#{}晋升强度"
 				},
 			},
 			c_entr_coatlicue = {
@@ -3405,7 +4832,7 @@ return {
 				text = {
 					"随机升级一种扑克牌型",
 					"根据其{C:chips}筹码{}每级",
-					"获得{C:gold}升阶强度{}的{C:attention}1/20{}"
+					"获得{C:gold}晋升强度{}的{C:attention}1/20{}"
 				},
 			},
 			c_entr_threefour = {
@@ -3413,7 +4840,7 @@ return {
 				text = {
 					"随机升级一种扑克牌型",
 					"根据其{C:mult}倍率{}每级",
-					"获得{C:gold}升阶强度{}的{C:attention}1/3{}"
+					"获得{C:gold}晋升强度{}的{C:attention}1/3{}"
 				},
 			},
 			c_entr_fuzzball = {
@@ -3421,7 +4848,7 @@ return {
 				text = {
 					"升级{C:attention}#1#{}种",
 					"随机扑克牌型",
-					"{C:gold}+#2#{}升阶强度",
+					"{C:gold}+#2#{}晋升强度",
 				},
 			},
 			c_entr_starhousespectrum = {
@@ -3429,7 +4856,7 @@ return {
 				text = {
 					"{S:0.8}（{S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}）{}提升等级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{} 升阶强度"
+					"{C:gold}+#4#{} 晋升强度"
 				}
 			},
 			c_entr_starspectrum = {
@@ -3437,7 +4864,7 @@ return {
 				text = {
 					"{S:0.8}（{S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}）{}提升等级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{} 升阶强度"
+					"{C:gold}+#4#{} 晋升强度"
 				}
 			},
 			c_entr_starfivespectrum = {
@@ -3445,7 +4872,7 @@ return {
 				text = {
 					"{S:0.8}（{S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}）{}提升等级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{} 升阶强度"
+					"{C:gold}+#4#{} 晋升强度"
 				}
 			},
 			c_entr_starstraightspectrum = {
@@ -3453,7 +4880,7 @@ return {
 				text = {
 					"{S:0.8}（{S:0.8,V:1}等级#1#{}{S:0.8,C:gold}#2#{}{S:0.8}）{}提升等级",
 					"{C:attention}#3#",
-					"{C:gold}+#4#{} 升阶强度"
+					"{C:gold}+#4#{} 晋升强度"
 				}
 			},
 		},
@@ -3495,7 +4922,7 @@ return {
 				text = {
 					"升级每一种",
 					"{C:legendary,E:1}扑克牌型{}",
-					"{C:gold}+#1#{}升阶强度"
+					"{C:gold}+#1#{}晋升强度"
 				}
 			},
 			c_entr_quasar = {
@@ -3503,7 +4930,7 @@ return {
 				text = {
 					"根据当前等级，升级你",
 					"最常用的{C:legendary,E:1}扑克牌型{}",
-					"{C:gold}+#1#{}升阶强度"
+					"{C:gold}+#1#{}晋升强度"
 				}
 			},
 			c_entr_dispel = {
@@ -3821,6 +5248,23 @@ return {
 					"及其{C:entr_entropic}升阶{}变体"
 				}
 			},
+			c_entr_flipside_omen = {
+				name = "翻转",
+				text = {
+					"将{C:attention}#1#{}张选定的卡牌#<s>1#",
+					"转换为{C:red}反转{}变体"
+				}
+			},
+			c_entr_ruin = {
+				name = "废墟",
+				text = {
+					"摧毁{C:attention}#2#{}张选定的小丑牌#<s>2#",
+					"从完整牌组中生成{C:attention}#1#{}张随机",
+					"{C:attention}增强{}且{C:attention}版本{}化的",
+					"卡牌复制"
+				}
+			},
+
 		},
 		Transient = {
 			c_entr_cage = {
@@ -4002,12 +5446,61 @@ return {
 					"{C:attention}光辉牌{}"
 				}
 			},
+			c_lovers_gfb = {
+				name = "恋人",
+				text = {
+					"对{C:attention}#1#{}张选定的",
+					"卡牌施加{C:entr_freaky}怪诞{}"
+				}
+			},
+			c_star_gfb = {
+				name = "星星",
+				text = {
+					"将{C:attention}#1#{}张选定的",
+					"卡牌增强为",
+					"{C:attention}超新星牌{}"
+				}
+			},
+			c_sun_gfb = {
+				name = "太阳",
+				text = {
+					"将{C:attention}#1#{}张选定的",
+					"卡牌增强为",
+					"{C:attention}阳光小丑牌{}"
+				}
+			},
+			c_world_gfb = {
+				name = "世界",
+				text = {
+					"将{C:attention}#1#{}张选定的",
+					"卡牌增强为",
+					"{C:attention}地球牌{}"
+				}
+			},
+			c_moon_gfb = {
+				name = "月亮",
+				text = {
+					"将{C:attention}#1#{}张选定的",
+					"卡牌增强为",
+					"{C:attention}登月牌{}"
+				}
+			},
+			c_death_gfb = {
+				name = "死神",
+				text = {
+					"选定{C:attention}#1#{}张卡牌，",
+					"将{C:attention}靠右{}的卡牌",
+					"变为{C:attention}靠左{}的卡牌",
+					"{C:inactive}(可拖动以重排)"
+				}
+			},
+
 		},
 		Spectral = {
 			c_entr_flipside = {
 				name = "逆转",
 				text = {
-					"将{C:attention}#1#{}张选中的消耗牌",
+					"将{C:attention}#1#{}张选中的卡牌",
 					"转换为{C:red}反转{}变体"
 				}
 			},
@@ -4082,6 +5575,16 @@ return {
 					"并跳过标签"
 				}
 			},
+			c_talisman_gfb = {
+				name = "下载护身符免费版2026",
+				text = {
+					"将{C:attention}金色蜡封{}添加到",
+					"手牌中{C:attention}1{}张选定的",
+					"卡牌上",
+					"{C:red}警告：不稳定"
+				}
+			},
+
 		},
 		Stake = {
 			stake_entr_copper = {
@@ -4123,10 +5626,25 @@ return {
 			stake_entr_zenith = {
 				name = "天顶注",
 				text = {
-					"{E:1,C:entr_zenith}所有盲注均为无尽之熵{}",
-					"{s:0.8}应用之前所有注的效果",
+					"要是{E:1,C:entr_zenith}无尽熵{}有",
+					"了{C:green}WhatsApp{}会怎样",
+					"红宝石·绯红獠牙          15:23",
+					"{C:inactive}我需要超级Boss！           ",
+					"翡翠·绯红獠牙  	    15:28",
+					"{C:inactive}我需要超级Boss！           ",
+					"男爵          		  14:23",
+					"{C:inactive}我恨你！我恨你！        ",
 				},
 			},
+			stake_entr_gfb = {
+				name = "红宝石'绯红獠牙'呈献：小丑即你，一场歌剧",
+				text = {
+					"尽情享受。",
+					"此赌注下无法",
+					"解锁任何内容"
+				}
+			},
+
 		},
 		Tag = {
 			tag_entr_dog = {
@@ -4334,7 +5852,7 @@ return {
 			},
 			tag_entr_ascendant_universal = {
 				name = "{C:gold}通用标签",
-				text = { "升级{C:attention}#1#{}", "{C:gold}+6{}升阶强度" },
+				text = { "升级{C:attention}#1#{}", "{C:gold}+6{}晋升强度" },
 			},
 			tag_entr_ascendant_ebundle = {
 				name = "{C:gold}捆绑标签",
@@ -4454,6 +5972,97 @@ return {
 					"变为{C:dark_edition}镀金{}"
 				}
 			},
+			tag_curse_entr_blind = {
+				name = "盲注之咒",
+				text = {
+					"商店中的卡牌",
+					"可能被{C:red}翻转{}"
+				}
+			},
+			tag_curse_entr_darkness = {
+				name = "黑暗之咒",
+				text = {
+					"补充包中可选择",
+					"的卡牌{C:red}更少{}"
+				}
+			},
+			tag_curse_entr_lost = {
+				name = "迷失之咒",
+				text = {
+					"没有{C:red}小盲注{}"
+				}
+			},
+			tag_curse_entr_maze = {
+				name = "迷宫之咒",
+				text = {
+					"盲注顺序被{C:red}随机化{}"
+				}
+			},
+			tag_entr_asc_additive = {
+				name = "{C:gold}加法标签{}",
+				text = { "{C:green}#1#/#2#{}概率增强", "打出的盲注" },
+			},
+			tag_entr_asc_awe = {
+				name = "{C:gold}敬畏标签{}",
+				text = { "每次出牌前，", "{C:red}削弱{}你的{C:attention}最左{}", "或{C:attention}最右{}的", "饰品" },
+			},
+			tag_entr_asc_burden = {
+				name = "{C:gold}负担标签{}",
+				text = { "每次出牌后，", "失去持有的{C:money}金钱{}的", "{C:attention}三分之一{}（向下取整）" },
+			},
+			tag_entr_asc_collector = {
+				name = "{C:gold}收藏家标签{}",
+				text = { "下一个打开的{C:attention}符号包{}", "将包含{C:dark_edition}版本{}升级的盲注" },
+			},
+			tag_entr_asc_debuff = {
+				name = "{C:gold}削弱标签{}",
+				text = { "计分后{C:blue}筹码{}和{C:red}倍率{}减半，", "若打出的牌型为{C:attention}#1#{}" },
+			},
+			tag_entr_asc_downpour = {
+				name = "{C:gold}倾盆标签{}",
+				text = { "每次出牌后，", "每个打出的盲注有{C:green}#1#/#2#{}", "概率失去全部", "{C:attention}修饰符{}" },
+			},
+			tag_entr_asc_joker = {
+				name = "{C:gold}小丑标签{}",
+				text = { "每次打出牌后，", "小丑牌获得{C:red}+0.5{}倍率" },
+			},
+			tag_entr_asc_magic = {
+				name = "{C:gold}魔法标签{}",
+				text = { "生成一个随机{C:attention,E:1}版本化饰品{}", "{C:inactive}(必须有空位)" },
+			},
+			tag_entr_asc_mantle = {
+				name = "{C:gold}披风标签{}",
+				text = { "每次出牌，{C:red}摧毁{}", "{C:attention}1{}个打出的盲注" },
+			},
+			tag_entr_asc_max = {
+				name = "{C:gold}极限标签{}",
+				text = { "手牌计分后", "{C:red}X2{}倍率和", "{C:blue}X2{}筹码" },
+			},
+			tag_entr_asc_memory = {
+				name = "{C:gold}记忆标签{}",
+				text = { "生成一个随机{C:bld_keepsake,E:1}版本化纪念物{}", "{C:inactive}(必须有空位)" },
+			},
+			tag_entr_asc_prison_break = {
+				name = "{C:gold}越狱标签{}",
+				text = { "本底注内禁用", "所有{C:attention}小丑牌{}" },
+			},
+			tag_entr_asc_recursive = {
+				name = "{C:gold}递归标签{}",
+				text = { "每持有一个标签，", "获得{X:blue,C:white}X0.1{}筹码", "{C:inactive}({X:blue,C:white}X#2#{C:inactive}筹码)" },
+			},
+			tag_entr_asc_symmetry = {
+				name = "{C:gold}对称标签{}",
+				text = { "重新触发每个计分盲注", "每个计分盲注有{C:green}#1#/#2#{}", "概率被额外触发两次" },
+			},
+			tag_entr_asc_voodoo = {
+				name = "{C:gold}巫毒标签{}",
+				text = { "获得一个不可跳过的", "{C:attention}巫毒包{}" },
+			},
+			tag_entr_asc_wave = {
+				name = "{C:gold}浪潮标签{}",
+				text = { "每个{C:attention}打出的盲注{}", "都计入计分" },
+			},
+
 		},
 		["Rune Tag"] = {
 			rune_entr_fehu = {
@@ -4683,14 +6292,14 @@ return {
 				name = "太阳",
 				text = {
 					"下一次{C:attention}弃掉{}的牌型",
-					"获得{C:gold}+2{}升阶强度"
+					"获得{C:gold}+2{}晋升强度"
 				}
 			},
 			rune_entr_sowilo_providence = {
 				name = "太阳{C:purple}+{}",
 				text = {
 					"下一次{C:attention}弃掉{}的牌型",
-					"获得{C:purple,E:1}+4{}升阶强度"
+					"获得{C:purple,E:1}+4{}晋升强度"
 				}
 			},
 			rune_entr_tiwaz = {
@@ -5276,14 +6885,14 @@ return {
 				name = "太阳符文",
 				text = {
 					"下一次{C:attention}弃掉{}的牌型",
-					"获得{C:gold}+2{}升阶强度"
+					"获得{C:gold}+2{}晋升强度"
 				}
 			},
 			c_entr_sowilo_providence = {
 				name = "太阳符文{C:purple}+{}",
 				text = {
 					"下一次{C:attention}弃掉{}的牌型",
-					"获得{C:purple,E:1}+4{}升阶强度"
+					"获得{C:purple,E:1}+4{}晋升强度"
 				}
 			},
 			c_entr_tiwaz = {
@@ -5539,7 +7148,7 @@ return {
 				name = "永恒契约",
 				text = {
 					"为你最常用的牌型",
-					"增加{C:gold}+#1#{}升阶强度",
+					"增加{C:gold}+#1#{}晋升强度",
 					"随机一张小丑变为{C:attention}永恒"
 				}
 			},
@@ -6034,12 +7643,12 @@ return {
 			},
 			entr_perma_exp_asc = {
 				text = {
-					"{X:money,C:white}^#1#{} 升阶强度"
+					"{X:money,C:white}^#1#{} 晋升强度"
 				}
 			},
 			entr_perma_h_asc = {
 				text = {
-					"留在手中时{X:money,C:white}X#1#{} 升阶强度"
+					"留在手中时{X:money,C:white}X#1#{} 晋升强度"
 				}
 			},
 			undiscovered_cblind = {
@@ -6052,22 +7661,22 @@ return {
 			},
 			entr_perma_asc = {
 				text = {
-					"{X:money,C:white}X#1#{} 升阶强度"
+					"{X:money,C:white}X#1#{} 晋升强度"
 				}
 			},
 			entr_perma_plus_asc = {
 				text = {
-					"{C:gold}#1#{} 升阶强度"
+					"{C:gold}#1#{} 晋升强度"
 				}
 			},
 			entr_perma_h_exp_asc = {
 				text = {
-					"留在手中时{X:money,C:white}^#1#{} 升阶强度"
+					"留在手中时{X:money,C:white}^#1#{} 晋升强度"
 				}
 			},
 			entr_perma_h_plus_asc = {
 				text = {
-					"留在手中时{C:gold}#1#{} 升阶强度"
+					"留在手中时{C:gold}#1#{} 晋升强度"
 				}
 			},
 			entr_marked = {
@@ -6079,15 +7688,64 @@ return {
 				}
 			},
 			asc_power_tutorial = {
-				name = "升阶强度说明",
+				name = "晋升强度说明",
 				text = {
 					"升阶（晋升）强度将{C:blue}筹码{}",
 					"与{C:mult}倍率{}的数值",
 					"{X:gold,C:white}X(1.25 ^ 强度)",
-					"{C:inactive,s:0.8}例：+0.5升阶强度 -> 筹码/倍率X1.11",
+					"{C:inactive,s:0.8}例：+0.5晋升强度 -> 筹码/倍率X1.11",
 					"{C:inactive,s:0.6}可在配置中禁用此说明"
 				}
 			},
+			entr_bountiful_harvest = {
+				'{C:green}#1#/#2#{}概率在',
+				'{C:attention}小丑牌{}被售出时',
+				'生成一个随机标签'
+			},
+			entr_card_suit_level = {
+				text = {
+					"--------------",
+					"{S:0.8,V:1}#1#{} {S:0.8}({S:0.8,V:2}等级.#3#{})",
+					"{C:blue}+#2#{}筹码"
+				}
+			},
+			entr_death_mark = {
+				name = "死亡标记",
+				text = {
+					"{C:red}触发时被摧毁{}"
+				}
+			},
+			entr_death_mark_consumeable = {
+				name = "死亡标记",
+				text = {
+					"{C:red}使用时被摧毁{}"
+				}
+			},
+			void_temporary = {
+				name = "临时",
+				text = {
+					"回合结束时",
+					"{C:red}被摧毁{}"
+				}
+			},
+			temporary_retriggers_tooltip = {
+				name = "临时重新触发",
+				text = {
+					"此卡被重新触发时，",
+					"临时重新触发",
+					"会被移除",
+					"{C:inactive}(当前{C:attention}#1#{C:inactive})"
+				}
+			},
+			temporary_retriggers_tooltip_gem = {
+				name = "临时重新触发",
+				text = {
+					"此卡被重新触发时，",
+					"临时重新触发",
+					"会被移除"
+				}
+			},
+
 		},
 
 		Partner = {
@@ -6183,6 +7841,152 @@ return {
 				"只是小心别让游戏{C:attention,E:1}崩溃{}，",
 				"因为很可能你还没输，它就先崩溃了……"
 			},
+			entr_tut_intro_1 = {
+				"你好呀！我是{C:red}露比{}，我来",
+				"帮你熟悉{C:entr_entropic}熵{}模组的门道"
+			},
+			entr_tut_intro_2 = {
+				"本模组的机制与",
+				"原版并无太大差别。"
+			},
+			entr_tut_intro_3 = {
+				"但有一些新东西",
+				"需要向你介绍。"
+			},
+			entr_tut_intro_4 = {
+				"我们一会儿见，",
+				"我在商店里等你。"
+			},
+			entr_alt_1 = {
+				"欢迎来到Boss盲注后的商店。",
+				"这里与原版大致相同，",
+				"但有一个不同之处。"
+			},
+			entr_alt_2 = {
+				"你可能注意到了这个新的",
+				"{C:purple}紫色{}商店按钮"
+			},
+			entr_alt_3 = {
+				"在{C:entr_entropic}熵{}模组中，",
+				"你的赛局有两个差异，会影响",
+				"{C:red}难度{}与{C:entr_void}奖励{}"
+			},
+			entr_alt_4 = {
+				"主路线包含常规盲注，",
+				"包括来自{C:attention}原版{}的以及",
+				"{C:entr_entropic}熵{}新增的盲注"
+			},
+			entr_alt_5 = {
+				"替代路线又称{C:purple}翻转面{}，",
+				"拥有只在此出现的全新盲注，",
+				"但通常难度更高"
+			},
+			entr_alt_6 = {
+				"这里出现{C:red}扭曲包{}的概率更高，",
+				"还可能出现新的{C:entr_void}小丑牌{}，",
+				"记得留意"
+			},
+			entr_alt_7 = {
+				"你可以在每个Boss盲注后的",
+				"商店中切换一次路线"
+			},
+			entr_alt_8 = {
+				"现在让我们切换到{C:purple}路线{}吧，",
+				"下一家商店见"
+			},
+			entr_ap_1 = {
+				"干得漂亮，现在你可以看看",
+				"{C:entr_entropic}熵{}商店能提供什么了。"
+			},
+			entr_ap_2 = {
+				"试试购买这个{C:gold}阳光{}恶魔"
+			},
+			entr_ap_3 = {
+				"这是本模组新增的",
+				"{C:attention}#1#{}个小丑牌之一"
+			},
+			entr_ap_4 = {
+				"这个会提供{C:gold}+2{}晋升强度，",
+				"你可能想知道它有什么用"
+			},
+			entr_ap_5 = {
+				"嗯，每{C:gold}+1{}晋升强度",
+				"都会将{C:blue}筹码{}和{C:red}倍率{}",
+				"都乘以{X:purple,C:white}X1.25{}"
+			},
+			entr_ap_6 = {
+				"所以{C:gold}+2{}就是两项",
+				"{X:purple,C:white}X1.25{}，大致相当于{X:purple,C:white}X1.56{}"
+			},
+			entr_ap_7 = {
+				"想知道精确公式的话，",
+				"就是{X:gold,C:white}X(1.25 ^ 强度)"
+			},
+			entr_ap_8 = {
+				"下一回合让我们",
+				"试试这个{C:attention}小丑牌{}。"
+			},
+			entr_packs_1 = {
+				"现在我们来看看",
+				"商店里的补充包"
+			},
+			entr_packs_2 = {
+				"试试购买这个由{C:entr_entropic}熵{}新增的",
+				"{C:red}扭曲{}包"
+			},
+			entr_packs_3 = {
+				"扭曲包是只包含反转消耗牌",
+				"的补充包"
+			},
+			entr_packs_4 = {
+				"{C:red}反转{}消耗牌是基于现有",
+				"{C:spectral}消耗牌{}的卡牌，",
+				"但以某种方式发生了扭曲"
+			},
+			entr_packs_5 = {
+				"例如，这张牌是{C:entr_omen}护符{}，",
+				"它是原版Balatro中{C:spectral}魔咒{}",
+				"的对应牌"
+			},
+			entr_packs_6 = {
+				"这些消耗牌也可以通过其他方式",
+				"获得，例如来自",
+				"{C:spectral}翻转{}或{C:purple}达格兹{}"
+			},
+			entr_packs_7 = {
+				"反转消耗牌可以",
+				"随时从包中选择"
+			},
+			entr_packs_8 = {
+				"让我们试试使用{C:entr_omen}护符{}"
+			},
+			entr_packs_9 = {
+				"接下来是对现有补充包的改动，",
+				"试试购买这个",
+				"{C:attention}星界包{}"
+			},
+			entr_packs_10 = {
+				"你可能注意到了这个包里",
+				"新的{C:purple}消耗牌类型{}"
+			},
+			entr_packs_11 = {
+				"这些是符文，它们有概率",
+				"替换秘术包中的{C:purple}塔罗牌{}",
+				"和星界包中的{C:blue}星球牌{}"
+			},
+			entr_packs_12 = {
+				"符文没有专属的",
+				"补充包，所以这个概率",
+				"是获得它们的主要途径"
+			},
+			entr_packs_13 = {
+				"让我们试试使用这个符文，",
+				"发挥它的效果"
+			},
+			entr_packs_14 = {
+				"好了，剩下的就交给你了。"
+			},
+
 		},
 		achievement_names = {
 			ach_entr_event_horizon = "视界",
@@ -6403,7 +8207,7 @@ return {
 			ph_red_2 = "？？？",
 			k_cooked_ex = "已加工！",
 			k_forcetrigger_ex = "强制触发！",
-			k_entr_asc_tutorial = "启用升阶强度提示",
+			k_entr_asc_tutorial = "启用晋升强度提示",
 			k_downgrade_ex = "降级！",
 		},
 		v_dictionary = {

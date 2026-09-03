@@ -102,14 +102,14 @@
                  "entr":  {
                               "repo":  "https://github.com/lord-ruby/Entropy.git",
                               "baselineRef":  "HEAD",
-                              "baselineCommit":  "dee6f4b96ac3e190af64ef0521682f439512e0ad",
+                              "baselineCommit":  "9ef53d3198175289dc1254479e60ad849eebb83c",
                               "resolvedPaths":  [
                                                     "localization/en-us.lua"
                                                 ],
                               "hashes":  {
-                                             "localization/en-us.lua":  "sha256:1efdd0726b2ed00fd6819c463954a79a6ab40a3308da234a644620b5bfd7cefb"
+                                             "localization/en-us.lua":  "sha256:57ddcae4fb8a2784a40539a716a5472a5c15a729c640d4d1b9f49f207795d594"
                                          },
-                              "updatedAt":  "2026-06-23T08:39:05Z"
+                              "updatedAt":  "2026-09-03T13:58:48Z"
                           },
                  "JoyousSpring":  {
                                       "repo":  "https://github.com/nh6574/JoyousSpring.git",
