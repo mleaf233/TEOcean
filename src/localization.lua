@@ -135,24 +135,12 @@ function merge_impl_mod_localizations(in_memory)
     end
 end
 
--- 为单个mod执行本地化合并的辅助函数
-function merge_single_mod_localization(target_mod, mod)
-    if not mod or not mod.path then return end
-    TEO_dbg_print(('[TEOcean] 开始为 %s 执行本地化操作'):format(target_mod.id))
+-- 以下为缺失翻译报告的只读生成工具：磁盘合并与运行时覆盖共用同一口径，保证两种模式下
+-- impl/todo/<modid>/missing_<lang>.lua 内容一致；这些函数只读目标 mod 文件，
+-- 写入范围仅限于 TEOcean 自己的 impl/todo 目录，不会备份或修改目标 mod 的任何文件。
 
-    local langs = {} -- 默认处理的语言
-    if G and G.SETTINGS and G.SETTINGS.language then
-        TEO_add_writable_language(langs, G.SETTINGS.language)
-    end
-    if G and G.SETTINGS and G.SETTINGS.real_language then
-        TEO_add_writable_language(langs, G.SETTINGS.real_language)
-    end
-
-    if #langs == 0 then
-        TEO_dbg_print(('[TEOcean] 当前语言为只读源语言，跳过 %s 的磁盘合并'):format(tostring(target_mod.id)))
-        return
-    end
-
+-- 读取目标 mod 自带本地化 + impl 覆盖，按语言合并（不写盘）
+local function TEO_collect_merged_by_lang(target_mod, mod, langs)
     local merged_by_lang = {}
     -- 1) 读取并合并到目标mod的 localization 文件
     local loc_dir = target_mod.path .. 'localization/'
@@ -221,9 +209,13 @@ function merge_single_mod_localization(target_mod, mod)
         end
     end
 
-    -- 3) 将合并后的本地化与原 mod 的 en-us.lua/default.lua 比较，生成缺失翻译清单并保存到 impl/todo/<modid>/
-    TEO_dbg_print(('[TEOcean Language Packs] 处理缺失翻译检查: %s'):format(target_mod.id))
+    return merged_by_lang
+end
+
+-- 读取目标 mod 的源语言文件（default.lua > en-us.lua > default.json > en-us.json）
+local function TEO_read_orig_source(target_mod)
     local orig_en = nil
+    local loc_dir = target_mod.path .. 'localization/'
     local orig_default_lua = loc_dir .. 'default.lua' -- 优先级最高
     local orig_en_lua = loc_dir .. 'en-us.lua'
     local orig_default_json = loc_dir .. 'default.json'
@@ -264,39 +256,105 @@ function merge_single_mod_localization(target_mod, mod)
         end
         TEO_dbg_print('read orig en json', orig_en_json, '->', type(orig_en), 'keys=', TEO_tbl_count(orig_en))
     end
-    if orig_en and type(orig_en) == 'table' then
-        local todo_root = mod.path .. 'impl/todo/'
-        if not TEO_safe_create_dir(todo_root, 'todo_root') then return end
-        local todo_mod_dir = todo_root .. target_mod.id .. '/'
-        if not TEO_safe_create_dir(todo_mod_dir, 'todo_mod_dir') then return end
-        for lang, merged_tbl in pairs(merged_by_lang) do
-            -- 对每个目标语言，找出原 en 中存在但合并后缺失的键
-            TEO_dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', TEO_tbl_count(orig_en),
-                'merged_keys=', TEO_tbl_count(merged_tbl))
-            local missing = diff_table(orig_en, merged_tbl)
-            local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
-            if missing and next(missing) then
-                local content = 'return ' .. TEO_table_to_lua(missing, '') .. '\n'
-                TEO_dbg_print('missing table for', target_mod.id, lang, 'top_keys=', TEO_tbl_count(missing))
-                local okw, errw = TEO_fs_call(NFS.write, out_path, content)
-                if okw then
-                    print(('[TEOcean Language Packs] 生成缺失翻译: %s -> %s'):format(target_mod.id, out_path))
-                else
-                    print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path,
-                        tostring(errw)))
-                end
-            elseif NFS.getInfo(out_path) then
-                -- No keys are missing for this language anymore; remove any stale
-                -- report from a previous run so it does not keep misleading
-                -- translators after the gaps have been filled.
-                local okd, errd = TEO_fs_call(NFS.remove, out_path)
-                if okd then
-                    print(('[TEOcean Language Packs] 清理过期缺失翻译报告: %s -> %s'):format(target_mod.id, out_path))
-                else
-                    print(('[TEOcean Language Packs] 清理过期缺失翻译报告失败: %s -> %s (%s)'):format(target_mod.id,
-                        out_path, tostring(errd)))
-                end
+    return orig_en
+end
+
+-- 将缺失清单写入 impl/todo/<modid>/missing_<lang>.lua；无缺失时清理过期报告
+local function TEO_write_missing_reports(target_mod, mod, orig_en, merged_by_lang)
+    local todo_root = mod.path .. 'impl/todo/'
+    if not TEO_safe_create_dir(todo_root, 'todo_root') then return false end
+    local todo_mod_dir = todo_root .. target_mod.id .. '/'
+    if not TEO_safe_create_dir(todo_mod_dir, 'todo_mod_dir') then return false end
+    for lang, merged_tbl in pairs(merged_by_lang) do
+        -- 对每个目标语言，找出原 en 中存在但合并后缺失的键
+        TEO_dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', TEO_tbl_count(orig_en),
+            'merged_keys=', TEO_tbl_count(merged_tbl))
+        local missing = diff_table(orig_en, merged_tbl)
+        local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
+        if missing and next(missing) then
+            local content = 'return ' .. TEO_table_to_lua(missing, '') .. '\n'
+            TEO_dbg_print('missing table for', target_mod.id, lang, 'top_keys=', TEO_tbl_count(missing))
+            local okw, errw = TEO_fs_call(NFS.write, out_path, content)
+            if okw then
+                print(('[TEOcean Language Packs] 生成缺失翻译: %s -> %s'):format(target_mod.id, out_path))
+            else
+                print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path,
+                    tostring(errw)))
             end
+        elseif NFS.getInfo(out_path) then
+            -- No keys are missing for this language anymore; remove any stale
+            -- report from a previous run so it does not keep misleading
+            -- translators after the gaps have been filled.
+            local okd, errd = TEO_fs_call(NFS.remove, out_path)
+            if okd then
+                print(('[TEOcean Language Packs] 清理过期缺失翻译报告: %s -> %s'):format(target_mod.id, out_path))
+            else
+                print(('[TEOcean Language Packs] 清理过期缺失翻译报告失败: %s -> %s (%s)'):format(target_mod.id,
+                    out_path, tostring(errd)))
+            end
+        end
+    end
+    return true
+end
+
+-- 生成（或清理）缺失翻译报告：只写 impl/todo，不备份、不修改目标 mod 任何文件。
+-- 磁盘模式在 merge_single_mod_localization 内复用本函数；运行时模式在
+-- TEO_apply_runtime_localization 中调用，保证内存覆盖时同样产出缺失清单。
+function TEO_generate_missing_reports_for_mod(target_mod, mod)
+    if not (target_mod and target_mod.id and target_mod.path) then return false end
+    if not (mod and mod.path) then mod = TEO end
+    if not (mod and mod.path) then return false end
+
+    local langs = {}
+    if G and G.SETTINGS and G.SETTINGS.language then TEO_add_writable_language(langs, G.SETTINGS.language) end
+    if G and G.SETTINGS and G.SETTINGS.real_language then
+        TEO_add_writable_language(langs, G.SETTINGS.real_language)
+    end
+    if #langs == 0 then
+        TEO_dbg_print(('[TEOcean Language Packs] 当前语言为只读源语言，跳过缺失翻译检查: %s'):format(target_mod.id))
+        return false
+    end
+
+    TEO_dbg_print(('[TEOcean Language Packs] 处理缺失翻译检查: %s'):format(target_mod.id))
+    local merged_by_lang = TEO_collect_merged_by_lang(target_mod, mod, langs)
+    local orig_en = TEO_read_orig_source(target_mod)
+    if not (orig_en and type(orig_en) == 'table') then
+        -- 如果没有原始 en-us，可选地记录一条信息
+        print(('[TEOcean Language Packs] 未找到原始 default、 en-us本地化文件，跳过缺失翻译检查: %s'):format(target_mod.id))
+        return false
+    end
+    return TEO_write_missing_reports(target_mod, mod, orig_en, merged_by_lang)
+end
+
+-- 为单个mod执行本地化合并的辅助函数
+function merge_single_mod_localization(target_mod, mod)
+    if not mod or not mod.path then return end
+    TEO_dbg_print(('[TEOcean] 开始为 %s 执行本地化操作'):format(target_mod.id))
+
+    local langs = {} -- 默认处理的语言
+    if G and G.SETTINGS and G.SETTINGS.language then
+        TEO_add_writable_language(langs, G.SETTINGS.language)
+    end
+    if G and G.SETTINGS and G.SETTINGS.real_language then
+        TEO_add_writable_language(langs, G.SETTINGS.real_language)
+    end
+
+    if #langs == 0 then
+        TEO_dbg_print(('[TEOcean] 当前语言为只读源语言，跳过 %s 的磁盘合并'):format(tostring(target_mod.id)))
+        return
+    end
+
+    -- 1)+2) 读取目标 mod 自带本地化与 impl 覆盖并合并（只读，不写盘）
+    local merged_by_lang = TEO_collect_merged_by_lang(target_mod, mod, langs)
+
+    -- 3) 将合并后的本地化与原 mod 的 en-us.lua/default.lua 比较，生成缺失翻译清单并保存到 impl/todo/<modid>/
+    TEO_dbg_print(('[TEOcean Language Packs] 处理缺失翻译检查: %s'):format(target_mod.id))
+    local orig_en = TEO_read_orig_source(target_mod)
+    if orig_en and type(orig_en) == 'table' then
+        local ok_report = TEO_write_missing_reports(target_mod, mod, orig_en, merged_by_lang)
+        if not ok_report then
+            -- 无法创建 impl/todo 目录：与旧逻辑一致，中止本次磁盘合并
+            return
         end
     else
         -- 如果没有原始 en-us，可选地记录一条信息
@@ -578,6 +636,15 @@ function TEO_apply_runtime_localization(mod_id, skip_init)
     if TEO_is_source_language(lang) then
         TEO_dbg_print('[TEOcean Runtime] 当前语言为只读源语言，跳过运行时覆盖:', lang)
         return false
+    end
+    -- 生成/清理缺失翻译报告（与磁盘模式同一口径，只写 impl/todo，不碰目标 mod 文件）。
+    -- 需在“是否无可合并内容”的提前返回之前执行：新建 impl 若只有 translator，
+    -- 内存覆盖会跳过，但缺失清单仍应完整生成，方便对照填充翻译。
+    if TEO_generate_missing_reports_for_mod then
+        local ok_report, err_report = pcall(TEO_generate_missing_reports_for_mod, target_mod)
+        if not ok_report then
+            print(('[TEOcean Runtime] 生成缺失翻译报告失败: %s (%s)'):format(mod_id, tostring(err_report)))
+        end
     end
     local impl_base = TEO_mod.path .. 'impl/mods/' .. mod_id .. '/localization/'
     local impl_file = impl_base .. lang .. '.lua'
