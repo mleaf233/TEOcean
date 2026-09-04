@@ -193,6 +193,15 @@ return {
             }
         },
         Luma = {
+            c_mmj_yellow_luma = {
+                name = "黄色鲁米",
+                text = {
+                    "将你的{C:money}金钱{}乘以",
+                    "你最不常打的{C:attention}牌型{}",
+                    "被游玩的次数",
+                    "{C:inactive}当前#1#{}"
+                }
+            },
             c_mmj_red_luma = {
                 name = "红色鲁米",
                 text = {
@@ -229,6 +238,14 @@ return {
                 text = {
                     "{C:attention}交换{}所有牌型的筹码和倍数",
                     "然后乘以{X:dark_edition,C:white}X#1#{}"
+                }
+            },
+            c_mmj_pink_luma = {
+                name = "粉色鲁米",
+                text = {
+                    "随机选择一个可见的{C:attention}牌型{}",
+                    "并将其等级倍率或筹码",
+                    "按 ^#2# 到 ^#1# 之间的随机值乘方"
                 }
             }
         }

@@ -78,14 +78,14 @@
                  "CryptidMoreMarioJokers":  {
                                                 "repo":  "https://github.com/smg9000/Cryptid-MoreMarioJokers.git",
                                                 "baselineRef":  "HEAD",
-                                                "baselineCommit":  "cd7d7df6db9204811509c105b4014922318103d6",
+                                                "baselineCommit":  "87c9aa4ebbf64104320bc4f343b8f067e7d217a7",
                                                 "resolvedPaths":  [
                                                                       "localization/en-us.lua"
                                                                   ],
                                                 "hashes":  {
-                                                               "localization/en-us.lua":  "sha256:bb8b291e05da6155ba72959b1b331fd7ad5fa3b7f87997beb94a230ca0106fa5"
+                                                               "localization/en-us.lua":  "sha256:d89c38cf207b91a1853453fadbae8e6dcc0216978f04685b4c42f5a40fd1eeab"
                                                            },
-                                                "updatedAt":  "2026-06-23T08:38:55Z"
+                                                "updatedAt":  "2026-09-04T07:05:06Z"
                                             },
                  "dpp":  {
                              "repo":  "https://github.com/Joglacraft/DebugPlusPlus.git",
