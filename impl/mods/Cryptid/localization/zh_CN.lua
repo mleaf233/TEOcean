@@ -1,13 +1,13 @@
 -- Cryptid 属于热门模组，一般更新较快，这里仅对缺失的翻译进行填充
 return {
-    translator = {
-        "PIPIKAI",
-        "linsaiya",
-        "Lightcx",
-        "homorunner",
-        "MarbleGate",
-        "mleaf233",
-    },
+	translator = {
+		"PIPIKAI",
+		"linsaiya",
+		"Lightcx",
+		"homorunner",
+		"MarbleGate",
+		"mleaf233",
+	},
 	descriptions = {
 		Back = {
 			b_cry_CCD = {
@@ -632,6 +632,13 @@ return {
 				},
 				unlock = {
 					"拥有一张{C:attention}域外{}小丑",
+				},
+			},
+			b_cry_bountiful_antimatter = {
+				name = "丰饶牌组",
+				text = {
+					"出牌或弃牌后",
+					"总是至少抽取{C:attention}5{}张牌",
 				},
 			},
 		},
@@ -1362,7 +1369,7 @@ return {
 				},
 			},
 			j_cry_thalia = {
-				name = "Thalia 与 Melpomeme",  -- 此小丑名称因涉及文化因素，保留原名，包括拼写错误也可能是故意为之
+				name = "Thalia 与 Melpomeme", -- 此小丑名称因涉及文化因素，保留原名，包括拼写错误也可能是故意为之
 				text = {
 					"每拥有一对不同的稀有度",
 					"{C:white,X:mult}X#1#{}倍率",
@@ -1387,7 +1394,7 @@ return {
 				},
 			},
 			j_cry_sundial = {
-				name = "日晷计划",  -- “日晷计划”（Project Sundial）是冷战时期（20世纪50年代）由美国核物理学家爱德华·泰勒（Edward Teller）等人提出的一项极度机密的理论构想。该计划的核心目标是设计一枚威力极其巨大、当量高达 100亿吨TNT当量 。该计划的核心目标是设计一枚威力极其巨大、当量高达 100亿吨TNT当量（10,000兆吨）的终极热核氢弹。
+				name = "日晷计划", -- “日晷计划”（Project Sundial）是冷战时期（20世纪50年代）由美国核物理学家爱德华·泰勒（Edward Teller）等人提出的一项极度机密的理论构想。该计划的核心目标是设计一枚威力极其巨大、当量高达 100亿吨TNT当量 。该计划的核心目标是设计一枚威力极其巨大、当量高达 100亿吨TNT当量（10,000兆吨）的终极热核氢弹。
 				text = {
 					"打出#1#次牌后{C:attention}售出这张小丑牌{}",
 					"使盲注分数要求降低#2#%",
@@ -5155,7 +5162,7 @@ return {
 			ach_cry_exodia = "艾克佐迪亚",
 			ach_cry_freak_house = "怪物之家",
 			ach_cry_googol_play_pass = "Googol Play Pass",
-			ach_cry_haxxor = "H4xx0r",  -- 这个成就还未实装
+			ach_cry_haxxor = "H4xx0r", -- 这个成就还未实装
 			ach_cry_home_realtor = "房产经纪人",
 			ach_cry_jokes_on_you = "现在谁是笑料？",
 			ach_cry_niw_uoy = "！了赢你",
@@ -5824,7 +5831,7 @@ return {
 			{
 				"优惠券",
 				"在",
-				"另一个城堡", 
+				"另一个城堡",
 			}, -- 致敬《超级马里奥》系列经典的“公主在另一座城堡”台词
 			{
 				"$0",
@@ -5855,7 +5862,7 @@ return {
 				"按住 R",
 				"补货",
 				"所有优惠券",
-			},  -- 某些游戏中按住 R 键可以刷新重开
+			}, -- 某些游戏中按住 R 键可以刷新重开
 			{
 				"你知道吗？",
 				"按 ALT+F4",
@@ -5870,7 +5877,7 @@ return {
 				"拨打 1-600-JIMBO",
 				"来评价你的",
 				"优惠券体验",
-			},  -- 仿照美国免费电话广告的常见格式
+			}, -- 仿照美国免费电话广告的常见格式
 			{
 				"击败",
 				"底注39的BOSS盲注",
@@ -5894,7 +5901,7 @@ return {
 				"为什么叫优惠券",
 				"既不优惠",
 				"又没有券",
-			},  -- 已经尽量贴近原文的幽默感，致敬了一个网络梗
+			}, -- 已经尽量贴近原文的幽默感，致敬了一个网络梗
 			{
 				"对不起",
 				"优惠券正在经历",
@@ -5962,7 +5969,7 @@ return {
 				"出门摸摸草",
 				"而不是玩",
 				"这个牌组",
-			},  -- 网络流行语 “touch grass”，用来调侃沉迷网络的人
+			}, -- 网络流行语 “touch grass”，用来调侃沉迷网络的人
 			{
 				"你现在可以",
 				"玩蓝色牌组",
@@ -6081,7 +6088,7 @@ return {
 				"金宝投掷出 1",
 				"把所有优惠券",
 				"扔进了一个沟里",
-			},  -- 没找到出处，但我猜想应该会有
+			}, -- 没找到出处，但我猜想应该会有
 			{
 				"尝试索引",
 				"字段 '优惠券'",
@@ -6096,8 +6103,7 @@ return {
 				"访问",
 				"https://youtu.be/dQw4w9WgXcQ",
 				"获取免费优惠券",
-			},  -- 访问这个网站获得同等效果：https://www.youtube.com/watch?v=dQw4w9WgXcQ
+			}, -- 访问这个网站获得同等效果：https://www.youtube.com/watch?v=dQw4w9WgXcQ
 		},
 	},
 }
-
