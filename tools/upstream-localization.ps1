@@ -418,6 +418,84 @@ function Copy-ResolvedPaths {
     return $cacheDir
 }
 
+function Test-SnapshotMatchesBaseline {
+    param(
+        [string]$ModId,
+        [object]$Entry
+    )
+
+    $snapshotDir = Join-Path $UpstreamDir $ModId
+    if (-not (Test-Path -LiteralPath $snapshotDir)) {
+        return $false
+    }
+
+    $expectedHashes = Get-ObjectProperty $Entry "hashes"
+    if ($null -eq $expectedHashes) {
+        return $true
+    }
+
+    $expected = [ordered]@{}
+    foreach ($prop in $expectedHashes.PSObject.Properties) {
+        $expected[[string]$prop.Name] = [string]$prop.Value
+    }
+
+    $actual = Get-FileHashes $snapshotDir
+    if ($actual.Count -ne $expected.Count) {
+        return $false
+    }
+
+    foreach ($key in $expected.Keys) {
+        if (-not $actual.Contains($key)) {
+            return $false
+        }
+        if ([string]$actual[$key] -ne [string]$expected[$key]) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Export-PathsToDirectory {
+    param(
+        [string]$ModId,
+        [string]$RepoDir,
+        [string]$Commit,
+        [string[]]$ResolvedPaths,
+        [string]$DestinationRoot
+    )
+
+    Assert-SafeModId $ModId
+    if (-not (Test-Path -LiteralPath $DestinationRoot)) {
+        New-Item -ItemType Directory -Force -Path $DestinationRoot | Out-Null
+    }
+    $todoRoot = (Resolve-Path -LiteralPath $ImplTodoDir).Path.TrimEnd("\")
+    $resolvedDest = (Resolve-Path -LiteralPath $DestinationRoot).Path.TrimEnd("\")
+    if (-not $resolvedDest.StartsWith($todoRoot + "\", [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to write outside impl/todo: $resolvedDest"
+    }
+
+    Invoke-Git $RepoDir @("checkout", "--force", $Commit) | Out-Null
+
+    if (Test-Path -LiteralPath $DestinationRoot) {
+        Remove-Item -LiteralPath $DestinationRoot -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $DestinationRoot | Out-Null
+
+    foreach ($path in $ResolvedPaths) {
+        $sourcePath = Join-RelativePath $RepoDir $path
+        if (-not (Test-Path -LiteralPath $sourcePath)) {
+            Write-Warning "[$ModId] source path disappeared after checkout: $path"
+            continue
+        }
+
+        $destinationPath = Join-RelativePath $DestinationRoot $path
+        $destinationParent = Split-Path -Parent $destinationPath
+        New-Item -ItemType Directory -Force -Path $destinationParent | Out-Null
+        Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Recurse -Force
+    }
+}
+
 function Get-FileHashes {
     param([string]$Directory)
 
@@ -619,6 +697,14 @@ function Update-Baseline {
     $reportPath = Join-Path $todoDir "upstream_changed.md"
     if (Test-Path -LiteralPath $reportPath) {
         Remove-Item -LiteralPath $reportPath -Force
+        $latestExportDir = Join-Path $todoDir "latest"
+        if (Test-Path -LiteralPath $latestExportDir) {
+            Remove-Item -LiteralPath $latestExportDir -Recurse -Force
+        }
+        $diffPath = Join-Path $todoDir "upstream.diff"
+        if (Test-Path -LiteralPath $diffPath) {
+            Remove-Item -LiteralPath $diffPath -Force
+        }
         $remaining = @(Get-ChildItem -LiteralPath $todoDir -Force -ErrorAction SilentlyContinue)
         if ($remaining.Count -eq 0) {
             Remove-Item -LiteralPath $todoDir -Force
@@ -670,9 +756,15 @@ function Write-ChangeReport {
         $DiffText,
         "~~~",
         "",
+        "Comparison material:",
+        "",
+        "1. Baseline snapshot (files at the baseline commit): impl/upstream/$ModId/",
+        "2. Latest upstream files (exported for direct comparison): impl/todo/$ModId/latest/",
+        "3. Full content diff: impl/todo/$ModId/upstream.diff",
+        "",
         "Suggested flow:",
         "",
-        "1. Compare the upstream source files under impl/upstream/$ModId/ with the upstream diff.",
+        "1. Compare the baseline files under impl/upstream/$ModId/ with the latest files under impl/todo/$ModId/latest/.",
         "2. Update impl/mods/$ModId/localization/zh_CN.lua or its split files.",
         "3. Run tools/upstream-localization.ps1 accept $ModId after the translation catches up."
     )
@@ -720,6 +812,13 @@ function Check-Mod {
     $ref = Get-SourceRef $Source
     $latestCommit = Resolve-RemoteCommit $repoDir $ref
 
+    # Make sure the baseline snapshot exists so the report's comparison flow can be followed.
+    if (-not (Test-SnapshotMatchesBaseline $ModId $entry)) {
+        Write-Host "[$ModId] baseline snapshot missing or stale - restoring from cache at $baselineCommit"
+        Set-SparseCheckoutPaths $repoDir $resolvedPaths
+        Copy-ResolvedPaths $ModId $repoDir $baselineCommit $resolvedPaths | Out-Null
+    }
+
     if ($baselineCommit -eq $latestCommit) {
         Write-Host "[$ModId] OK - baseline is current."
         return
@@ -733,8 +832,24 @@ function Check-Mod {
         return
     }
 
+    # Export the latest upstream localization files so translators have a sample to compare against.
+    $todoDir = Join-Path $ImplTodoDir $ModId
+    New-Item -ItemType Directory -Force -Path $todoDir | Out-Null
+    $latestExportDir = Join-Path $todoDir "latest"
+    Write-Host "[$ModId] exporting latest localization files to impl/todo/$ModId/latest/"
+    Export-PathsToDirectory $ModId $repoDir $latestCommit $resolvedPaths $latestExportDir
+
+    # Write the full content diff next to the report for easy review.
+    $fullDiffArgs = @("diff", "--no-color", $baselineCommit, $latestCommit, "--") + @($resolvedPaths)
+    $fullDiff = Invoke-Git $repoDir $fullDiffArgs
+    $diffPath = Join-Path $todoDir "upstream.diff"
+    Set-Content -LiteralPath $diffPath -Value $fullDiff.Output -Encoding UTF8
+
     $reportPath = Write-ChangeReport $ModId $entry $latestCommit $diff.Output
     Write-Host "[$ModId] NEEDS UPDATE - report: $reportPath"
+
+    # Leave the shared repo cache on the baseline commit for consistent re-runs.
+    Invoke-Git $repoDir @("checkout", "--force", $baselineCommit) | Out-Null
 }
 
 function Select-TargetModIds {
