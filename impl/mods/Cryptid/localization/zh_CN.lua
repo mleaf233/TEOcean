@@ -2036,7 +2036,7 @@ return {
 				name = "数字幻觉",
 				text = {
 					"打开{C:attention}补充包{}时",
-					"有{C:green}#1#/#2#{}概率创建一张",
+					"有{C:green}#1#/#2#{}几率创建一张",
 					"与其{C:attention}类型{}对应的随机{C:dark_edition}负片{}牌",
 				},
 			},
@@ -5304,6 +5304,7 @@ return {
 			cry_gameset_madness = "疯狂（Madness）",
 			cry_gameset_mainline = "标准（Mainline）",
 			cry_gameset_modest = "克制（Modest）",
+			cry_gameset_ongoing_warning = "（游戏进行中时无法切换游戏配置选项）",
 			cry_highfive_ex = "击掌！",
 			cry_joke_placeholder = "（8的倍数）",
 			cry_mus_alt_bg = "背景音乐（MathIsFun_）",
