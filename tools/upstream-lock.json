@@ -16,14 +16,14 @@
                  "aikoyorisshenanigans":  {
                                               "repo":  "https://github.com/Aikoyori/Balatro-Aikoyoris-Shenanigans.git",
                                               "baselineRef":  "HEAD",
-                                              "baselineCommit":  "aaa40eb7775186de17c378ac815f9c4c6efe4b32",
+                                              "baselineCommit":  "1b42e51fc60a19a720097fb5c9f4a84b447729cb",
                                               "resolvedPaths":  [
                                                                     "localization/en-us.lua"
                                                                 ],
                                               "hashes":  {
-                                                             "localization/en-us.lua":  "sha256:4a4ab13832064e3595f80e7ac059f39c3461e29fae9432bbacb485eedf45a26c"
+                                                             "localization/en-us.lua":  "sha256:5a23d8bdbf671a300a82042fae852ceed3b72a7e8d960b23be85cdf21045c7e6"
                                                          },
-                                              "updatedAt":  "2026-08-06T06:29:05Z"
+                                              "updatedAt":  "2026-09-04T05:51:14Z"
                                           },
                  "allinjest":  {
                                    "repo":  "https://github.com/survovoaneend/All-In-Jest.git",
@@ -66,14 +66,14 @@
                  "Cryptid":  {
                                  "repo":  "https://github.com/SpectralPack/Cryptid.git",
                                  "baselineRef":  "HEAD",
-                                 "baselineCommit":  "22fb1b1295591e8dd3091e37f3371367bb8f0a01",
+                                 "baselineCommit":  "b036131c10032f20e1dc550c812524b20aab0df1",
                                  "resolvedPaths":  [
                                                        "localization/en-us.lua"
                                                    ],
                                  "hashes":  {
-                                                "localization/en-us.lua":  "sha256:d302d82cf96c1148df75aedb57aabca41415db0303b4228c648fd5c6c3ae85e3"
+                                                "localization/en-us.lua":  "sha256:c541a976ea7a74fa58e1235c83b7563638ec72a1fb7a9e9de55923b19ef3040b"
                                             },
-                                 "updatedAt":  "2026-08-12T08:39:30Z"
+                                 "updatedAt":  "2026-09-04T06:06:05Z"
                              },
                  "CryptidMoreMarioJokers":  {
                                                 "repo":  "https://github.com/smg9000/Cryptid-MoreMarioJokers.git",
