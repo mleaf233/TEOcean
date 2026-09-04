@@ -18,8 +18,17 @@ local function diff_table(base, other)
     for k, v in pairs(base) do
         local ov = (type(other) == 'table') and other[k] or nil
         if type(v) == 'table' then
-            -- 特例: 仅当 key 为 'text' 或 'unlock' 时应用特殊逻辑：
-            -- 如果 base.text 中任意一行为非空（非 nil 且非空字符串），则认为该键不是缺失的，跳过标记。
+            -- Special case for 'text' / 'unlock' tables: they are free-form
+            -- arrays of lines where the line count is purely a formatting
+            -- choice, not a semantic boundary. A translation (e.g. zh_CN) may
+            -- express the same meaning with fewer or more lines than the
+            -- English source, so comparing them line-by-line would flood the
+            -- missing-key report with false positives. As long as the source
+            -- table has at least one non-empty line, the key is considered
+            -- present and skipped entirely. This lenient check only applies in
+            -- normal (non-debug) mode; when TEO_DEBUG is true we fall through
+            -- to the strict recursive comparison so developers can inspect the
+            -- exact per-line differences while debugging.
             if TEO_DEBUG == false and (k == 'text' or k == 'unlock') then
                 local has_non_empty = false
                 for _, line in pairs(v) do
@@ -265,8 +274,8 @@ function merge_single_mod_localization(target_mod, mod)
             TEO_dbg_print('computing missing for', target_mod.id, 'lang', lang, 'orig_en_keys=', TEO_tbl_count(orig_en),
                 'merged_keys=', TEO_tbl_count(merged_tbl))
             local missing = diff_table(orig_en, merged_tbl)
+            local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
             if missing and next(missing) then
-                local out_path = todo_mod_dir .. 'missing_' .. tostring(lang) .. '.lua'
                 local content = 'return ' .. TEO_table_to_lua(missing, '') .. '\n'
                 TEO_dbg_print('missing table for', target_mod.id, lang, 'top_keys=', TEO_tbl_count(missing))
                 local okw, errw = TEO_fs_call(NFS.write, out_path, content)
@@ -275,6 +284,17 @@ function merge_single_mod_localization(target_mod, mod)
                 else
                     print(('[TEOcean Language Packs] 写入缺失翻译失败: %s -> %s (%s)'):format(target_mod.id, out_path,
                         tostring(errw)))
+                end
+            elseif NFS.getInfo(out_path) then
+                -- No keys are missing for this language anymore; remove any stale
+                -- report from a previous run so it does not keep misleading
+                -- translators after the gaps have been filled.
+                local okd, errd = TEO_fs_call(NFS.remove, out_path)
+                if okd then
+                    print(('[TEOcean Language Packs] 清理过期缺失翻译报告: %s -> %s'):format(target_mod.id, out_path))
+                else
+                    print(('[TEOcean Language Packs] 清理过期缺失翻译报告失败: %s -> %s (%s)'):format(target_mod.id,
+                        out_path, tostring(errd)))
                 end
             end
         end
