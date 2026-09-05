@@ -437,7 +437,8 @@ function TEO_build_original_translation_ui(original_data, vars, title_key)
     end
 
     local theme_color = G.C.BLACK
-    local header_color = mix_colours(G.C.BLACK, G.C.ORANGE, 0.2)
+    -- 使用原版游戏通用面板背景色（L_BLACK 深蓝灰）
+    local header_color = G.C.L_BLACK
 
     return {
         n = G.UIT.R,

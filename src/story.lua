@@ -345,7 +345,7 @@ end
 -- 单行最大显示宽度单位，超过则强制分行。
 -- 单位按字形宽度计：半角（ASCII）=1，全角（中文等）=2，
 -- 这样中英文混排时行宽与弹窗描述一致，避免撑宽弹窗挡住 info_queue 浮层。
-local STORY_LINE_MAX = 25
+local STORY_LINE_MAX = 50
 
 -- 断行时优先选用的标点（向前就近查找）
 local WRAP_PUNCTUATION = '，。、；：！？,.;:!? '
@@ -508,22 +508,26 @@ function TEO_build_story_ui(story_lines)
         end
     end
 
+    -- 背景配色与原版翻译 UI 保持一致（原版游戏通用面板背景色）
+    local theme_color = G.C.BLACK
+    local header_color = G.C.L_BLACK
+
     return {
         n = G.UIT.R,
-        config = { align = 'cm', minw = 2.0, padding = 0.04, emboss = 0.08, r = 0.1, colour = HEX('23242E') },
+        config = { align = 'cm', minw = 2.0, padding = 0.04, emboss = 0.08, r = 0.1, colour = header_color },
         nodes = {
-            -- 标题栏
+            -- 标题栏（无独立背景，与原版翻译一致）
             {
                 n = G.UIT.R,
-                config = { align = 'cm', minh = 0.32, padding = 0.03, r = 0.08, colour = HEX('3A3B4C') },
+                config = { align = 'cm', minh = 0.32, padding = 0.03, r = 0.08 },
                 nodes = {
                     { n = G.UIT.T, config = { text = localize('teo_story_tooltip') or '故事', scale = 0.34, colour = HEX('F2C879'), shadow = true } }
                 }
             },
-            -- 正文
+            -- 正文（深色底、圆角，与原版翻译一致）
             {
                 n = G.UIT.R,
-                config = { align = 'cm', padding = 0.04 },
+                config = { align = 'cm', padding = 0.04, r = 0.1, colour = theme_color },
                 nodes = text_nodes
             }
         }
