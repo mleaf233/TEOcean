@@ -297,14 +297,14 @@
                  "Sculio":  {
                                 "repo":  "https://github.com/crmykybord/Sculio.git",
                                 "baselineRef":  "HEAD",
-                                "baselineCommit":  "8c89dfcd0e96bbc9437fabf515a027d426a7f3b1",
+                                "baselineCommit":  "bc150838815fe15f887cedcf1b0e32e381ffc6d1",
                                 "resolvedPaths":  [
                                                       "localization/en-us.lua"
                                                   ],
                                 "hashes":  {
-                                               "localization/en-us.lua":  "sha256:d96eef5412ee763b5220a3ec12313841f0f24c5d96f76aa0738dfe1e04b20782"
+                                               "localization/en-us.lua":  "sha256:93711959907ef86357150ee2ced446c88ea24140cebbbc4ac24bca99024bfb79"
                                            },
-                                "updatedAt":  "2026-06-23T08:39:52Z"
+                                "updatedAt":  "2026-09-05T04:05:20Z"
                             }
              }
 }

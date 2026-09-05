@@ -13,13 +13,13 @@ return {
                 text = {
                     '一个旨在为《小丑牌》添加',
                     '全新且风格契合内容的模组',
-                    '（目前包含超过45张小丑牌）',
+                    '（目前包含超过60张小丑牌）',
                     ' ',
                     '{C:attention}制作人员：{}',
-                    '{C:money}crmykybord{}：像素画师',
+                    '{C:money}crmykybord{}：卡面美术',
+                    "{C:money}Marffe{}: 开发者",
                     '{C:money}BrandonE{}：开发者',
-                    '{C:money}chily{}：小丑牌创意与平衡调整',
-                    '{C:money}Marffe{}：创意与本地化文件',
+                    '{C:money}chily{}：情感支持',
                     ' ',
                     '{C:attention}特别鸣谢（小丑牌创意提供）：{}',
                     '{C:inactive}Spicy_burritos（愚人画像与概念）、The_Math_Hatter',
@@ -181,9 +181,9 @@ return {
                     '当资金少于{C:money}$#3#{}时自毁',
                 },
             },
-            -- 16. Beyond Reach
-            j_Sculio_beyond_reach = {
-                name = '遥不可及',
+            -- 16. Reach
+            j_Sculio_reach = {
+                name = '触手可及',
                 text = {
                     '可免于死亡但会{S:1.1,C:red,E:2}自毁{}',
                     '当获得的筹码至少为需求的{C:attention}#2#%{}时',
@@ -240,11 +240,13 @@ return {
                     '{C:inactive}（当前为{C:mult}+#1#{}{C:inactive}倍率）',
                 }
             },
-            -- 22. Signage
-            j_Sculio_signage = {
-                name = '路标',
+            -- 22. Bathroom Signage
+            j_Sculio_bathroom_signage = {
+                name = '卫生间标识',
                 text = {
-                    '商店只刷新{C:attention}小丑牌{}',
+                    '商店中只会出现',
+                    '{C:attention}小丑牌{}',
+                    '{C:inactive,s:0.8}不影响优惠券{}',
                 },
             },
             -- 23. Jokerium
@@ -457,6 +459,167 @@ return {
                     '{C:inactive}（当前为{C:chips}+#1#{C:inactive}筹码、{C:mult}+#2#{C:inactive}倍率和{X:mult,C:white}X#3#{C:inactive}倍率）'
                 }
             },
+            -- 45. Googly Eyes
+            j_Sculio_googly_eyes = {
+                name = '斗鸡眼',
+                text = {
+                    '第一张计分牌给予',
+                    '其{C:attention}基础筹码{}数值的{C:mult}倍率{}',
+                },
+            },
+            -- 46. Pocket Money
+            j_Sculio_pocket_money = {
+                name = '零花钱',
+                text = {
+                    '每回合{C:attention}第一次购买{}时',
+                    '返还{C:money}$#1#{}',
+                },
+            },
+            -- 47. Jimbo Says
+            j_Sculio_jimbo_says = {
+                name = '金宝说',
+                text = {
+                    '每回合首次打出{C:attention}同花{}（{V:1}#1#{}）时',
+                    '获得一个{C:attention}随机标签{}',
+                    '{C:inactive}（花色每回合改变）',
+                },
+            },
+            -- 48. Joker Metro
+            j_Sculio_joker_metro = {
+                name = '小丑地铁',
+                text = {
+                    '当打出的牌包含{C:attention}#3#{}时',
+                    '每回合获得{C:mult}+#2#{}倍率',
+                    '{C:inactive,s:0.8}（每回合随机选择牌型）{}',
+                    '每击败{C:attention}Boss盲注{}一次',
+                    '获得量增加{C:mult}+#4#{}',
+                    '{C:inactive}（当前为{C:mult}+#1#{}{C:inactive}倍率）',
+                },
+            },
+            -- 49. Gladiator Joker
+            j_Sculio_gladiator = {
+                name = '角斗士',
+                text = {
+                    '获得等同于被{C:attention}摧毁{}的牌',
+                    '的{C:attention}基础筹码{}的{C:mult}+倍率{}',
+                    '{C:inactive}（当前为{C:mult}+#1#{}{C:inactive}倍率）',
+                },
+            },
+            -- 50. Jokes Against Humanity
+            j_Sculio_jokes_against_humanity = {
+                name = '反人类笑话',
+                text = {
+                    '{X:mult,C:white}X#1#{}倍率',
+                    '每次出牌前有{C:green}#2#/#3#{}几率',
+                    '{C:attention}削弱{}2张随机小丑牌',
+                },
+            },
+            -- 51. Letter Tile
+            j_Sculio_letter_tile = {
+                name = '字母砖块',
+                text = {
+                    '打出的{C:attention}J{}',
+                    '计分时给予{C:mult}+#1#{}倍率',
+                },
+            },
+            -- 52. Untextured Joker
+            j_Sculio_untextured = {
+                name = '无贴图小丑',
+                text = {
+                    '打出的{C:attention}万能牌{}',
+                    '计分时牌组中每有一张{C:attention}万能牌{}',
+                    '给予{C:mult}+#1#{}倍率',
+                    '{C:inactive}（当前为{C:mult}+#2#{}{C:inactive}倍率）',
+                },
+            },
+            -- 53. The Leader
+            j_Sculio_leader = {
+                name = '领袖',
+                text = {
+                    '打出{C:attention}高牌{}时',
+                    '此前每打出一张{C:attention}高牌{}',
+                    '获得{C:mult}+#1#{}倍率',
+                    '{C:inactive}（当前为{C:mult}+#2#{}{C:inactive}倍率）',
+                },
+            },
+            -- 54. Sheriff
+            j_Sculio_sheriff = {
+                name = '治安官',
+                text = {
+                    '每次击败{C:attention}Boss盲注{}',
+                    '获得{X:mult,C:white}X#1#{}倍率',
+                    '{C:inactive}（当前为{X:mult,C:white}X#2#{C:inactive}倍率）',
+                },
+            },
+            -- 55. Computer Virus
+            j_Sculio_computer_virus = {
+                name = '电脑病毒',
+                text = {
+                    '击败{C:attention}Boss盲注{}后',
+                    '摧毁{C:attention}最右侧{}的小丑牌',
+                    '并生成一张带有{C:dark_edition}负片{}',
+                    '或{C:dark_edition}多彩{}的{C:common}普通小丑牌{}',
+                },
+            },
+            -- 56. Manilla Folder
+            j_Sculio_manilla_folder = {
+                name = '档案袋',
+                text = {
+                    '打出{C:attention}隐藏牌型{}时',
+                    '用{C:attention}随机消耗牌{}',
+                    '填满空的消耗牌槽位',
+                    '{C:inactive}（必须有空位）{}',
+                },
+            },
+            -- 57. Nonogram Joker
+            j_Sculio_nonogram_joker = {
+                name = '数织小丑',
+                text = {
+                    '{C:inactive}占位文本{}',
+                },
+            },
+            -- 58. Telephone
+            j_Sculio_telephone = {
+                name = '电话',
+                text = {
+                    '{C:inactive}占位文本{}',
+                },
+            },
+            -- 59. Joker of Nothing
+            j_Sculio_joker_of_nothing = {
+                name = '虚无小丑',
+                text = {
+                    '牌组中每缺少一个{C:attention}点数{}',
+                    '打出并计分的{C:attention}K{}给予',
+                    '{X:mult,C:white}X#1#{}倍率',
+                    '{C:inactive}（缺少#2#个点数，{X:mult,C:white}X#3#{C:inactive}倍率）',
+                },
+            },
+            -- 60. Game Package
+            j_Sculio_game_package = {
+                name = '游戏套餐',
+                text = {
+                    '留在手牌中的{C:attention}2{}和{C:attention}4{}',
+                    '每打出一张计分牌给予',
+                    '{X:mult,C:white}X#1#{}倍率',
+                },
+            },
+            -- 61. Lost Keys
+            j_Sculio_lost_keys = {
+                name = '丢失的钥匙',
+                text = {
+                    '击败{C:attention}Boss盲注{}后',
+                    '商店中出现{C:attention}#1#个免费{}',
+                    '{C:attention}小型补充包{}',
+                },
+            },
+            -- 62. Gun Target
+            j_Sculio_gun_target = {
+                name = '枪靶',
+                text = {
+                    '{C:inactive}占位文本{}',
+                },
+            },
         },
         Tag = {
             tag_Sculio_unstoppable = {
@@ -468,5 +631,20 @@ return {
                 },
             }
         },
-    }
+    },
+    misc = {
+        dictionary = {
+            k_Sculio_bad_trip_randomized = '牌组已随机化！',
+            k_Sculio_beyond_reach_saved = '并非遥不可及！',
+            k_Sculio_binary_scale_chips = '01000011',
+            k_Sculio_binary_scale_mult = '01001101',
+            k_Sculio_cloning_vat_active = '已克隆！',
+            k_Sculio_compatible = '兼容',
+            k_Sculio_crime_scene = '+倍率！',
+            k_Sculio_incompatible = '不兼容',
+            k_Sculio_mad_scientist_spawn = '科学！',
+            k_Sculio_none = '无',
+            k_Sculio_sticky_keys_changed = '倍率已改变！',
+        },
+    },
 }
