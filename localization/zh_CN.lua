@@ -6,7 +6,8 @@ return {
                 text = {
                     "在卡牌详细描述中显示",
                     "原来mod的本地化",
-                    "用于对照翻译质量"
+                    "用于对照翻译质量",
+                    "悬停卡牌时按 H 可临时隐藏",
                 }
             },
             teo_show_original_blind = {
@@ -14,7 +15,7 @@ return {
                 text = {
                     "在盲注挑战中显示",
                     "原来mod的中文翻译",
-                    "用于对照翻译质量"
+                    "用于对照翻译质量",
                 }
             },
             teo_story = {
@@ -75,6 +76,7 @@ return {
             teo_show_original = "显示原版翻译",
             teo_show_original_blind = "显示盲注原版翻译",
             teo_original_tooltip = "原版翻译",
+            teo_original_en_tooltip = "原版英文",
             teo_story = "显示故事",
             teo_story_tooltip = "故事",
             teo_actions = "操作",

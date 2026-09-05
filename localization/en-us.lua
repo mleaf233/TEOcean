@@ -6,7 +6,8 @@ return {
                 text = {
                     "Show the mod's original",
                     "localization in card description",
-                    "For translation quality comparison"
+                    "For translation quality comparison",
+                    "Press H while hovering a card to hide it temporarily",
                 }
             },
             teo_show_original_blind = {
@@ -76,6 +77,7 @@ return {
             teo_show_original = "Show Original Translation",
             teo_show_original_blind = "Show Original Blind Translation",
             teo_original_tooltip = "Original Translation",
+            teo_original_en_tooltip = "Original (EN)",
             teo_story = "Show Story",
             teo_story_tooltip = "Story",
             teo_actions = "Actions",

@@ -400,7 +400,8 @@ function TEO_get_original_localization(mod_id, loc_type, loc_key, preserve_struc
     return original_text
 end
 
-function TEO_build_original_translation_ui(original_data, vars)
+function TEO_build_original_translation_ui(original_data, vars, title_key)
+    title_key = title_key or 'teo_original_tooltip'
     local t = {}
     if original_data.name then
         table.insert(t,
@@ -446,7 +447,7 @@ function TEO_build_original_translation_ui(original_data, vars)
             {
                 n = G.UIT.R,
                 config = { align = "tm", minh = 0.36, padding = 0.03 },
-                nodes = { { n = G.UIT.T, config = { text = localize('teo_original_tooltip') or "ORIGINAL", scale = 0.32, colour = G.C.UI.TEXT_LIGHT, shadow = true } } }
+                nodes = { { n = G.UIT.T, config = { text = localize(title_key) or "ORIGINAL", scale = 0.32, colour = G.C.UI.TEXT_LIGHT, shadow = true } } }
             },
             {
                 n = G.UIT.R,
@@ -457,6 +458,140 @@ function TEO_build_original_translation_ui(original_data, vars)
     }
 end
 
+-- 探测卡牌所属 mod 的 id（兼容多种命名习惯）
+local function TEO_detect_center_mod_id(_c)
+    if _c.mod and _c.mod.id then return _c.mod.id end
+    if _c.mod_id then return _c.mod_id end
+    if _c.key and SMODS.Centers and SMODS.Centers[_c.key] and SMODS.Centers[_c.key].mod then
+        return SMODS.Centers[_c.key].mod.id
+    end
+    if _c.config and _c.config.mod and _c.config.mod.id then return _c.config.mod.id end
+    return nil
+end
+
+-- 构建卡牌"原版翻译" info_queue 条目列表（SMODS 延迟渲染机制）：
+--   启用开关（enabled）时生成：
+--   1) 英文原版（source 模式：目标 mod 的 en-us.lua / default.lua，始终尝试显示）
+--   2) 当前语言原版（display 模式：备份/目标mod当前语言，按需显示）
+-- 各条目找不到对应文本就不生成（"没有就不显示"）
+local function TEO_original_info_queue_entries(mod_id, loc_type, loc_key, vars, enabled)
+    local entries = {}
+    if not enabled then return entries end
+    local en_data = TEO_get_original_localization(mod_id, loc_type, loc_key, false, "source")
+    if en_data then
+        entries[#entries + 1] = {
+            key = 'teo_original_en_' .. loc_key,
+            set = 'Other',
+            vars = {},
+            generate_ui = function(info_queue_card)
+                return TEO_build_original_translation_ui(en_data, vars, 'teo_original_en_tooltip')
+            end
+        }
+    end
+    local display_data = TEO_get_original_localization(mod_id, loc_type, loc_key, false, "display")
+    if display_data then
+        entries[#entries + 1] = {
+            key = 'teo_original_' .. loc_key,
+            set = 'Other',
+            vars = {},
+            generate_ui = function(info_queue_card)
+                return TEO_build_original_translation_ui(display_data, vars)
+            end
+        }
+    end
+    return entries
+end
+
+-- 构建可直接插入的"原版翻译" UI 节点列表（用于 card_h_popup / 盲注弹窗）
+--   启用开关（enabled）时生成：英文原版（始终尝试） + 当前语言原版（按需）
+local function TEO_original_ui_nodes(mod_id, loc_type, loc_key, vars, enabled)
+    local nodes = {}
+    if not enabled then return nodes end
+    local en_data = TEO_get_original_localization(mod_id, loc_type, loc_key, false, "source")
+    if en_data then
+        nodes[#nodes + 1] = { n = G.UIT.R, config = { minh = 0.05 } }
+        nodes[#nodes + 1] = TEO_build_original_translation_ui(en_data, vars, 'teo_original_en_tooltip')
+    end
+    local display_data = TEO_get_original_localization(mod_id, loc_type, loc_key, false, "display")
+    if display_data then
+        nodes[#nodes + 1] = { n = G.UIT.R, config = { minh = 0.05 } }
+        nodes[#nodes + 1] = TEO_build_original_translation_ui(display_data, vars)
+    end
+    return nodes
+end
+
+-- ============ 按 H 临时隐藏原版翻译框（与故事同款） ============
+
+-- 隐藏状态标志（重新悬停卡牌后恢复显示）
+TEO._original_hidden = false
+
+-- 重建当前悬停弹窗（隐藏时移除原版翻译框）
+local function rebuild_hover_popup(target)
+    if not target or target.REMOVED then return end
+    TEO_suspend_ai_resolve = true
+    local ok, err = pcall(function()
+        if target.generate_UIBox_ability_table then
+            target.ability_UIBox_table = target:generate_UIBox_ability_table()
+        end
+        if target.config then
+            target.config.h_popup = G.UIDEF.card_h_popup(target)
+            if target.align_h_popup then
+                target.config.h_popup_config = target:align_h_popup()
+            end
+        end
+        if target.children and target.children.h_popup then
+            target.children.h_popup:remove()
+            target.children.h_popup = nil
+        end
+        Node.hover(target)
+    end)
+    TEO_suspend_ai_resolve = false
+    if not ok then
+        print('[TEOcean 原版翻译] 弹窗重建异常:', tostring(err))
+    end
+end
+
+-- 每帧处理：按 H 临时隐藏原版翻译框（重新悬停卡牌后恢复显示）
+local function original_update(dt)
+    local controller = G and G.CONTROLLER
+    local target = controller and controller.hovering and controller.hovering.target
+
+    -- 悬停目标变化（含移开鼠标）→ 清除隐藏状态，下次悬停恢复显示
+    if TEO._original_last_hover_target ~= target then
+        TEO._original_last_hover_target = target
+        TEO._original_hidden = false
+    end
+
+    if not target or TEO._original_hidden then return end
+
+    -- 按 H：临时隐藏原版翻译框（重建弹窗移除它）
+    local pressed = controller.pressed_keys and controller.pressed_keys['h']
+    if pressed then
+        TEO._original_hidden = true
+        rebuild_hover_popup(target)
+    end
+end
+
+-- 确保 Game.update 已被包装（链式、幂等，与 story 等其它模块的包装互不干扰）。
+-- 若加载时 Game 不可用，将在首次悬停（ensure_original_update_hook）时补挂。
+local function ensure_original_update_hook()
+    if Game and Game.update and not TEO._original_update_hooked then
+        TEO._original_update_hooked = true
+        local original_update_ref = Game.update
+        Game.update = function(self, dt)
+            local ok, err = pcall(original_update, dt)
+            if not ok then
+                print('[TEOcean 原版翻译] 更新异常:', tostring(err))
+            end
+            return original_update_ref(self, dt)
+        end
+        print('[TEOcean 原版翻译] 更新钩子已激活')
+    end
+end
+
+-- 挂到 Game.update（若加载时 Game 不可用，首次悬停时由 hook 补挂）
+ensure_original_update_hook()
+
 -- Hook generate_card_ui
 local generate_card_ui_ref = generate_card_ui
 if not generate_card_ui_ref then
@@ -464,8 +599,6 @@ if not generate_card_ui_ref then
 end
 
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
-    local TEO_mod = TEO_get_mod()
-
     -- 跳过非卡牌对象 - 在调用原函数之前检查
     if not _c or type(_c) ~= 'table' or not _c.key or not _c.set then
         return generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
@@ -476,39 +609,24 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     local result = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start,
         main_end, card)
 
-    -- 只有在启用原文翻译功能时才执行以下逻辑
+    -- 仅非英文语言下生效：
+    --   show_original_translation 启用时：英文原版始终尝试显示 + 当前语言原版按需显示
+    --   关闭时：两者都不显示
+    local TEO_mod = TEO_get_mod()
+    local enabled = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_translation
     local lang = TEO_get_cur_language() or 'en-us'
-    local should_show_original = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_translation
-
-    if should_show_original and lang ~= 'en-us' and lang ~= 'default' then
-        -- 探测 Mod ID
-        local mod_id = nil
-        local detection_method = "none"
-        if _c.mod and _c.mod.id then
-            mod_id = _c.mod.id
-            detection_method = "center.mod.id"
-        elseif _c.mod_id then
-            mod_id = _c.mod_id
-            detection_method = "center.mod_id"
-        elseif _c.key and SMODS.Centers and SMODS.Centers[_c.key] and SMODS.Centers[_c.key].mod then
-            mod_id = SMODS.Centers[_c.key].mod.id
-            detection_method = "SMODS.Centers.mod"
-        elseif _c.config and _c.config.mod and _c.config.mod.id then
-            mod_id = _c.config.mod.id
-            detection_method = "center.config.mod.id"
-        end
-
-        TEO_dbg_print('[TEOcean] ModID 探测结果:', tostring(mod_id), '方式:', detection_method)
+    if lang ~= 'en-us' and lang ~= 'default' then
+        local mod_id = TEO_detect_center_mod_id(_c)
+        TEO_dbg_print('[TEOcean] generate_card_ui ModID 探测结果:', tostring(mod_id), 'Key:', tostring(_c.key))
 
         if mod_id and mod_id ~= 'base' then
-            -- 获取原文数据
-            local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key, false, "display")
-
-            if original_data then
-                TEO_dbg_print('[TEOcean] 找到原文数据，准备插入UI，ModID:', mod_id, 'Key:', _c.key)
-
-                local vars = specific_vars
-
+            -- 按 H 临时隐藏期间（TEO._original_hidden）不插入原版翻译条目
+            ensure_original_update_hook()
+            if TEO._original_hidden then
+                return result
+            end
+            local entries = TEO_original_info_queue_entries(mod_id, _c.set, _c.key, specific_vars, enabled)
+            if #entries > 0 then
                 local target_queue = nil
                 if type(result) == 'table' then
                     result.info_queue = result.info_queue or {}
@@ -519,15 +637,9 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
                 end
 
                 if target_queue then
-                    table.insert(target_queue, {
-                        key = 'teo_original_' .. _c.key,
-                        set = 'Other',
-                        vars = {},
-                        generate_ui = function(info_queue_card)
-                            TEO_dbg_print('[TEOcean] 正在渲染 info_queue 节点...')
-                            return TEO_build_original_translation_ui(original_data, vars)
-                        end
-                    })
+                    for _, entry in ipairs(entries) do
+                        table.insert(target_queue, entry)
+                    end
                 end
             end
         end
@@ -542,29 +654,22 @@ function create_UIBox_blind_popup(blind, discovered, vars)
     local result = create_UIBox_blind_popup_ref(blind, discovered, vars)
 
     local TEO_mod = TEO_get_mod()
-    if not TEO_mod or not TEO_mod.config or not TEO_mod.config.show_original_blind_translation then
-        return result
-    end
-
+    local enabled = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_blind_translation
     local lang = TEO_get_cur_language() or 'en-us'
-    if lang == 'en-us' or lang == 'default' then
-        return result
-    end
-
+    if lang == 'en-us' or lang == 'default' then return result end
+    if not result or not result.nodes then return result end
     if not blind or not blind.children then return result end
+
     local mod_id = blind.config and blind.config.blind and blind.config.blind.mod and blind.config.blind.mod.id
     if not mod_id and blind.mod then mod_id = blind.mod.id end
+    local blind_key = blind.config and blind.config.blind and blind.config.blind.key
 
-    if mod_id and mod_id ~= 'base' then
-        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind.config.blind.key, false, "display")
-        if original_data then
-            TEO_dbg_print('[TEOcean] 找到 Blind 原文数据:', blind.config.blind.key)
-            -- 传入 vars (blind popup 的 vars 通常在调用时传入)
-            table.insert(result.nodes, {
-                n = G.UIT.R,
-                config = { align = "cm", padding = 0.05 },
-                nodes = { TEO_build_original_translation_ui(original_data, vars) }
-            })
+    if mod_id and mod_id ~= 'base' and blind_key then
+        local nodes = TEO_original_ui_nodes(mod_id, 'Blind', blind_key, vars, enabled)
+        if #nodes > 0 then
+            for _, node in ipairs(nodes) do
+                table.insert(result.nodes, node)
+            end
         end
     end
 
@@ -577,26 +682,21 @@ function create_UIBox_blind_choice(type, run_info)
     local result = create_UIBox_blind_choice_ref(type, run_info)
 
     local TEO_mod = TEO_get_mod()
-    if not TEO_mod or not TEO_mod.config or not TEO_mod.config.show_original_blind_translation then
-        return result
-    end
-
+    local enabled = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_blind_translation
     local lang = TEO_get_cur_language() or 'en-us'
-    if lang == 'en-us' or lang == 'default' then
-        return result
-    end
+    if lang == 'en-us' or lang == 'default' then return result end
 
     local blind_key = G.GAME.round_resets.blind_choices[type]
     local blind = G.P_BLINDS[blind_key]
 
     if blind and blind.mod then
         local mod_id = blind.mod.id
-        local original_data = TEO_get_original_localization(mod_id, 'Blind', blind_key, false, "display")
-        if original_data then
-            TEO_dbg_print('[TEOcean] 找到 Blind Choice 原文数据:', blind_key)
-            -- 这里 vars 不太容易获取，暂传 nil
-            if result.nodes[1] and result.nodes[1].nodes[2] and result.nodes[1].nodes[2].nodes then
-                table.insert(result.nodes[1].nodes[2].nodes, TEO_build_original_translation_ui(original_data))
+        if mod_id and mod_id ~= 'base' then
+            local nodes = TEO_original_ui_nodes(mod_id, 'Blind', blind_key, nil, enabled)
+            if #nodes > 0 and result.nodes[1] and result.nodes[1].nodes[2] and result.nodes[1].nodes[2].nodes then
+                for _, node in ipairs(nodes) do
+                    table.insert(result.nodes[1].nodes[2].nodes, node)
+                end
             end
         end
     end
@@ -611,59 +711,25 @@ if not G.UIDEF.card_h_popup_teo_ref then
         local ret_val = G.UIDEF.card_h_popup_teo_ref(card)
 
         local TEO_mod = TEO_get_mod()
-        if not TEO_mod or not TEO_mod.config or not TEO_mod.config.show_original_translation then
-            return ret_val
-        end
-
+        local enabled = TEO_mod and TEO_mod.config and TEO_mod.config.show_original_translation
         local lang = TEO_get_cur_language() or 'en-us'
-        if lang == 'en-us' or lang == 'default' then
-            return ret_val
-        end
+        if ret_val and ret_val.nodes and lang ~= 'en-us' and lang ~= 'default' then
+            local _c = card.config.center or (card.config.tag and G.P_TAGS[card.config.tag.key])
 
-        -- 探测 Mod ID
-        local _c = card.config.center or (card.config.tag and G.P_TAGS[card.config.tag.key])
-
-        if not _c or not _c.key then return ret_val end
-
-        local mod_id = nil
-        if _c.mod and _c.mod.id then
-            mod_id = _c.mod.id
-        elseif _c.mod_id then
-            mod_id = _c.mod_id
-        elseif SMODS.Centers[_c.key] and SMODS.Centers[_c.key].mod then
-            mod_id = SMODS.Centers[_c.key].mod.id
-        elseif _c.config and _c.config.mod and _c.config.mod.id then
-            mod_id = _c.config.mod.id
-        end
-
-        if not mod_id or mod_id == 'base' then return ret_val end
-
-        local original_data = TEO_get_original_localization(mod_id, _c.set, _c.key, false, "display")
-
-        if original_data then
-            -- 尝试获取 vars
-            -- card.ability.extra 或者是 SMODS 提供的 loc_vars
-            local vars = nil
-            if card.ability and card.ability.extra and type(card.ability.extra) == 'table' then
-                -- 这是一个常见的模式，但不一定准确，先不做复杂映射
-            end
-
-            -- SMODS 标准方法获取 vars
-            if SMODS.Centers[_c.key] and SMODS.Centers[_c.key].loc_vars then
-                -- 注意：调用 loc_vars 可能有副作用或需要特定 context，这里需谨慎
-                -- 安全起见，如果 card 存在，尝试调用
-                local ok, res = pcall(function()
-                    return SMODS.Centers[_c.key]:loc_vars(nil, card)
-                end)
-                if ok and res then vars = res end
-            end
-
-            local ui_node = TEO_build_original_translation_ui(original_data, vars)
-
-            if ret_val and ret_val.nodes then
-                -- 添加一个间距
-                table.insert(ret_val.nodes, { n = G.UIT.R, config = { minh = 0.05 } })
-                table.insert(ret_val.nodes, ui_node)
+            if _c and _c.key then
+                local mod_id = TEO_detect_center_mod_id(_c)
+                if mod_id and mod_id ~= 'base' then
+                    -- 按 H 临时隐藏期间（TEO._original_hidden）不追加原版翻译面板
+                    if TEO._original_hidden then
+                        return ret_val
+                    end
+                    local nodes = TEO_original_ui_nodes(mod_id, _c.set, _c.key, nil, enabled)
+                    for _, node in ipairs(nodes) do
+                        table.insert(ret_val.nodes, node)
+                    end
+                    -- 确保按 H 隐藏的更新钩子已激活（首次悬停时补挂）
+                    ensure_original_update_hook()
+                end
             end
         end
 
