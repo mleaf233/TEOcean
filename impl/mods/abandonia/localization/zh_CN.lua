@@ -2796,6 +2796,8 @@ return {
                 }
             },
             j_abn_random_encounter = {
+                -- 一种游戏机制，
+                -- 一般指JRPG游戏中在野外地图行走时随机触发切入战斗场景的机制。
                 name = "随机遭遇",
                 text = {
                     {
@@ -2849,7 +2851,7 @@ return {
                         "每当{C:abn_rose}玫瑰{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:abn_rose}玫瑰{}牌永久获得",
                         "本盲注中每张{C:abn_rose}玫瑰{}牌{C:mult}+#3#{}倍率",
                     }
@@ -2877,7 +2879,7 @@ return {
                         "每当{C:abn_sword}剑{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "手牌中所有{C:attention}留在手中{}的牌",
                         "在{C:abn_sword}剑{}计分时永久获得{C:mult}+#3#{}倍率",
                     }
@@ -2892,7 +2894,7 @@ return {
                         "每当{C:abn_sword}剑{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "手牌中所有{C:attention}留在手中{}的牌",
                         "在{C:abn_sword}剑{}计分时永久获得{C:chips}+#3#{}筹码",
                     }
@@ -2916,6 +2918,10 @@ return {
                 }
             },
             j_abn_zauberer_magicians = {
+                -- 卡名中的 Zauberer 是德语中的“魔术师”
+                -- 美术原型疑似卡普空法庭冒险游戏《逆转裁判4》（Ace Attorney 4） 中的
+                -- 传奇魔术表演团体——“或真敷一座”（Troupe Gramarye） 的两位核心魔术师：
+                -- 或真敷巴朗（Valant Gramarye） 与 或真敷扎克（Zak Gramarye）。
                 name = "魔术师",
                 text = {
                     {
@@ -2996,70 +3002,70 @@ return {
                 },
             },
             j_abn_mikhail_jester = {
-                name = "米哈伊尔小丑",
+                name = "米哈伊尔",
                 text = {
                     {
                         "计分的{C:abn_bow}弓{}牌给予{X:chips,C:white}X#1#{}筹码",
                         "每当{C:abn_bow}弓{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:abn_bow}弓{}牌每{C:attention}持有{}一张消耗牌",
                         "永久获得{C:mult}+#3#{}倍率",
                     }
                 }
             },
             j_abn_mitch_jester = {
-                name = "米奇小丑",
+                name = "米奇",
                 text = {
                     {
                         "计分的{C:abn_tie}和{}牌给予{X:mult,C:white}X#1#{}倍率",
                         "每当{C:abn_tie}和{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:abn_tie}和{}牌每{C:attention}持有{}一张消耗牌",
                         "永久获得{C:attention}+#3#{}次重新触发",
                     }
                 }
             },
             j_abn_mateo_mime = {
-                name = "马特奥哑剧演员",
+                name = "马特奥•哑剧演员",
                 text = {
                     {
                         "计分的{C:abn_coin}币{}牌给予{X:chips,C:white}X#1#{}筹码",
                         "每当{C:abn_coin}币{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "提升所有计分{C:abn_coin}币{}牌的{C:planet}星球{} {C:attention}点数{}",
                     }
                 }
             },
             j_abn_dimitri_jester = {
                 -- 参见：https://en.wikipedia.org/wiki/Dimitri_(clown)
-                name = "德米特里弄臣",
+                name = "德米特里",
                 text = {
                     {
                         "计分的{C:diamonds}方块{}牌给予{X:mult,C:white}X#1#{}倍率",
                         "每当{C:diamonds}方块{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:diamonds}方块{}牌给每张{C:attention}小丑牌{}",
                         "添加{C:money}$#3#{}售价",
                     }
                 }
             },
             j_abn_rando_jester = {
-                name = "兰多小丑",
+                name = "兰多",
                 text = {
                     {
                         "计分的{C:clubs}梅花{}牌给予{X:mult,C:white}X#1#{}倍率",
                         "每当{C:clubs}梅花{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:clubs}梅花{}牌提升下一次{C:green}概率{}的{C:attention}#3#{}",
                         "{C:inactive,s:0.8}（例：{C:green,s:0.8}1/4{C:inactive,s:0.8} -> {C:green,s:0.8}2/4{C:inactive,s:0.8} -> {C:green,s:0.8}3/4{C:inactive,s:0.8}）",
                     }
@@ -3088,7 +3094,7 @@ return {
                 }
             },
             j_abn_regalia_joker = {
-                name = "王权小丑",
+                name = "王权",
                 text = {
                     {
                         "如果{C:attention}牌型{}是{C:attention}#2#{}或{C:attention}#3#{}",
@@ -3112,7 +3118,7 @@ return {
                         "{s:0.8}花色每手牌变化",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "{V:1}#5#{}牌手牌中每{C:attention}持有{}一张牌",
                         "永久获得{C:chips}+#4#{}筹码和{C:mult}+#3#{}倍率",
                     }
@@ -3126,7 +3132,7 @@ return {
                         "每当{C:abn_suitless}无色{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "打出的{C:abn_suitless}无色{}牌计分时",
                         "每剩余一次出牌永久获得{C:money}$#3#{}",
                     }
@@ -3155,7 +3161,7 @@ return {
                         "每当{C:abn_chalice}圣杯{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "打出的{C:abn_chalice}圣杯{}牌计分时",
                         "每张计分牌的{C:planet}星球{} {C:attention}点数{}等级",
                         "永久获得{C:mult}+#3#{}倍率",
@@ -3163,14 +3169,14 @@ return {
                 }
             },
             j_abn_robert_jester = {
-                name = "罗伯特小丑",
+                name = "罗伯特",
                 text = {
                     {
                         "计分的{C:clubs}梅花{}牌给予{X:chips,C:white}X#1#{}筹码",
                         "每当{C:clubs}梅花{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "打出的{C:clubs}梅花{}牌计分时",
                         "每剩余一次弃牌永久获得{C:money}$#3#{}",
                     }
@@ -3185,7 +3191,7 @@ return {
                         "每当{C:spades}黑桃{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "手牌中每{C:attention}持有{}一张牌",
                         "{C:spades}黑桃{}牌永久获得{C:mult}+#3#{}倍率",
                     }
@@ -3205,28 +3211,28 @@ return {
                 }
             },
             j_abn_maurice_jester = {
-                name = "莫里斯小丑",
+                name = "莫里斯",
                 text = {
                     {
                         "计分的{C:hearts}红桃{}牌给予{X:chips,C:white}X#1#{}筹码",
                         "每当{C:hearts}红桃{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "打出的{C:hearts}红桃{}牌计分时",
                         "永久获得{C:white,X:mult}X#3#{}倍率",
                     }
                 }
             },
             j_abn_mike_jester = {
-                name = "迈克小丑",
+                name = "迈克",
                 text = {
                     {
                         "计分的{C:abn_bow}弓{}牌给予{X:mult,C:white}X#1#{}倍率",
                         "每当{C:abn_bow}弓{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:abn_bow}弓{}牌按{C:white,X:abn_plasma}#3#%{}",
                         "平衡{C:chips}筹码{}和{C:mult}倍率{}",
                     }
@@ -3241,7 +3247,7 @@ return {
                         "每当{C:abn_tie}和{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "打出的{C:abn_tie}和{}牌计分时",
                         "永久获得{C:money}$#3#{}",
                     }
@@ -3263,14 +3269,14 @@ return {
                 }
             },
             j_abn_reggy_jester = {
-                name = "雷吉小丑",
+                name = "雷吉",
                 text = {
                     {
                         "计分的{C:abn_snow}雪{}牌给予{X:mult,C:white}X#1#{}倍率",
                         "每当{C:abn_snow}雪{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分的{C:abn_snow}雪{}牌降低",
                         "{C:attention}盲注需求{} {C:attention}#3#%{}",
                     }
@@ -3453,6 +3459,10 @@ return {
                 }
             },
             j_abn_uboa = {
+                -- 原型是心理恐怖、探索肉鸽类游戏《梦日记》（Yume Nikki）中的著名隐藏角色/彩蛋——乌波阿（Uboa）
+                -- 在《梦日记》中，主角附窗子（Madotsuki）来到NPC浅木（Poniko）的房间时，
+                -- 切换房间灯光开关有1/64的几率不会关灯，而是让背景音效骤变，
+                -- Poniko 瞬间变成异形 Uboa，并会将玩家传送至一个无法逃脱的血色/静止异空间。
                 name = "乌波阿",
                 text = {
                     {
@@ -3523,7 +3533,8 @@ return {
                 }
             },
             j_abn_rekoj_esrever = {
-                name = "丑小·埃斯雷弗",
+                -- Rekoj Esrever 是 "Reverse Joker" 的反向拼写。
+                name = "丑小转反",
                 text = {
                     {
                         "计分的{C:attention}翻转{}牌",
@@ -3596,7 +3607,7 @@ return {
                 }
             },
             j_abn_marionette_joker = {
-                name = "提线木偶小丑",
+                name = "木偶小丑",
                 text = {
                     {
                         "迫使{C:attention}#3#{}张牌",
@@ -3705,7 +3716,7 @@ return {
                 }
             },
             j_abn_moe_joker = {
-                name = "莫小丑",
+                name = "萌化小丑",
                 text = {
                     "{C:attention}波尔卡点{}牌{C:attention}留在手中{}",
                     "可在计分时计数",
@@ -3744,7 +3755,8 @@ return {
                 }
             },
             j_abn_undiscovered_sunset = {
-                name = "未发现的日落",
+                -- 美术原型疑似是独立游戏《看火人》（Firewatch） 的主视觉海报与美学风格。
+                name = "未曾瞩目的落日",
                 text = {
                     {
                         "{C:attention}#5#{}中第一张计分的{C:abn_penumbra}半影{}牌",
@@ -4107,7 +4119,7 @@ return {
                 },
             },
             j_abn_qrcode_joker = {
-                name = "二维码小丑",
+                name = "二维码",
                 text = {
                     "选择{C:attention}盲注{}时",
                     "生成一张{C:program_pack}程序{}牌",
@@ -4166,7 +4178,7 @@ return {
                 },
             },
             j_abn_syntha_joker = {
-                name = "合成小丑",
+                name = "合成乐小丑",
                 text = {
                     "本赛局每激活一张{C:lexica}辞典{}牌",
                     "获得{C:red}+#1#{}倍率",
@@ -4236,6 +4248,11 @@ return {
                 }
             },
             j_abn_shovel_knight = {
+                -- 《铲子骑士》是由Yacht Club Games开发并发行的一款8-bit风格横版动作冒险游戏，
+                -- 于2014年6月27日发售。
+                -- 玩家扮演铲子骑士，
+                -- 使用多功能铲子进行战斗与挖掘，
+                -- 为拯救同伴盾牌骑士而对抗无情骑士团。
                 name = "铲子骑士",
                 text = {
                     "选择{C:attention}盲注{}时",
@@ -4252,7 +4269,8 @@ return {
                 }
             },
             j_abn_wildfrost_joker = {
-                name = "野霜小丑",
+                -- 原型是冰雪末日题材的肉鸽卡牌构建游戏——《雪居之地》（Wildfrost） 的角色/随从卡牌界面。
+                name = "雪居之地",
                 text = {
                     "如果打出的牌型是{C:attention}#5#{}",
                     "这张小丑牌获得{C:mult}+#3#{}倍率",
@@ -4270,7 +4288,7 @@ return {
                 }
             },
             j_abn_photoalbum = {
-                name = "相册小丑",
+                name = "相册",
                 text = {
                     "{C:attention}数字牌{}计分时",
                     "手牌中每张{C:attention}人头牌{}",
@@ -4280,7 +4298,8 @@ return {
                 }
             },
             j_abn_will = {
-                name = "威尔",
+                -- 原型是都铎王朝时期英国国王亨利八世（Henry VIII）最著名的宫廷小丑——威廉·萨默斯（Will Sommers / Will Somers）
+                name = "威廉",
                 text = {
                     "计分手牌包含",
                     "{C:attention}奇数{}点数牌时",
@@ -4459,7 +4478,7 @@ return {
                 }
             },
             j_abn_melty_joker = {
-                name = "融化的",
+                name = "半融小丑",
                 text = {
                     "{C:attention}最左侧{}打出的牌",
                     "永久获得{C:attention}最右侧{}牌",
@@ -4596,7 +4615,8 @@ return {
                 }
             },
             j_abn_yharman_joker = {
-                name = "亚尔曼小丑",
+                -- 原型是 FromSoftware 制作的动作RPG游戏《血源诅咒》（Bloodborne） 及其核心舞台——雅南（Yharnam）
+                name = "雅南小丑",
                 text = {
                     {
                         "{V:1}#1#花色{}的牌以{C:attention}背面朝上{}抽取",
@@ -4650,6 +4670,8 @@ return {
                 }
             },
             j_abn_moai_joker = {
+                -- 造型直接来源于智利复活节岛（Easter Island）巨型人面石像——摩艾（Moai / 🗿）。牌面在坚硬、带有裂纹的灰色石像头上加戴了一顶极小的红黄双色小丑帽，并涂上了红色的笑脸嘴唇。
+                -- 摩艾石像（🗿）在现代网络流行文化中也是极其经典的表情包梗
                 name = "摩艾小丑",
                 text = {
                     "每张打出的{C:attention}石头牌{}",
@@ -4666,7 +4688,11 @@ return {
                 }
             },
             j_abn_van_joker = {
-                name = "货车小丑",
+                -- 原型是荷兰后印象派代表画家——文森特·梵高（Vincent van Gogh） 
+                -- 及其著名的自画像作品（Self-Portraits）（尤其是 1889 年创作的《蓝漩涡背景自画像》）。
+                -- 这幅画作于 1889年9月，当时梵高正住在法国圣雷米（Saint-Rémy）的精神疗养院中。
+                -- 目前，这幅无价的杰作由法国巴黎的奥赛博物馆（Musée d'Orsay）永久收藏。
+                name = "梵高",
                 text = {
                     "商店中{C:attention}+#1#{}个",
                     "优惠券槽位",
@@ -4698,7 +4724,7 @@ return {
                 }
             },
             j_abn_menacing_clown = {
-                name = "威胁小丑",
+                name = "威吓小丑",
                 text = {
                     "选择{C:attention}盲注{}时",
                     "摧毁右侧的小丑牌",
@@ -4761,7 +4787,7 @@ return {
                 }
             },
             j_abn_terminator = {
-                name = "终结者小丑",
+                name = "终结者",
                 text = {
                     {
                         "{C:attention}钢铁牌{}留在手牌中时",
@@ -4836,14 +4862,14 @@ return {
                 }
             },
             j_abn_maxwell_joker = {
-                name = "麦克斯韦小丑",
+                name = "麦克斯韦",
                 text = {
                     "带有{C:dark_edition}#2#{}版本的牌",
-                    "和小丑牌给予{X:chips,C:white}X#1#{}筹码",
+                    "给予{X:chips,C:white}X#1#{}筹码",
                 }
             },
             j_abn_melted_joker = {
-                name = "融化小丑",
+                name = "已融化小丑",
                 text = {
                     {
                         "选择{C:attention}盲注{}时",
@@ -4926,7 +4952,7 @@ return {
                 }
             },
             j_abn_union_jack = {
-                name = "联合杰克小丑",
+                name = "联合杰克",
                 text = {
                     "如果打出的牌包含",
                     "一张{C:attention}奖励牌{}和",
@@ -4974,7 +5000,7 @@ return {
                     "当第一张{C:attention}未增强{}牌",
                     "计分时",
                     "这张小丑牌获得其",
-                    "{C:attention}点数{}作为{C:mult}倍率{}",
+                    "{C:attention}点数{}的{C:mult}倍率{}",
                     "{C:inactive}（当前为{C:mult}+#1#{C:inactive}倍率）",
                 }
             },
@@ -4986,6 +5012,8 @@ return {
                 }
             },
             j_abn_newground_joker = {
+                -- Newgrounds是全球最著名的独立游戏与Flash动画创作社区，被称为“互联网独立艺术与 Flash 游戏的发源地”。
+                -- 卡面美术复刻了 Newgrounds 社区的经典标志——新地坦克
                 name = "新地小丑",
                 text = {
                     "选择{C:attention}盲注{}时",
@@ -5143,7 +5171,7 @@ return {
                         "给最左侧小丑牌",
                         "添加{C:dark_edition}#3#{}版本",
                     },
-                    {   
+                    {
                         "每有一张",
                         "带有{C:dark_edition}#3#{}版本的小丑牌或游戏牌",
                         "就给予{C:mult}+#1#{}倍率",
@@ -5387,7 +5415,7 @@ return {
             },
 
             j_abn_abandonia = {
-                name = "Abandonia",  -- 专有名词
+                name = "Abandonia", -- 专有名词
                 text = {
                     {
                         "打出的牌计分时给予",
@@ -5471,7 +5499,17 @@ return {
                 }
             },
             j_abn_tronie_joker = {
-                name = "特洛尼小丑",
+                -- Tronie（16 或 17 世纪荷兰语中的“脸”，与法语单词“trogne”相关）
+                -- 是荷兰黄金时代绘画和佛拉蒙巴洛克绘画（英语：Flemish Baroque painting）中常见的一种作品的名称/类别，
+                -- 它们表现出夸张的面部表情或穿着服装的人。这些作品的目的不是肖像，而是对表情、类型、相貌或有趣角色的研究，
+                -- 例如老人或女人、年轻女人、士兵、牧羊女、东方人或特定种族的人等。
+                -- ---------------------------
+                -- 美术原型来自《戴珍珠耳环的少女》是荷兰画家扬·弗美尔约1665年所作的布面油画，纵44.5厘米、横39厘米，
+                -- 自1903年起藏于海牙莫瑞泰斯皇家美术馆，
+                -- 馆方称其为弗美尔最著名的作品。
+                -- 画中少女在深色底子前侧身回望，
+                -- 头裹蓝黄两色头巾，耳下垂着一颗尺寸夸张的珍珠。
+                name = "Tronie",
                 text = {
                     "{C:chips}+#1#{}个小丑牌槽位",
                     "{C:attention}盲注需求{} {X:mult,C:white}#2#X{}",
@@ -5525,7 +5563,7 @@ return {
                 }
             },
             j_abn_daddy_warbucks = {
-                -- 原型来自Oliver "Daddy" Warbucks 
+                -- 原型来自Oliver "Daddy" Warbucks
                 -- 是美国著名经典漫画/音乐剧《小孤女安妮》（Little Orphan Annie）中的核心角色
                 -- 是一位富可敌国、光头、外表严厉但对安妮充满慈爱的光头亿万富豪。
                 name = "金主老爹",
@@ -5613,7 +5651,8 @@ return {
                 }
             },
             j_abn_telejoker = {
-                name = "心灵小丑",
+                -- 原型是儿童节目《天线宝宝》（Teletubbies）中的紫色天线宝宝——丁丁（Tinky Winky）。
+                name = "天线宝宝",
                 text = {
                     "如果打出的牌是{C:attention}#1#{}或{C:attention}#2#{}",
                     "且只包含{C:attention}#3#{}张牌",
@@ -5681,7 +5720,8 @@ return {
                 }
             },
             j_abn_the_joker = {
-                name = "小丑",
+                -- 爆闪稀有度的金宝~
+                name = "金宝",
                 text = {
                     "计分牌降低{C:attention}盲注需求{} {C:attention}10%{}",
                 }
@@ -5766,11 +5806,12 @@ return {
                 text = {
                     "选择{C:attention}盲注{}时",
                     "给{C:attention}最右侧{}的小丑牌",
-                    "添加{C:green}有益{}贴纸",
+                    "添加{C:green}增益{}贴纸",
                 }
             },
             j_abn_melnibone_comedian = {
-                name = "梅尔尼博内喜剧演员",
+                -- Melniboné（梅尔尼博内）出自英国奇幻大师迈克尔·考克斯（Michael Moorcock）的代表作《永恒战士/白狼埃尔里克系列》（Elric of Melniboné）。
+                name = "梅尔尼博内",
                 text = {
                     "{C:attention}售出{}小丑牌时获得{X:mult,C:white}X#3#{}倍率",
                     "{C:mult}摧毁{}小丑牌时获得{C:chips}+#4#{}筹码",
@@ -5806,7 +5847,7 @@ return {
                 }
             },
             j_abn_power_four = {
-                name = "力量四",
+                name = "四色之力",
                 text = {
                     "重新触发包含{C:attention}4{}种或以上",
                     "{C:attention}花色{}的手牌中的所有牌",
@@ -5865,7 +5906,10 @@ return {
                 }
             },
             j_abn_ponzi = {
-                name = "庞氏骗局",
+                -- 查尔斯·庞兹（Charles Ponzi)是历史上最著名的诈骗犯之一，
+                -- 著名的金融诈骗模式“庞氏骗局”（Ponzi Scheme）就是以他的名字命名的。他在 20 世纪 20 年代以“国际回邮卡券”套利为借口，承诺 45 天内获得 50% 的高额回报，
+                -- 实际上是用后生投资者的钱支付前期投资者的利息。
+                name = "庞兹",
                 text = {
                     "每打出一张牌失去{C:money}$#1#{}",
                     "每张计分牌获得等同于",
@@ -5897,7 +5941,8 @@ return {
                 }
             },
             j_abn_mana = {
-                name = "法力",
+                -- 源自《驱魔少年》（D.Gray-man）中的小丑“马拿·沃克”（Mana Walker）
+                name = "马拿",
                 text = {
                     "如果这是回合的{C:attention}第一次出牌{}",
                     "给第一张计分的",
@@ -5906,7 +5951,7 @@ return {
                 }
             },
             j_abn_streetart_joker = {
-                name = "街头艺术小丑",
+                name = "街头艺术",
                 text = {
                     "石头牌保留其",
                     "{C:attention}点数{}和{C:attention}花色{}",
@@ -5977,7 +6022,8 @@ return {
                 }
             },
             j_abn_night_comedian = {
-                name = "夜间•喜剧演员",
+                -- 世嘉（SEGA）经典游戏《飞天幽梦》（NiGHTS into Dreams...）主角“奈特”（NiGHTS）
+                name = "奈特",
                 text = {
                     {
                         "计分的{C:attention}增强{}牌每有一种相同{C:attention}增强效果{}",
@@ -6032,6 +6078,7 @@ return {
                 }
             },
             j_abn_tom = {
+                -- 原型疑似是莎士比亚戏剧《李尔王》（King Lear）中的伪装形象 “疯癫汤姆”（Poor Tom）
                 name = "汤姆",
                 text = {
                     "每剩余一次{C:attention}出牌{}",
@@ -6076,7 +6123,8 @@ return {
                 }
             },
             j_abn_tier_list = {
-                name = "等级列表",
+                -- 也就是短视频里经常看到的“从夯到拉”系列，将某种同领域的东西做一个梯度排名来进行评价。
+                name = "梯度表",
                 text = {
                     {
                         "这张小丑牌根据{C:attention}最后获得{}的小丑牌",
@@ -6132,10 +6180,12 @@ return {
                 }
             },
             j_abn_number_44 = {
-                name = "数字44",
+                -- 源自美国著名作家马克·吐温（Mark Twain）的长篇哲学小说《44号神秘陌生人》。
+                -- 小说中的主角是一个名为 “44号”（No. 44） 的神秘少年/超自然存在。
+                name = "44号",
                 text = {
                     "选择{C:attention}盲注{}时",
-                    "生成{C:attention}#1#{}个小丑牌槽位",
+                    "创建{C:attention}#1#{}个小丑牌槽位",
                     "并用随机{C:attention}小丑牌{}填满",
                 }
             },
@@ -6240,7 +6290,7 @@ return {
                 }
             },
             j_abn_perfidious_comedian = {
-                name = "背信弃义的喜剧演员",
+                name = "奸诈•喜剧演员",
                 text = {
                     "手牌中带有{C:attention}蜡封{}的{C:attention}偶数{}和{C:attention}奇数{}牌可在计分时计数",
                     "带有{C:attention}蜡封{}的{C:attention}偶数{}牌计分时获得等同于其{C:attention}点数{}的{C:mult}倍率{}",
@@ -6249,7 +6299,7 @@ return {
                 }
             },
             j_abn_venom_comedian = {
-                name = "毒液喜剧演员",
+                name = "毒液•喜剧演员",
                 text = {
                     {
                         "如果打出的牌包含{C:attention}光谱{}",
@@ -6306,13 +6356,14 @@ return {
                 }
             },
             j_abn_parkateo = {
-                name = "帕卡泰奥",
+                name = "帕卡泰欧",
                 text = {
                     "持有的{C:attention}消耗牌{}给予{X:mult,C:white}X#1#{}倍率",
                 }
             },
             j_abn_perrrkeo = {
-                name = "佩尔克奥",
+                -- Perrrkeo
+                name = "帕~奇欧",
                 text = {
                     "按{C:white,X:abn_plasma}#3#%{}平衡",
                     "{C:mult}倍率{}和{C:chips}筹码{}",
@@ -6320,6 +6371,7 @@ return {
                     "额外增加{C:white,X:abn_plasma}#2#%{}",
                 }
             },
+            -- 原型是《最终幻想 IV》（Final Fantasy IV）中的Boss——“火之四天王”鲁比坎特（Rubicante / 炎のルビカンテ）。
             j_abn_rubicante = {
                 name = "鲁比坎特",
                 text = {
@@ -6352,6 +6404,7 @@ return {
                 }
             },
             j_abn_trevulit = {
+                -- 原型应该是原版小丑牌中的特里布莱（Triboulet）
                 name = "特雷维利特",
                 text = {
                     "{C:attention}奇数{}计分牌获得",
@@ -6419,7 +6472,7 @@ return {
                 }
             },
             j_abn_pixelgrid_joker = {
-                name = "像素网格小丑",
+                name = "像素网格",
                 text = {
                     "如果打出的牌包含",
                     "{C:attention}偶数{}张计分牌",
@@ -6462,7 +6515,10 @@ return {
                 }
             },
             j_abn_tetris_joker = {
-                name = "俄罗斯方块小丑",
+                -- 《俄罗斯方块》，是1980年末期至1990年代初期风靡全世界的电脑游戏，是落下型益智游戏的始祖，
+                -- 电子游戏领域的代表作之一，为苏联首个在美国发布的娱乐软件。
+                -- 此游戏最初由阿列克谢·帕基特诺夫在苏联设计和编写，于1984年6月6日首次发布。
+                name = "俄罗斯方块",
                 text = {
                     "当你拥有{C:attention}偶数{}",
                     "张小丑牌时获得{X:mult,C:white}X#1#{}倍率",
@@ -6496,7 +6552,7 @@ return {
                 }
             },
             j_abn_phonechat_joker = {
-                name = "电话聊天小丑",
+                name = "电话聊天",
                 text = {
                     "左侧{C:attention}小丑牌{}触发时获得{C:chips}+#3#{}筹码",
                     "右侧{C:attention}小丑牌{}触发时获得{C:mult}+#4#{}倍率",
@@ -6801,7 +6857,8 @@ return {
                 }
             },
             j_abn_yesman_joker = {
-                name = "好好先生小丑",
+                -- 《好好先生》指2008年由金·凯瑞主演的美国喜剧电影《好好先生》（Yes Man）
+                name = "好好先生",
                 text = {
                     "{C:attention}持有{}的{C:dark_edition}版本{}会被触发",
                     "{C:dark_edition}版本{}触发时",
@@ -6813,14 +6870,14 @@ return {
                 name = "老虎机",
                 text = {
                     {
-                        "列出的{C:green,E:1,S:1.1}概率{}总是",
-                        "{C:green}成功{}，但每次花费{C:money}$5{}",
+                        "{C:green,E:1,S:1.1}概率{}判定总是{C:green}成功{}",
+                        "但每次花费{C:money}$5{}",
                         "除非拥有{C:attention}黄金小丑",
                     },
                     {
-                        "如果{C:attention}牌型{}是",
-                        "{C:attention}#2#{}，重新触发",
-                        "并提升该牌型等级",
+                        "如果{C:attention}牌型{}是{C:attention}#2#{}",
+                        "重新触发并提升",
+                        "对应打出的牌型等级",
                     },
                 }
             },
@@ -6849,7 +6906,7 @@ return {
                         "所有小丑牌获得{C:mult}+#1#{}倍率和{C:chips}+#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}有利可图小丑{}",
+                        "如果拥有{C:attention}暴利小丑{}",
                         "用{C:attention}黄金{}牌{C:attention}提升{}牌型等级",
                     },
                     {
@@ -6875,7 +6932,8 @@ return {
                 }
             },
             j_abn_parq = {
-                name = "帕克",
+                -- 这个不知道是指谁，保留英文
+                name = "P'arq",
                 text = {
                     "每{C:attention}持有{}一种不同的消耗牌",
                     "降低{C:attention}盲注需求{} {C:attention}#1#%{}",
@@ -6883,7 +6941,7 @@ return {
                 }
             },
             j_abn_pracheo = {
-                name = "普拉奇奥",
+                name = "普拉奇欧",
                 text = {
                     "每{C:attention}持有{}一种不同的消耗牌",
                     "牌重新触发{C:attention}1{}次",
@@ -6919,7 +6977,8 @@ return {
                 }
             },
             j_abn_tochic = {
-                name = "托奇克",
+                -- 原版小丑牌希科（Chicot）倒过来写，但是不完全一致，不知道是写错还是有别的原型
+                name = "科希",
                 text = {
                     "选择{C:attention}盲注{}时",
                     "每有一张{C:attention}小丑牌{}",
@@ -6966,7 +7025,7 @@ return {
                 }
             },
             j_abn_ransomware_joker = {
-                name = "勒索软件小丑",
+                name = "勒索软件",
                 text = {
                     "使用特定{C:attention}消耗牌{}时应用以下效果：",
                     "{C:tarot}塔罗{}：所有小丑牌获得{C:chips}+#1#{}筹码，失去{C:money}$#2#{}",
@@ -6994,7 +7053,8 @@ return {
                 }
             },
             j_abn_scantron_joker = {
-                name = "阅卷机小丑",
+                -- 阅卷机是一种用于自动读取和判定考试答题卡分数的电子设备，主要通过光学原理快速处理客观题。
+                name = "阅卷机",
                 text = {
                     "计分的{C:attention}幸运{}牌给予{X:chips,C:white}^#1#{}筹码",
                     "计分的{C:attention}奖励{}牌给予{X:mult,C:white}^#2#{}倍率",
@@ -7074,7 +7134,7 @@ return {
                 }
             },
             j_abn_rom_hack_balatro = {
-                name = "ROM破解小丑牌",
+                name = "ROM改版的小丑牌",
                 text = {
                     "{C:attention}基础{}小丑牌每张给予",
                     "{X:mult,C:white}X#1#{}倍率、{X:chips,C:white}X#2#{}筹码和{C:money}$#3#{}",
@@ -7146,7 +7206,7 @@ return {
                 }
             },
             j_abn_pentomino_joker = {
-                name = "五格骨牌小丑",
+                name = "五格骨牌",
                 text = {
                     {
                         "使用{C:program_pack}程序{}牌时",
@@ -7160,7 +7220,8 @@ return {
                 }
             },
             j_abn_nuruomino_joker = {
-                name = "鲁诺米诺小丑",
+                -- Nuruomino 是由著名解谜概念“涂壁/数墙”（Nurikabe）与“多格骨牌”（Polyomino）结合而成的经典格纸逻辑谜题。在 Nuruomino 谜题中，玩家需要将网格中的部分格子涂黑/暗化（Dark），使其连接构成特定形状的骨牌块
+                name = "诺鲁骨牌小丑",
                 text = {
                     "使用{C:program_pack}程序{}牌时",
                     "持有的{C:spades}暗色{}花色牌获得{C:chips}+#1#{}筹码",
@@ -7278,7 +7339,7 @@ return {
                 }
             },
             j_abn_propagator_joker = {
-                name = "繁殖者小丑",
+                name = "繁殖者",
                 text = {
                     "每张与计分牌相同{C:attention}点数{}和{C:attention}花色{}的牌",
                     "计分牌给予{X:mult,C:white}^2.0{}倍率",
@@ -7438,14 +7499,17 @@ return {
                 }
             },
             j_abn_painyatta = {
-                name = "苦行僧",
+                -- 原型来自游戏系列《动视/小龙斯派罗》（Skylanders: Trap Team）中的
+                -- 反派/角色 Painyatta（痛苦皮尼亚塔）。
+                name = "痛苦皮尼亚塔",
                 text = {
                     "购买{C:attention}优惠券{}时",
                     "{C:attention}免费{}兑换{C:attention}#1#{}张随机优惠券",
                 }
             },
             j_abn_puddles = {
-                name = "水坑",
+                -- 原型是美国著名高个子悲伤小丑歌手 Puddles（全称 Puddles Pity Party，由音乐人 Mike Geier 扮演）。
+                name = "Puddles",
                 text = {
                     "右侧每张{C:attention}小丑牌{}",
                     "获得{X:mult,C:white}X#2#{}倍率",
@@ -7453,7 +7517,8 @@ return {
                 }
             },
             j_abn_talstaff = {
-                name = "塔尔斯塔夫",
+                -- 原型是莎士比亚戏剧中的喜剧角色/小丑代表人物——约翰·福斯塔夫爵士（Sir John Falstaff）（代码中写作 Talstaff，但卡牌下方的牌名画着像 FALSTAFF）。
+                name = "Talstaff",
                 text = {
                     "左侧每张{C:attention}小丑牌{}",
                     "获得{X:mult,C:white}X#2#{}倍率",
@@ -7485,7 +7550,9 @@ return {
                 }
             },
             j_abn_pedro_joker = {
-                name = "佩德罗小丑",
+                -- Pedro 在植物学分类上属于 AAB 基因型组（Mysore 亚群），它最著名的国际通用名称是 Pisang Ceylan（锡兰香蕉）。在澳大利亚（尤其是昆士兰州），人们普遍习惯称它为 Pedro。
+                -- 它对导致现代香蕉产业面临严重危机的巴拿马病（香蕉枯萎病）具有极强的抗性，因此常被推荐给庭院种植者和有机农场。
+                name = "佩德罗香蕉",
                 text = {
                     "击败{C:attention}盲注{}时",
                     "{C:mult}摧毁{}售价最低的小丑牌",
@@ -7625,7 +7692,9 @@ return {
                 }
             },
             j_abn_orphic_joker = {
-                name = "俄耳甫斯小丑",
+                -- Orphic 在艺术史上专指 20 世纪初由罗贝尔·德洛内（Robert Delaunay）等人发起的“奥费主义”（立体主义的一个重要前卫分支）。
+                -- 该流派主张放弃写实，通过强烈对比的几何色块、多边形拼贴与光色韵律来表达纯粹的视觉音乐感。
+                name = "奥费小丑",
                 text = {
                     {
                         "如果打出包含",
@@ -7672,7 +7741,7 @@ return {
                 }
             },
             j_abn_sherlock_joker = {
-                name = "福尔摩斯小丑",
+                name = "福尔摩斯", -- 夏洛克·福尔摩斯（Sherlock Holmes）是英国作家亚瑟·柯南·道尔笔下著名的虚构咨询侦探。
                 text = {
                     {
                         "揭示选定的",
@@ -7720,21 +7789,24 @@ return {
                 }
             },
             j_abn_prizefighter_joker = {
-                name = "拳击手小丑",
+                name = "拳击手",
                 text = {
                     {
-                        "如果打出的{C:attention}手牌数量{}大于{C:attention}#1#{}",
+                        "如果打出的{C:attention}牌数量{}大于{C:attention}#1#{}",
                         "获得{C:chips}+#2#{}筹码和{C:mult}+#3#{}倍率",
                         "{C:inactive}（当前为{C:chips}+#4#{C:inactive}筹码，{C:mult}+#5#{C:inactive}倍率）",
                     },
                     {
-                        "如果打出的{C:attention}手牌数量{}是{C:attention}#1#{}的两倍",
+                        "如果打出的{C:attention}牌数量{}是{C:attention}#1#{}的两倍",
                         "这张小丑牌的{C:chips}筹码{}和{C:mult}倍率{} {C:attention}翻倍{}",
-                        "{C:inactive}（击败盲注时手牌数量重置）",
+                        "{C:inactive}（击败盲注时计数重置）",
                     },
                 }
             },
             j_abn_symbol_of_peace = {
+                -- 原型是动漫《我的英雄学院》（My Hero Academia）中的核心角色、
+                -- No.1 英雄——欧尔麦特（All Might，八木俊典）。
+                -- 警告：这个动漫目前在中国大陆地区已被封禁，由于众所周知的原因~
                 name = "和平象征",
                 text = {
                     "{C:enhanced}+#1#{}次出牌选择",
@@ -7862,7 +7934,10 @@ return {
                 }
             },
             j_abn_paint_by_numbers = {
-                name = "数字填色",
+                -- Paint by Numbers 是一种风靡全球的业余艺术创作方式（中文常称为“数字油画”或“按数字填色”），
+                -- 画布上被分割成许多带有数字编号的小区域，
+                -- 玩家只需要根据数字填上对应的颜料就能完成一幅画。
+                name = "数字油画",
                 text = {
                     {
                         "如果{C:attention}第一次出牌{}",
@@ -7901,7 +7976,9 @@ return {
                 }
             },
             j_abn_mutually_assured_destruction = {
-                name = "相互毁灭保证",
+                -- Mutually Assured Destruction（简称 MAD，意为“相互保证毁灭”或“相互确保摧毁”）
+                -- 是冷战时期美苏两大核大国之间的核威慑战略原则 —— 任何一方发动核袭击，另一方都有能力发动报复性打击摧毁对方，最终导致双绝对毁灭。
+                name = "玉石俱焚",
                 text = {
                     {
                         "所有{C:legendary}稀有度{}",
@@ -8213,13 +8290,13 @@ return {
                 }
             },
             j_abn_ascended_joker = {
-                name = "飞升小丑",
+                name = "晋升小丑",
                 text = {
                     {
                         "{C:gold}+#1#{}晋升强度",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "计分牌给予{C:gold}+#2#{}晋升强度",
                     }
                 }
@@ -8291,7 +8368,7 @@ return {
                 text = {
                     {
                         "当{C:attention}第一次出牌{}计分时",
-                        "手牌中所有",
+                        "留在手中的所有",
                         "{C:attention}钢铁{}和{C:attention}黄金{}牌",
                         "变为{C:dark_edition}逆转{}",
                     },
@@ -8302,7 +8379,9 @@ return {
                 }
             },
             j_abn_strickland_joker = {
-                name = "斯特里克兰小丑",
+                -- 原型是美国动画《山丘之王》（King of the Hill）的主角——汉克·希尔（Hank Hill） 
+                -- 以及他工作的公司——斯特里克兰丙烷公司（Strickland Propane）。
+                name = "斯特里克兰",
                 text = {
                     "每张{C:attention}打出{}的牌获得{C:red}+#1#{}倍率",
                     "分数{C:red,E:2}着火{}时重置",
@@ -8380,7 +8459,7 @@ return {
                 },
             },
             j_abn_monkey_buisness = {
-                name = "猴子把戏",
+                name = "猩牌危机",
                 text = {
                     "{C:attention}消耗牌{}可以有不同{C:dark_edition}版本{}",
                 },
@@ -8578,9 +8657,9 @@ return {
                 }
             },
             j_abn_rival_photograph = {
-                name = "对手照片",
+                name = "对比照片",
                 text = {
-                    "第一张打出的{C:attention}数字牌{}",
+                    "打出的第一张{C:attention}数字牌{}",
                     "计分时给予{X:mult,C:white}X#1#{}倍率",
                 },
             },
@@ -8818,7 +8897,8 @@ return {
                 }
             },
             j_abn_meddlesome_naidemoc = {
-                name = "多管闲事的奈德莫克",
+                -- 名字naidemoc是comedians的反向拼写
+                name = "多事演员剧喜",
                 text = {
                     {
                         "计分前牌改变{C:attention}花色{}",
@@ -8838,7 +8918,8 @@ return {
                 }
             },
             j_abn_tlumddo = {
-                name = "特卢姆多小丑",
+                -- 不会翻
+                name = "Tlumddo",
                 text = {
                     {
                         "{C:attention}奖励牌{}计分时",
@@ -8992,7 +9073,8 @@ return {
                 }
             },
             j_abn_reversecard_joker = {
-                name = "反转牌小丑",
+                -- UNO游戏中有一张“反转牌”，当玩家打出这张牌时，游戏的出牌顺序会发生反转。
+                name = "反转牌",
                 text = {
                     {
                         "如果打出的牌同时包含",
@@ -9043,7 +9125,7 @@ return {
                 }
             },
             j_abn_telisyndrome_joker = {
-                name = "远程综合症小丑",
+                name = "终末综合症",
                 text = {
                     {
                         "每有一种{C:attention}不同{}计分{C:attention}增强效果{}",
@@ -9137,7 +9219,8 @@ return {
                 }
             },
             j_abn_runedelta_disc2 = {
-                name = "符文三角洲光盘2",
+                -- 有些游戏会进行分盘，例如《Deltarune》在Switch平台上就分为两盘，第一盘是“Runedelta Disc 1”，第二盘是“Runedelta Disc 2”。本小丑牌的美术原型来自于《Deltarune》的第二盘。
+                name = "三角符文光盘2",
                 text = {
                     {
                         "第一张计分的带有{C:dark_edition}版本{}的{C:inactive}点数{}牌",
@@ -9218,7 +9301,7 @@ return {
                 }
             },
             j_abn_snow_comedian = {
-                name = "雪之喜剧演员",
+                name = "雪•喜剧演员",
                 text = {
                     {
                         "如果打出的牌包含{C:attention}偶数{} {C:abn_snow}雪{}牌",
@@ -9235,7 +9318,7 @@ return {
                 }
             },
             j_abn_primogeniture_joker = {
-                name = "长子继承小丑",
+                name = "长子继承",
                 text = {
                     {
                         "{C:common}普通{}小丑牌{C:money}免费{}",
@@ -9243,7 +9326,7 @@ return {
                         "每张给予{X:mult,C:white}X#1#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "{C:common}普通{}小丑牌触发时",
                         "这张小丑牌获得{C:chips}+#2#{}筹码",
                         "{C:inactive}（当前为{C:chips}+#3#{C:inactive}筹码）",
@@ -9278,7 +9361,7 @@ return {
                 }
             },
             j_abn_joker_in_a_nutshell = {
-                name = "极简小丑",
+                name = "简述小丑",
                 text = {
                     {
                         "不带{C:dark_edition}版本{}的{C:common}普通{}小丑牌",
@@ -9291,7 +9374,8 @@ return {
                 }
             },
             j_abn_runedelta = {
-                name = "符文三角洲",
+                -- 《Deltarune》是一款由独立游戏制作人Toby Fox开发的章节式电子角色扮演游戏，为其2015年作品《Undertale》的后续作品。
+                name = "三角符文",
                 text = {
                     "如果{C:attention}获胜手牌{}只含{C:spades}暗色花色{}",
                     "这张小丑牌获得{C:mult}+#3#{}倍率",
@@ -9335,7 +9419,9 @@ return {
                 }
             },
             j_abn_obra_dinn = {
-                name = "奥布拉丁",
+                -- 原型来自独立解谜游戏《奥伯拉·丁的回归》（Return of the Obra Dinn）
+                -- 现实原型为“奥伯拉·丁号”（Obra Dinn） 是一艘于 1802 年在海上失踪、并在 1807 年飘回港口的东印度公司商船，船上的 60 名船员全部死亡或失踪。
+                name = "奥伯拉丁",
                 text = {
                     {
                         "本赛局每摧毁一张{C:spades}暗色花色{}牌",
@@ -9373,7 +9459,7 @@ return {
                 }
             },
             j_abn_tesseract_joker = {
-                name = "超立方体小丑",
+                name = "超立方体",
                 text = {
                     {
                         "击败{C:attention}Boss盲注{}时",
@@ -9412,7 +9498,7 @@ return {
                         "每当{C:abn_leaf}叶{}计分时提升{X:mult,C:white}X#2#{}倍率",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "手牌中所有{C:attention}持有{}的牌",
                         "当{C:abn_leaf}叶{}计分时获得等同于最高叶牌点数的{C:chips}筹码{}",
                     }
@@ -9427,7 +9513,7 @@ return {
                         "每当{C:abn_leaf}叶{}计分时提升{X:chips,C:white}X#2#{}筹码",
                     },
                     {
-                        "如果拥有{C:attention}小丑牌{}",
+                        "如果拥有{C:attention}默认小丑{}",
                         "所有{C:attention}计分{}牌",
                         "当{C:abn_leaf}叶{}计分时获得等同于持有消耗牌数量的{C:mult}倍率{}",
                     }
@@ -13001,7 +13087,7 @@ return {
             abn_reversal = "逆转",
             abn_bit_rot = "比特衰变",
             abn_reel = "卷轴",
-            abn_collodion = "胶棉",  -- 摄影领域应用于火棉胶湿版法（wet-plate process），该工艺由弗雷德里克·司各特·阿切尔于1851年发明，需在玻璃板上涂布湿润火棉胶。火棉胶湿版法因成像清晰度高，在1851年后取代卡罗版摄影术，主导专业摄影领域直至1880年干版法出现
+            abn_collodion = "胶棉", -- 摄影领域应用于火棉胶湿版法（wet-plate process），该工艺由弗雷德里克·司各特·阿切尔于1851年发明，需在玻璃板上涂布湿润火棉胶。火棉胶湿版法因成像清晰度高，在1851年后取代卡罗版摄影术，主导专业摄影领域直至1880年干版法出现
             abn_vintage = "复古",
             abn_bright = "明亮",
             abn_opaque = "暗淡",
