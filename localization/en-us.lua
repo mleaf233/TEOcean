@@ -22,7 +22,7 @@ return {
                 name = "Show Story",
                 text = {
                     "Show comments (background story)",
-                    "written in the impl localization",
+                    "written in the localization",
                     "entries on card hover popup",
                     "Press H while hovering a card to hide it temporarily"
                 }
