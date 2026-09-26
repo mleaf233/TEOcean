@@ -34,7 +34,7 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Hot reload**: Supports execution when clicking the "Manual Reload" button in the mod configuration menu in-game
 - **AI Translation** (experimental): Supports automatic translation via DeepSeek API with persistent caching
 - **Original text display**: Optionally show original text alongside translations for cards and blinds
-- **Story display**: Optionally show translator-written comments (background story) from localization entries in the card hover popup; supports both leading comment blocks and inline comments
+- **Story display**: Optionally show translator-written comments (background story) from localization entries in the card hover popup; supports both leading comment blocks and inline comments. This mod's adapted files (`impl/mods/<modid>/localization/`) take priority, then the target mod's own `localization/`
 
 ## How to Use
 
@@ -60,7 +60,7 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Runtime Override Mode**: When enabled, applies translations in-memory without writing to disk
 - **Show Original Translation**: Display original text alongside translated text for cards
 - **Show Original Blind Translation**: Display original text for Blind challenges
-- **Show Story**: Display comments (background story) from localization entries in the card hover popup
+- **Show Story**: Display comments (background story) from localization entries in the card hover popup. Lookup order: this mod's adapted files first, then the target mod's own localization; language order: current language → `en-us` → `default`
 - **Enable AI Translation**: Enable automatic AI translation via DeepSeek API
 - **API Key**: Your DeepSeek API key for AI translation (get one at [deepseek](https://platform.deepseek.com/api_keys))
 
@@ -88,9 +88,20 @@ c_abn_hyperborea = {
 },
 ```
 
-Both styles can be combined and are displayed in file order. Overlong comments wrap automatically at 25 visible characters, and `{C:xxx}` colour marks in comments are rendered as well.
+Both styles can be combined and are displayed in file order. Overlong comments wrap automatically at a display width of 50 (half-width = 1, full-width = 2, i.e. about 25 CJK characters), and `{C:xxx}` colour marks in comments are rendered as well.
 
 Localization files may use either a single `localization/<lang>.lua` file or a multi-file layout under a `localization/<lang>/` directory (including subdirectories), e.g. JoyousSpring — both layouts are scanned.
+
+### Sources and language order
+
+Stories are looked up in the following order, and the first hit wins:
+
+1. This mod's adapted files: `impl/mods/<modid>/localization/`
+2. The target mod's own localization: `<target mod>/localization/`
+
+Within each source the language order is **current language → `en-us` → `default`**. So a Chinese UI reads `zh_CN` files first and an English UI reads `en-us` files first; only when the current language has no comment for that entry do we fall back to `en-us` and then `default`.
+
+Because the priority is "this mod's adapted files first", a comment written in the adapted file hides the target mod's own comment for the same entry. Also note that section/marker comments inside the target mod's own files (e.g. a `-- Contract` line right above an entry) are extracted as stories too — add a proper comment in the adapted file to override that kind of noise.
 
 ## Development
 

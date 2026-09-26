@@ -1,6 +1,7 @@
 -- TEOcean 故事(story)模块
--- 在卡牌悬停弹窗中显示 impl/mods/<modid>/localization/ 本地化文件里
--- 对应条目（如 c_abn_hyperborea）的注释内容（"故事"）。
+-- 在卡牌悬停弹窗中显示本地化文件里对应条目（如 c_abn_hyperborea）的注释内容（"故事"）。
+-- 来源顺序：本 mod 适配文件 impl/mods/<modid>/localization/ > 目标 mod 自身 localization/
+-- 语言顺序：当前语言 > en-us > default
 -- 支持两种注释格式：
 --   1) 行尾注释:  name = "极北之地",  -- 译为许珀耳玻瑞亚或极北之地……
 --   2) 条目前注释块:
@@ -232,8 +233,9 @@ local function collect_loc_files(dir, out)
     out = out or {}
     local items = NFS.getDirectoryItems(dir)
     if not items then return out end
+    local base = dir:gsub('/+$', '') .. '/'
     for _, name in ipairs(items) do
-        local p = dir .. '/' .. name
+        local p = base .. name
         local info = NFS.getInfo(p)
         if info and info.type == 'directory' then
             collect_loc_files(p, out)
@@ -275,18 +277,63 @@ end
 
 -- ============ 对外接口 ============
 
+local function TEO_find_mod_localization_base(mod_id)
+    for _, m in ipairs(SMODS.mod_list or {}) do
+        if m.id == mod_id and m.path then
+            return TEO_ensure_slash(m.path) .. 'localization/'
+        end
+    end
+    return nil
+end
+
+local function story_from_base(base, langs_try, loc_key)
+    for _, l in ipairs(langs_try) do
+        -- 1) 单文件 localization/<lang>.lua
+        local path = base .. l .. '.lua'
+        if NFS.getInfo(path) then
+            local story = story_from_file(path, loc_key)
+            if story then return story end
+        end
+        -- 2) 目录形式 localization/<lang>/（多文件，可含子目录，如 JoyousSpring）
+        local dir = base .. l .. '/'
+        if NFS.getInfo(dir) then
+            local files = dir_cache[dir]
+            if not files then
+                files = collect_loc_files(dir)
+                dir_cache[dir] = files
+            end
+            for _, fp in ipairs(files) do
+                local story = story_from_file(fp, loc_key)
+                if story then return story end
+            end
+        end
+    end
+    return nil
+end
+
+local function build_langs_try(primary, fallbacks)
+    local out, seen = {}, {}
+    local function add(l)
+        if l and l ~= '' and not seen[l] then
+            seen[l] = true
+            out[#out + 1] = l
+        end
+    end
+    add(primary)
+    for _, l in ipairs(fallbacks) do add(l) end
+    return out
+end
+
 -- 获取指定 mod 卡牌条目的故事注释（行数组）；无注释返回 nil
+-- 来源优先级：本 mod 适配文件（impl/mods）> 目标 mod 自身 localization/
+-- 语言优先级：当前语言 > en-us > default
 function TEO_get_story_text(mod_id, loc_key)
     if not mod_id or mod_id == 'base' or not loc_key or loc_key == '' then
         return nil
     end
-    local lang = TEO_get_cur_language() or 'zh_CN'
-    if lang == 'en-us' or lang == 'default' then
-        -- 注释主要写在中文文件中，英文语言时直接尝试 zh_CN
-        lang = 'zh_CN'
-    end
+    local cur_lang = TEO_get_cur_language() or 'en-us'
 
-    local cache_key = string.format('%s:%s:%s', tostring(mod_id), tostring(lang), tostring(loc_key))
+    local cache_key = string.format('%s:%s:%s', tostring(mod_id), tostring(cur_lang), tostring(loc_key))
     if story_cache[cache_key] ~= nil then
         return story_cache[cache_key] or nil
     end
@@ -295,29 +342,13 @@ function TEO_get_story_text(mod_id, loc_key)
     if not TEO_mod or not TEO_mod.path then return nil end
     local impl_base = TEO_ensure_slash(TEO_mod.path) .. 'impl/mods/' .. mod_id .. '/localization/'
 
-    local story = nil
-    local langs_try = { lang }
-    if lang ~= 'zh_CN' then table.insert(langs_try, 'zh_CN') end
-    for _, l in ipairs(langs_try) do
-        -- 1) 单文件 localization/<lang>.lua
-        local path = impl_base .. l .. '.lua'
-        if NFS.getInfo(path) then
-            story = story_from_file(path, loc_key)
-            if story then break end
-        end
-        -- 2) 目录形式 localization/<lang>/（多文件，可含子目录，如 JoyousSpring）
-        local dir = impl_base .. l .. '/'
-        if NFS.getInfo(dir) then
-            local files = dir_cache[dir]
-            if not files then
-                files = collect_loc_files(dir)
-                dir_cache[dir] = files
-            end
-            for _, fp in ipairs(files) do
-                story = story_from_file(fp, loc_key)
-                if story then break end
-            end
-            if story then break end
+    local langs_try = build_langs_try(cur_lang, { 'en-us', 'default' })
+    local story = story_from_base(impl_base, langs_try, loc_key)
+
+    if not story then
+        local target_base = TEO_find_mod_localization_base(mod_id)
+        if target_base then
+            story = story_from_base(target_base, langs_try, loc_key)
         end
     end
 
