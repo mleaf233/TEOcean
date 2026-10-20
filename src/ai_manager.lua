@@ -10,7 +10,9 @@ local function TEO_get_ai_request_config()
         api_model = cfg.api_model or "",
         api_key = cfg.api_key or "",
         api_format = cfg.api_format or "auto",
-        temperature = cfg.ai_temperature
+        temperature = cfg.ai_temperature,
+        max_output_tokens = cfg.ai_max_tokens,
+        glossary = cfg.api_glossary or ""
     }
 end
 local AI_CARD_CACHE = {}         -- 卡牌级缓存：{ [mod_id] = { [set_key] = { [card_key] = { __teo_shape, __teo_content } } } }
@@ -91,6 +93,100 @@ end
 
 if not https then
     print("[TEOcean AI] 错误：无法加载 HTTPS 模块，AI 翻译功能不可用！")
+end
+
+-- 请求并发控制：免费公共接口在高并发下会直接断开连接，这里统一排队限流
+local AI_MAX_CONCURRENT = 3
+local AI_STALL_SECONDS = 180
+local AI_INFLIGHT = 0
+local AI_INFLIGHT_SINCE = {}
+local AI_TASK_QUEUE = {}
+local AI_PUMPING = false
+local AI_SLOT_SEQ = 0
+
+local ai_pump_queue
+
+local AI_MAX_ATTEMPTS = 2
+
+local function ai_should_retry(code)
+    local numeric = tonumber(code)
+    if not numeric or numeric == 0 then
+        return true
+    end
+    return numeric == 429 or numeric >= 500
+end
+
+local function ai_release_stalled_slots()
+    local now = os.time()
+    for id, started in pairs(AI_INFLIGHT_SINCE) do
+        if now - started > AI_STALL_SECONDS then
+            AI_INFLIGHT_SINCE[id] = nil
+            AI_INFLIGHT = math.max(0, AI_INFLIGHT - 1)
+            if TEO_dbg_print then
+                TEO_dbg_print('[TEOcean AI] 请求超时，释放并发槽位')
+            end
+        end
+    end
+end
+
+ai_pump_queue = function()
+    if AI_PUMPING then return end
+    AI_PUMPING = true
+
+    while AI_INFLIGHT < AI_MAX_CONCURRENT and #AI_TASK_QUEUE > 0 do
+        local task = table.remove(AI_TASK_QUEUE, 1)
+        AI_SLOT_SEQ = AI_SLOT_SEQ + 1
+        local slot_id = AI_SLOT_SEQ
+        AI_INFLIGHT = AI_INFLIGHT + 1
+        AI_INFLIGHT_SINCE[slot_id] = os.time()
+
+        local started, start_err = pcall(https.asyncRequest, task.url, task.options,
+            function(code, body, resp_headers)
+                AI_INFLIGHT_SINCE[slot_id] = nil
+                AI_INFLIGHT = math.max(0, AI_INFLIGHT - 1)
+
+                if ai_should_retry(code) and (task.attempts or 1) < AI_MAX_ATTEMPTS then
+                    task.attempts = (task.attempts or 1) + 1
+                    AI_TASK_QUEUE[#AI_TASK_QUEUE + 1] = task
+                    if TEO_dbg_print then
+                        TEO_dbg_print('[TEOcean AI] 请求失败，重新排队重试:', tostring(code),
+                            tostring(task.attempts) .. '/' .. tostring(AI_MAX_ATTEMPTS))
+                    end
+                    ai_pump_queue()
+                    return
+                end
+
+                local ok, cb_err = pcall(task.callback, code, body, resp_headers)
+                if not ok then
+                    print('[TEOcean AI] 响应回调异常:', tostring(cb_err))
+                end
+                ai_pump_queue()
+            end)
+
+        if not started then
+            AI_INFLIGHT_SINCE[slot_id] = nil
+            AI_INFLIGHT = math.max(0, AI_INFLIGHT - 1)
+            print('[TEOcean AI] 请求发起失败:', tostring(start_err))
+            if task.on_start_failed then
+                pcall(task.on_start_failed, start_err)
+            end
+        end
+    end
+
+    AI_PUMPING = false
+end
+
+local function ai_enqueue_request(url, options, callback, on_start_failed)
+    if #AI_TASK_QUEUE > 0 or AI_INFLIGHT >= AI_MAX_CONCURRENT then
+        ai_release_stalled_slots()
+    end
+    AI_TASK_QUEUE[#AI_TASK_QUEUE + 1] = {
+        url = url,
+        options = options,
+        callback = callback,
+        on_start_failed = on_start_failed
+    }
+    ai_pump_queue()
 end
 
 -- 系统提示词 (保持不变)
@@ -1137,7 +1233,7 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
         TEO_dbg_print("[TEOcean AI Manager] 发起 API 请求:", card_id, request_spec.provider, request_spec.url)
     end
 
-    local request_started, request_err = pcall(https.asyncRequest,
+    ai_enqueue_request(
         request_spec.url,
         { method = "POST", headers = request_spec.headers, data = json.encode(request_spec.body) },
         function(code, body, resp_headers)
@@ -1188,13 +1284,12 @@ function TEO_request_ai_translation(source_payload, mod_id, set_key, card_key, p
                     TEO_dbg_print("[TEOcean AI] 原始错误响应:", parsed_data)
                 end
             end
+        end,
+        function(err)
+            PENDING_CARD_REQUESTS[card_id] = nil
+            print('[TEOcean AI] 请求发起失败:', tostring(err), 'Card:', card_id)
         end
     )
-    if not request_started then
-        PENDING_CARD_REQUESTS[card_id] = nil
-        print('[TEOcean AI] 请求发起失败:', tostring(request_err), 'Card:', card_id)
-        return false
-    end
     return true
 end
 

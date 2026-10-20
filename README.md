@@ -61,8 +61,15 @@ Translation files under `impl/mods/<modid>/localization/` are merged into the co
 - **Show Original Translation**: Display original text alongside translated text for cards
 - **Show Original Blind Translation**: Display original text for Blind challenges
 - **Show Story**: Display comments (background story) from localization entries in the card hover popup. Lookup order: this mod's adapted files first, then the target mod's own localization; language order: current language → `en-us` → `default`
-- **Enable AI Translation**: Enable automatic AI translation via DeepSeek API
-- **API Key**: Your DeepSeek API key for AI translation (get one at [deepseek](https://platform.deepseek.com/api_keys))
+- **Enable AI Translation**: Enable automatic AI translation
+- **Set AI API**: Opens the endpoint settings page with five presets (Index-Translate free endpoint / DeepSeek / OpenAI / Claude / Gemini) in a dropdown selector
+- **API URL**: Endpoint URL starting with `http`; OpenAI, Claude, Gemini and the Index-Translate free public API are supported
+- **Model**: Model name for the chosen endpoint. Defaults to `Index-Translate-35B-A3B` (2B / 9B can be picked in the preset panel)
+- **API Key**: Required for third-party endpoints; may be left empty for the Index-Translate free endpoint
+- **Glossary**: Optional `source:target, source:target` pairs, applied as hard term constraints by the Index-Translate endpoint
+
+> The default endpoint is Bilibili's open-source Index-Translate free public API (`https://index-translate.bilibili.com/v1`) and needs no API key.
+> It is a shared public resource, so bursty traffic may be throttled. This mod caps requests at 3 concurrent and retries once on failure; switch to your own API if failures are frequent.
 
 ### Story Comments
 
@@ -154,7 +161,7 @@ Common commands:
 - If no backup or output is generated after clicking the button, check the game startup logs (console output) for entries prefixed with `[TEOcean Language Packs]`.
 - Ensure the target mod's `localization/` directory is writable.
 - If the localization still does not take effect after merging, confirm that the selected in-game language (`G.SETTINGS.language`) matches the merged language file (e.g. `zh_CN.lua`).
-- For AI translation issues, verify your API key is valid and you have sufficient credits.
+- For AI translation issues, verify your API key is valid and you have sufficient credits (the Index-Translate free endpoint needs no key).
 
 ## License
 

@@ -172,8 +172,16 @@ local function TEO_is_ai_config_input(hook_config)
     return input_id == "teo_cfg_url_input" or
         input_id == "teo_cfg_model_input" or
         input_id == "teo_cfg_key_input" or
+        input_id == "teo_cfg_glossary_input" or
         input_id == "teo_test_text_input"
 end
+
+local TEO_API_INPUT_FIELDS = {
+    api_url = true,
+    api_model = true,
+    api_key = true,
+    api_glossary = true
+}
 
 local function TEO_get_active_api_input_field()
     local target_field = nil
@@ -185,7 +193,7 @@ local function TEO_get_active_api_input_field()
         target_field = G.CONTROLLER.text_input_hook.config.ref_table.ref_value
     end
 
-    if target_field ~= "api_url" and target_field ~= "api_model" and target_field ~= "api_key" then
+    if not TEO_API_INPUT_FIELDS[target_field] then
         target_field = nil
     end
 
@@ -197,10 +205,12 @@ local function TEO_get_active_api_input_field()
             target_field = "api_model"
         elseif id == "teo_cfg_key_input" then
             target_field = "api_key"
+        elseif id == "teo_cfg_glossary_input" then
+            target_field = "api_glossary"
         end
     end
 
-    if target_field == "api_url" or target_field == "api_model" or target_field == "api_key" then
+    if TEO_API_INPUT_FIELDS[target_field] then
         return target_field
     end
 
@@ -963,6 +973,88 @@ G.FUNCS.TEOcean_adapted_mods_button = function()
     })
 end
 
+local function TEO_api_provider_label(provider)
+    local key = (TEO_get_ai_provider_key and TEO_get_ai_provider_key(provider)) or "openai"
+    if key == "index" then
+        return localize('teo_api_provider_index') or "Index-Translate 免费接口"
+    elseif key == "claude" then
+        return localize('teo_api_provider_claude') or "Claude 接口"
+    elseif key == "gemini" then
+        return localize('teo_api_provider_gemini') or "Gemini 接口"
+    end
+    return localize('teo_api_provider_openai') or "OpenAI 兼容接口"
+end
+
+local function TEO_apply_api_preset(url, model, format)
+    local mod = TEO_get_mod()
+    if not (mod and mod.config) then return end
+    if url then mod.config.api_url = url end
+    if model then mod.config.api_model = model end
+    if format then mod.config.api_format = format end
+    TEO_save_configs()
+    TEO._api_key_display_config = nil
+    TEO_set_mobile_text_input(false)
+    G.E_MANAGER:add_event(Event({
+        timer = "REAL",
+        blockable = false,
+        blocking = false,
+        trigger = "immediate",
+        func = function()
+            G.FUNCS.TEOcean_ask_api_key()
+            return true
+        end
+    }))
+end
+
+G.FUNCS.TEOcean_api_preset_index = function()
+    TEO_apply_api_preset(TEO_INDEX_API_BASE .. "/chat/completions", TEO_INDEX_DEFAULT_MODEL, "index")
+end
+
+G.FUNCS.TEOcean_api_preset_openai = function()
+    TEO_apply_api_preset("https://api.openai.com/v1/chat/completions", "gpt-4o-mini", "openai")
+end
+
+G.FUNCS.TEOcean_api_preset_deepseek = function()
+    TEO_apply_api_preset("https://api.deepseek.com/v1/chat/completions", "deepseek-chat", "openai")
+end
+
+G.FUNCS.TEOcean_api_preset_claude = function()
+    TEO_apply_api_preset("https://api.anthropic.com/v1/messages", "claude-sonnet-4-5", "claude")
+end
+
+G.FUNCS.TEOcean_api_preset_gemini = function()
+    TEO_apply_api_preset("https://generativelanguage.googleapis.com/v1beta", "gemini-2.5-flash", "gemini")
+end
+
+G.FUNCS.TEOcean_api_preset_selected = function(e)
+    local mod = TEO_get_mod()
+    if not (mod and mod.config) then return end
+    local value = e and e.config and e.config.value
+    if type(value) ~= "string" then return end
+    local provider = TEO_detect_ai_provider and
+        TEO_detect_ai_provider(mod.config.api_url or "", mod.config.api_format or "auto") or "openai"
+    local current_key = (TEO_get_ai_provider_key and TEO_get_ai_provider_key(provider)) or provider
+    local url_lower = (mod.config.api_url or ""):lower()
+    local same = current_key == value
+        and not (value == "openai" and url_lower:find("deepseek", 1, true))
+        and not (value == "deepseek" and not url_lower:find("deepseek", 1, true))
+    if same then return end
+    local apply_func = G.FUNCS["TEOcean_api_preset_" .. value]
+    if apply_func then apply_func() end
+end
+
+G.FUNCS.TEOcean_api_model_2b = function()
+    TEO_apply_api_preset(nil, "Index-Translate-2B", "index")
+end
+
+G.FUNCS.TEOcean_api_model_9b = function()
+    TEO_apply_api_preset(nil, "Index-Translate-9B", "index")
+end
+
+G.FUNCS.TEOcean_api_model_35b = function()
+    TEO_apply_api_preset(nil, "Index-Translate-35B-A3B", "index")
+end
+
 G.FUNCS.TEOcean_ask_api_key = function()
     TEO_patch_backspace_repeat()
     if G.FUNCS and G.FUNCS.TEOcean_blur_input then
@@ -974,192 +1066,178 @@ G.FUNCS.TEOcean_ask_api_key = function()
     mod.config.api_url = mod.config.api_url or ""
     mod.config.api_model = mod.config.api_model or ""
     mod.config.api_key = mod.config.api_key or ""
+    mod.config.api_glossary = mod.config.api_glossary or ""
 
     TEO._api_key_display_config = {
         api_url = mod.config.api_url,
         api_model = mod.config.api_model,
         api_key = mod.config.api_key ~= "" and string.rep("*", #mod.config.api_key) or "",
+        api_glossary = mod.config.api_glossary,
         _original_api_key = mod.config.api_key
     }
+
+    local provider = TEO_detect_ai_provider and
+        TEO_detect_ai_provider(mod.config.api_url, mod.config.api_format or "auto") or "openai"
+    local provider_key = (TEO_get_ai_provider_key and TEO_get_ai_provider_key(provider)) or provider
+    local is_index = provider_key == "index"
+
+    local function row(nodes, padding)
+        return { n = G.UIT.R, config = { align = 'cm', padding = padding or 0.05 }, nodes = nodes }
+    end
+
+    local function col(nodes, config)
+        return { n = G.UIT.C, config = config or { align = 'cm', padding = 0.05 }, nodes = nodes }
+    end
+
+    local function text_node(text, scale, colour, shadow)
+        return { n = G.UIT.T, config = { text = text, scale = scale or 0.33, colour = colour or G.C.UI.TEXT_LIGHT, shadow = shadow } }
+    end
+
+    local function action(label_text, button, colour, minw)
+        return UIBox_button({
+            button = button,
+            label = { label_text },
+            col = true,
+            minw = minw or 2.6,
+            minh = 0.6,
+            scale = 0.35,
+            colour = colour,
+            shadow = true
+        })
+    end
+
+    local function field_label(text)
+        return row({ text_node(text) }, 0.02)
+    end
+
+    local function field_input(id, ref_value, max_length, placeholder)
+        return row({
+            create_text_input({
+                id = id,
+                ref_table = TEO._api_key_display_config,
+                ref_value = ref_value,
+                max_length = max_length,
+                prompt_text = placeholder,
+                extended_corpus = true,
+                w = 9,
+                h = 0.8,
+            })
+        }, 0.03)
+    end
+
+    local key_label = is_index
+        and (localize('teo_api_key_label_optional') or "API Key（免费接口可留空）")
+        or (localize('teo_api_key_label') or "API Key")
+
+    local fields_column = col({
+        field_label(localize('teo_api_url_label') or "API URL"),
+        field_input("teo_cfg_url_input", "api_url", 220,
+            localize('teo_api_url_placeholder') or "https://api.example.com/v1/chat/completions"),
+        field_label(localize('teo_api_model_label') or "Model"),
+        field_input("teo_cfg_model_input", "api_model", 120,
+            localize('teo_api_model_placeholder') or "Index-Translate-35B-A3B"),
+        field_label(key_label),
+        field_input("teo_cfg_key_input", "api_key", 120,
+            localize('teo_api_key_placeholder') or "sk-..."),
+        field_label(localize('teo_api_glossary_label') or "术语表（可选）"),
+        field_input("teo_cfg_glossary_input", "api_glossary", 300,
+            localize('teo_api_glossary_placeholder') or "碳纤维:carbon fiber, 抗裂缝:crack resistance"),
+    }, { align = 'cm', padding = 0.05 })
+
+    local url_lower = (mod.config.api_url or ""):lower()
+    TEO._api_preset_dropdown = {
+        preset = provider_key == "openai"
+            and (url_lower:find("deepseek", 1, true) and "deepseek" or "openai")
+            or provider_key,
+    }
+
+    local preset_display = {
+        index = localize('teo_api_preset_index') or "Index 免费",
+        deepseek = localize('teo_api_preset_deepseek') or "DeepSeek",
+        openai = localize('teo_api_preset_openai') or "OpenAI",
+        claude = localize('teo_api_preset_claude') or "Claude",
+        gemini = localize('teo_api_preset_gemini') or "Gemini",
+    }
+
+    local preset_dropdown = nil
+    if SMODS and SMODS.GUI and SMODS.GUI.dropdown_select then
+        preset_dropdown = SMODS.GUI.dropdown_select({
+            id = 'teo_api_preset_dropdown',
+            ref_table = TEO._api_preset_dropdown,
+            ref_value = 'preset',
+            options = { 'index', 'deepseek', 'openai', 'claude', 'gemini' },
+            callback = 'TEOcean_api_preset_selected',
+            display_choice_func = function(opt) return preset_display[opt] or opt end,
+            colour = G.C.GREY,
+            minw = 3.2,
+            scale = 0.35,
+        })
+    end
+
+    local subtitle = is_index
+        and (localize('teo_api_subtitle_index') or "B 站免费公共接口，无需 API Key，请求过快可能被限流")
+        or (localize('teo_api_subtitle') or "支持 DeepSeek / OpenAI 兼容 / Claude / Gemini 接口，需要 API Key")
+
+    local main_nodes = {
+        row({ text_node(localize('teo_api_settings_popup_title') or localize('teo_api_key_popup_title')
+            or "AI API Settings", 0.5, G.C.UI.TEXT_LIGHT, true) }, 0.08),
+        row({ text_node(subtitle, 0.28, { 1, 1, 1, 0.6 }, true) }, 0.04),
+        row({
+            text_node(localize('teo_api_presets') or "接口预设", 0.33, G.C.UI.TEXT_LIGHT),
+            { n = G.UIT.B, config = { w = 0.3, h = 0.1 } },
+            { n = G.UIT.C, config = { align = 'cl' }, nodes = { preset_dropdown } },
+        }, 0.08),
+    }
+
+    if is_index then
+        local function model_button(label_text, button, model)
+            return action(label_text, button,
+                mod.config.api_model == model and G.C.BOOSTER or G.C.GREY, 2.0)
+        end
+        main_nodes[#main_nodes + 1] = row({
+            text_node(localize('teo_api_index_models') or "免费模型", 0.3, G.C.UI.TEXT_LIGHT)
+        }, 0.06)
+        main_nodes[#main_nodes + 1] = row({
+            model_button("2B", "TEOcean_api_model_2b", "Index-Translate-2B"),
+            model_button("9B", "TEOcean_api_model_9b", "Index-Translate-9B"),
+            model_button("35B-A3B", "TEOcean_api_model_35b", "Index-Translate-35B-A3B"),
+        }, 0.05)
+    end
+
+    main_nodes[#main_nodes + 1] = row({ fields_column }, 0.06)
+    main_nodes[#main_nodes + 1] = row({
+        action(localize('teo_b_clear') or "清空", "TEOcean_clear_api_key", G.C.RED, 2.6),
+        action(localize('teo_b_paste') or "粘贴", "TEOcean_paste_api_key", G.C.GREEN, 2.6),
+    }, 0.05)
+    main_nodes[#main_nodes + 1] = row({
+        action(localize('teo_b_get_key') or "获取API文档", "TEOcean_get_api_key_url", G.C.ORANGE, 2.6),
+        action(localize('teo_b_test_api') or "检测可用性", "TEOcean_test_api_key", G.C.BLUE, 2.6),
+    }, 0.05)
+    main_nodes[#main_nodes + 1] = row({
+        action(localize('teo_b_set') or "确认", "TEOcean_save_api_key_display", G.C.BOOSTER, 2.6),
+        action(localize('teo_b_cancel') or "取消", "TEOcean_cancel_api_key", G.C.GREY, 2.6),
+    }, 0.05)
 
     G.FUNCS.overlay_menu({
         definition = {
             n = G.UIT.ROOT,
-            config = { align = "cm", padding = 0.05, colour = G.C.BLACK, r = 0.1 },
+            config = {
+                align = "cm",
+                minw = G.ROOM.T.w * 5,
+                minh = G.ROOM.T.h * 5,
+                padding = 0.1,
+                r = 0.1,
+                colour = { G.C.GREY[1], G.C.GREY[2], G.C.GREY[3], 0.7 }
+            },
             nodes = {
                 {
-                    n = G.UIT.C,
-                    config = { align = "cm", padding = 0.05 },
+                    n = G.UIT.R,
+                    config = { align = "cm", minh = 1, r = 0.3, padding = 0.07, minw = 1, colour = G.C.JOKER_GREY, emboss = 0.1 },
                     nodes = {
                         {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.1 },
-                            nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_api_settings_popup_title') or localize('teo_api_key_popup_title') or "AI API Settings", scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.03 },
-                            nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_api_url_label') or "API URL", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.05 },
-                            nodes = {
-                                create_text_input({
-                                    id = "teo_cfg_url_input",
-                                    ref_table = TEO._api_key_display_config,
-                                    ref_value = "api_url",
-                                    max_length = 220,
-                                    prompt_text = localize('teo_api_url_placeholder') or "https://api.example.com/v1/chat/completions",
-                                    extended_corpus = true,
-                                    w = 10,
-                                    h = 0.8,
-                                })
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.03 },
-                            nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_api_model_label') or "Model", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.05 },
-                            nodes = {
-                                create_text_input({
-                                    id = "teo_cfg_model_input",
-                                    ref_table = TEO._api_key_display_config,
-                                    ref_value = "api_model",
-                                    max_length = 120,
-                                    prompt_text = localize('teo_api_model_placeholder') or "gpt-4.1-mini / claude-3-5-sonnet / gemini-2.0-flash",
-                                    extended_corpus = true,
-                                    w = 10,
-                                    h = 0.8,
-                                })
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.03 },
-                            nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_api_key_label') or "API Key", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.05 },
-                            nodes = {
-                                create_text_input({
-                                    id = "teo_cfg_key_input",
-                                    ref_table = TEO._api_key_display_config,
-                                    ref_value = "api_key",
-                                    max_length = 120,
-                                    prompt_text = localize('teo_api_key_placeholder') or "sk-...",
-                                    extended_corpus = true,
-                                    w = 10,
-                                    h = 0.8,
-                                })
-                            }
-                        },
-                        {
-                            n = G.UIT.R,
-                            config = { align = "cm", padding = 0.1 },
-                            nodes = {
-                                -- Clear button row
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", padding = 0.1 },
-                                    nodes = {
-                                        UIBox_button({
-                                            button = "TEOcean_clear_api_key",
-                                            label = { localize('teo_b_clear') or "Clear Key" },
-                                            minw = 2,
-                                            scale = 0.4,
-                                            colour = G.C.RED
-                                        })
-                                    }
-                                },
-                                -- Paste button row
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", padding = 0.1 },
-                                    nodes = {
-                                        UIBox_button({
-                                            button = "TEOcean_paste_api_key",
-                                            label = { localize('teo_b_paste') or "Paste" },
-                                            minw = 2,
-                                            scale = 0.4,
-                                            colour = G.C.GREEN
-                                        })
-                                    }
-                                },
-                                -- Get API Key URL row
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", padding = 0.1 },
-                                    nodes = {
-                                        UIBox_button({
-                                            button = "TEOcean_get_api_key_url",
-                                            label = { localize('teo_b_get_key') or "Get API Docs" },
-                                            minw = 2,
-                                            scale = 0.4,
-                                            colour = G.C.ORANGE
-                                        })
-                                    }
-                                },
-                                -- Test Availability button row
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", padding = 0.1 },
-                                    nodes = {
-                                        UIBox_button({
-                                            button = "TEOcean_test_api_key",
-                                            label = { localize('teo_b_test_api') or "Test Availability" },
-                                            minw = 2,
-                                            scale = 0.4,
-                                            colour = G.C.BLUE
-                                        })
-                                    }
-                                },
-                                -- Confirm/Cancel buttons row
-                                {
-                                    n = G.UIT.R,
-                                    config = { align = "cm", padding = 0.1 },
-                                    nodes = {
-                                        {
-                                            n = G.UIT.C,
-                                            config = { align = "cm" },
-                                            nodes = {
-                                                UIBox_button({
-                                                    button = "TEOcean_save_api_key_display",
-                                                    label = { localize('teo_b_set') or "Confirm" },
-                                                    minw = 2,
-                                                    scale = 0.4
-                                                })
-                                            }
-                                        },
-                                        { n = G.UIT.C, config = { align = "cm", padding = 0.1 }, nodes = { { n = G.UIT.B, config = { w = 0.2, h = 0.1 } } } }, -- Spacer
-                                        {
-                                            n = G.UIT.C,
-                                            config = { align = "cm" },
-                                            nodes = {
-                                                UIBox_button({
-                                                    button = "TEOcean_cancel_api_key",
-                                                    label = { localize('teo_b_cancel') or "Cancel" },
-                                                    minw = 2,
-                                                    scale = 0.4
-                                                })
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            n = G.UIT.C,
+                            config = { align = "cm", minh = 1, r = 0.2, padding = 0.2, minw = 1, colour = G.C.L_BLACK },
+                            nodes = main_nodes
                         }
                     }
                 }
@@ -1183,6 +1261,7 @@ G.FUNCS.TEOcean_save_api_key_display = function(e)
         mod.config.api_url = new_url
         mod.config.api_model = new_model
         mod.config.api_key = final_key
+        mod.config.api_glossary = TEO_trim_string and TEO_trim_string(cfg.api_glossary) or (cfg.api_glossary or "")
         mod.config.api_format = TEO_detect_ai_provider and TEO_detect_ai_provider(new_url, "auto") or "auto"
         TEO_save_configs()
 
@@ -1244,7 +1323,9 @@ G.FUNCS.TEOcean_get_api_key_url = function()
         local cfg = (mod and mod.config) or {}
         local provider = TEO_detect_ai_provider and TEO_detect_ai_provider(cfg.api_url or "", cfg.api_format or "auto") or
             "openai"
-        if provider == "claude" then
+        if provider == "index" then
+            love.system.openURL("https://index-translate.bilibili.com")
+        elseif provider == "claude" then
             love.system.openURL("https://console.anthropic.com/settings/keys")
         elseif provider == "gemini" then
             love.system.openURL("https://aistudio.google.com/app/apikey")
@@ -1461,18 +1542,48 @@ G.FUNCS.TEOcean_test_api_key = function()
     G.FUNCS.overlay_menu({
         definition = {
             n = G.UIT.ROOT,
-            config = { align = "cm", padding = 0.05, colour = G.C.BLACK, r = 0.1 },
+            config = {
+                align = "cm",
+                minw = G.ROOM.T.w * 5,
+                minh = G.ROOM.T.h * 5,
+                padding = 0.1,
+                r = 0.1,
+                colour = { G.C.GREY[1], G.C.GREY[2], G.C.GREY[3], 0.7 }
+            },
             nodes = {
                 {
-                    n = G.UIT.C,
-                    config = { align = "cm", padding = 0.05, minw = 10, minh = 6 },
+                    n = G.UIT.R,
+                    config = { align = "cm", minh = 1, r = 0.3, padding = 0.07, minw = 1, colour = G.C.JOKER_GREY, emboss = 0.1 },
                     nodes = {
+                        {
+                            n = G.UIT.C,
+                            config = { align = "cm", padding = 0.2, minw = 1, minh = 1, r = 0.2, colour = G.C.L_BLACK },
+                            nodes = {
                         -- 标题
                         {
                             n = G.UIT.R,
                             config = { align = "cm", padding = 0.15 },
                             nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_test_translation_title') or "翻译测试", scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
+                                { n = G.UIT.T, config = { text = localize('teo_test_translation_title') or "翻译测试", scale = 0.5, colour = G.C.UI.TEXT_LIGHT, shadow = true } }
+                            }
+                        },
+                        -- 当前接口
+                        {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.02 },
+                            nodes = {
+                                {
+                                    n = G.UIT.T,
+                                    config = {
+                                        text = (localize('teo_api_current') or "当前接口：") ..
+                                            TEO_api_provider_label(TEO_detect_ai_provider and
+                                                TEO_detect_ai_provider(mod.config.api_url or "",
+                                                    mod.config.api_format or "auto") or "openai") ..
+                                            " · " .. tostring(mod.config.api_model or ""),
+                                        scale = 0.3,
+                                        colour = G.C.UI.TEXT_LIGHT
+                                    }
+                                }
                             }
                         },
                         -- 输入区域标题
@@ -1480,7 +1591,7 @@ G.FUNCS.TEOcean_test_api_key = function()
                             n = G.UIT.R,
                             config = { align = "cm", padding = 0.05 },
                             nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_test_input_label') or "输入要翻译的文本:", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                                { n = G.UIT.T, config = { text = localize('teo_test_input_label') or "输入要翻译的文本:", scale = 0.35, colour = G.C.UI.TEXT_LIGHT } }
                             }
                         },
                         -- 输入框
@@ -1495,7 +1606,7 @@ G.FUNCS.TEOcean_test_api_key = function()
                                     max_length = 200,
                                     prompt_text = localize('teo_test_input_placeholder') or "输入英文文本...",
                                     extended_corpus = true,
-                                    w = 10,
+                                    w = 9,
                                     h = 0.8,
                                 })
                             }
@@ -1552,7 +1663,7 @@ G.FUNCS.TEOcean_test_api_key = function()
                             n = G.UIT.R,
                             config = { align = "cm", padding = 0.05 },
                             nodes = {
-                                { n = G.UIT.T, config = { text = localize('teo_test_result_label') or "翻译结果:", scale = 0.35, colour = G.C.UI.TEXT_DARK } }
+                                { n = G.UIT.T, config = { text = localize('teo_test_result_label') or "翻译结果:", scale = 0.35, colour = G.C.UI.TEXT_LIGHT } }
                             }
                         },
                         -- 结果显示区域 - 使用带 ref 的简单文本
@@ -1562,7 +1673,7 @@ G.FUNCS.TEOcean_test_api_key = function()
                             nodes = {
                                 {
                                     n = G.UIT.C,
-                                    config = { align = "cm", minw = 9.5, minh = 1.5, r = 0.1, colour = G.C.BLACK, emboss = 0.05 },
+                                    config = { align = "cm", minw = 8.5, minh = 1.5, r = 0.1, colour = G.C.BLACK, emboss = 0.05 },
                                     nodes = {
                                         {
                                             n = G.UIT.T,
@@ -1590,11 +1701,14 @@ G.FUNCS.TEOcean_test_api_key = function()
                                     label = { localize('b_back') or "返回" },
                                     minw = 2.5,
                                     scale = 0.4,
-                                    colour = G.C.BLUE
+                                    colour = G.C.BLUE,
+                                    shadow = true
                                 })
                             }
                         }
+                        }
                     }
+                }
                 }
             }
         }

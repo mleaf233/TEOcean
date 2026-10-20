@@ -108,7 +108,7 @@ function TEO_build_config_tab(mod)
                 else
                     mod.config.enable_ai_translation = false
                     TEO_save_configs()
-                    print('[TEOcean] AI 配置不完整（需要 URL/Model/API Key），跳转至设置页面')
+                    print('[TEOcean] AI 配置不完整（需要 URL / Model，第三方接口还需要 API Key），跳转至设置页面')
                     G.FUNCS.TEOcean_ask_api_key()
                 end
             end

@@ -37,9 +37,19 @@ end
 
 function TEO_has_required_ai_config(cfg)
     if type(cfg) ~= "table" then return false end
-    return TEO_trim_string(cfg.api_url) ~= ""
-        and TEO_trim_string(cfg.api_model) ~= ""
-        and TEO_trim_string(cfg.api_key) ~= ""
+    if TEO_trim_string(cfg.api_url) == "" or TEO_trim_string(cfg.api_model) == "" then
+        return false
+    end
+    local format = (TEO_trim_string(cfg.api_format):lower())
+    if format == "index" or format == "index-translate" then
+        return true
+    end
+    if format == "" or format == "auto" then
+        if TEO_trim_string(cfg.api_url):lower():find("index-translate", 1, true) then
+            return true
+        end
+    end
+    return TEO_trim_string(cfg.api_key) ~= ""
 end
 
 function TEO_printTable(t, indent, visited)
@@ -650,19 +660,23 @@ function TEO_init_UI_configs()
     if mod and mod.config and mod.config.enable_debug == nil then
         mod.config.enable_debug = false
     end
-    -- 初始化 AI 接口配置（必填：URL / Model / API Key）
+    -- 初始化 AI 接口配置（必填：URL / Model；API Key 仅第三方接口必填）
     if mod and mod.config and mod.config.api_url == nil then
-        mod.config.api_url = "https://api.deepseek.com/v1/chat/completions"
+        mod.config.api_url = "https://index-translate.bilibili.com/v1/chat/completions"
     end
     if mod and mod.config and mod.config.api_model == nil then
-        mod.config.api_model = "deepseek-chat"
+        mod.config.api_model = "Index-Translate-35B-A3B"
     end
     if mod and mod.config and mod.config.api_key == nil then
         mod.config.api_key = ""
     end
-    -- 可选：手动指定协议（auto/openai/claude/gemini），默认自动识别
+    -- 可选：手动指定协议（auto/openai/claude/gemini/index），默认自动识别
     if mod and mod.config and mod.config.api_format == nil then
-        mod.config.api_format = "auto"
+        mod.config.api_format = "index"
+    end
+    -- 可选：术语对照表，仅 Index-Translate 接口使用
+    if mod and mod.config and mod.config.api_glossary == nil then
+        mod.config.api_glossary = ""
     end
 end
 

@@ -26,6 +26,7 @@ local function get_test_config()
     local saved_cfg = (mod and mod.config) or {}
     local display_cfg = (TEO and TEO._api_key_display_config) or nil
     local source_cfg = type(display_cfg) == "table" and display_cfg or saved_cfg
+    local glossary = (type(display_cfg) == "table" and display_cfg.api_glossary) or saved_cfg.api_glossary or ""
     return {
         api_url = source_cfg.api_url or saved_cfg.api_url or "",
         api_model = source_cfg.api_model or saved_cfg.api_model or "",
@@ -33,7 +34,11 @@ local function get_test_config()
             or source_cfg.api_key
             or saved_cfg.api_key
             or "",
-        api_format = source_cfg.api_format or saved_cfg.api_format or "auto",
+        api_format = saved_cfg.api_format or source_cfg.api_format or "auto",
+        api_glossary = glossary,
+        glossary = glossary,
+        max_output_tokens = saved_cfg.ai_max_tokens,
+        temperature = saved_cfg.ai_temperature,
     }
 end
 
