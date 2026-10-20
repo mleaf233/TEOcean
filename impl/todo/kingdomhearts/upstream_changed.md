@@ -11,8 +11,14 @@ Changed localization files:
 M	localization/en-us.lua
 ~~~
 
+Comparison material:
+
+1. Baseline snapshot (files at the baseline commit): impl/upstream/kingdomhearts/
+2. Latest upstream files (exported for direct comparison): impl/todo/kingdomhearts/latest/
+3. Full content diff: impl/todo/kingdomhearts/upstream.diff
+
 Suggested flow:
 
-1. Compare the upstream source files under impl/upstream/kingdomhearts/ with the upstream diff.
+1. Compare the baseline files under impl/upstream/kingdomhearts/ with the latest files under impl/todo/kingdomhearts/latest/.
 2. Update impl/mods/kingdomhearts/localization/zh_CN.lua or its split files.
 3. Run tools/upstream-localization.ps1 accept kingdomhearts after the translation catches up.
